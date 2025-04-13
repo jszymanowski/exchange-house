@@ -10,17 +10,21 @@ from app.core.database import register_orm
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
-    # app startup
-    try:
-        async with register_orm(app):
-            # db connected
-            yield
-            # app teardown
-        # db connections closed
-    except Exception as e:
-        # TODO: log this, once a logger is added
-        print(f"Database connection error: {e}")
-        raise
+    if getattr(app.state, "testing", None):
+        yield
+        return
+    else:
+        # app startup
+        try:
+            async with register_orm(app):
+                # db connected
+                yield
+                # app teardown
+            # db connections closed
+        except Exception as e:
+            # TODO: log this, once a logger is added
+            print(f"Database connection error: {e}")
+            raise
 
 
 app = FastAPI(
