@@ -16,7 +16,8 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
             # app teardown
         # db connections closed
     except Exception as e:
-        app.logger.error(f"Database connection error: {e}")
+        # TODO: log this, once a logger is added
+        print(f"Database connection error: {e}")
         raise
 
 
