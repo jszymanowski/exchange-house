@@ -40,3 +40,6 @@ ignore = [
     "E501", # line too long, handled by black
     "W191", # indentation contains tabs
 ]
+
+[tool.coverage.report]
+# omit = ["app/main.py"]
