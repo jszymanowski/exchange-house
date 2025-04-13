@@ -2,6 +2,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from tortoise.contrib.fastapi import tortoise_exception_handlers
 
 from app.api.routes import router as api_router
 from app.core.database import register_orm
@@ -22,6 +23,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
         raise
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    exception_handlers=tortoise_exception_handlers(),
+)
 
 app.include_router(api_router)

@@ -4,9 +4,17 @@ from tortoise.contrib.fastapi import RegisterTortoise
 
 from app.core.config import settings
 
+TORTOISE_ORM = {
+    "connections": {"default": settings.DATABASE_URL},
+    "apps": {
+        "models": {
+            "models": ["app.models", "aerich.models"],
+            "default_connection": "default",
+        },
+    },
+}
+
 register_orm = partial(
     RegisterTortoise,
-    db_url=settings.DATABASE_URL,
-    modules={"models": ["app.models"]},
-    generate_schemas=True,
+    config=TORTOISE_ORM,
 )
