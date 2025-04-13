@@ -3,8 +3,8 @@ name = "exchange-house"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13"
-dependencies = ["fastapi[standard]==0.115.12"]
+requires-python = ">=3.13.2,<4.0"
+dependencies = ["fastapi[standard]==0.115.12", "tortoise-orm[asyncpg]==0.24.2"]
 
 
 [tool.uv]
@@ -20,10 +20,11 @@ dev-dependencies = [
 [tool.mypy]
 strict = true
 exclude = [".venv", "alembic"]
+python_version = "3.13"
 
 [tool.ruff]
-target-version = "py313"
 exclude = ["alembic"]
+target-version = "py313"
 
 [tool.ruff.lint]
 select = [
