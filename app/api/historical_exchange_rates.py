@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from app.schema.exchange_rate_response import ExchangeRateResponse
 
-router = APIRouter(prefix="/api/v1")
+router = APIRouter()
 
 
 @router.get("/latest_exchange_rate")

@@ -6,7 +6,7 @@ from httpx import AsyncClient
 
 
 @pytest.mark.asyncio
-@patch("app.api.main.date")
+@patch("app.api.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rate(
     mock_date,
     async_client: AsyncClient,
