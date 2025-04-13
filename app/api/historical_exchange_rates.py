@@ -10,19 +10,6 @@ from app.schema.exchange_rate_response import ExchangeRateResponse
 router = APIRouter()
 
 
-@router.get("/latest_exchange_rate")
-async def latest_exchange_rate(
-    from_iso_code: str = Query(..., alias="from_iso_code"),
-    to_iso_code: str = Query(..., alias="to_iso_code"),
-) -> ExchangeRateResponse:
-    return ExchangeRateResponse(
-        rate=Decimal(1.0),
-        date=date(2025, 4, 1),
-        from_iso_code=from_iso_code,
-        to_iso_code=to_iso_code,
-    )
-
-
 def get_default_start_date() -> date:
     return date.today() - timedelta(days=365.25 * 10)
 
@@ -47,12 +34,6 @@ async def historical_exchange_rates(
     from_iso_code = query_params.from_iso_code
     to_iso_code = query_params.to_iso_code
 
-    if start_date > end_date:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="start_date must be before or equal to end_date",
-        )
-
     if start_date > date.today():
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -63,6 +44,12 @@ async def historical_exchange_rates(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="end_date must be before or equal to today",
+        )
+
+    if start_date > end_date:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="start_date must be before or equal to end_date",
         )
 
     return [
