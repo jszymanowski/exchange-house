@@ -8,6 +8,14 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
+    @property
+    def environment(self) -> str:
+        return os.getenv("ENV", "development")
+
+    @property
+    def is_test(self) -> bool:
+        return self.environment == "test"
+
     @cached_property
     def DATABASE_URL(self) -> str:
         user = os.getenv("POSTGRES_USER")
