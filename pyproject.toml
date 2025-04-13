@@ -15,7 +15,6 @@ dev-dependencies = [
     "ruff==0.11.3",
     "coverage<8.0.0,>=7.4.3",
     "pre-commit>=4.2.0",
-    "freezegun>=1.5.1",
 ]
 
 [tool.mypy]
@@ -41,6 +40,3 @@ ignore = [
     "E501", # line too long, handled by black
     "W191", # indentation contains tabs
 ]
-
-[tool.coverage.report]
-# omit = ["app/main.py"]
