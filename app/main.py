@@ -16,4 +16,4 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     # db connections closed
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)

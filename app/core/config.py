@@ -18,7 +18,7 @@ class Settings(BaseSettings):
         port = 5432
         db_name = os.getenv("POSTGRES_DB")
 
-        return f"postgresql+asyncpg://{user}:{password}@{host}:{port}/{db_name}"
+        return f"asyncpg://{user}:{password}@{host}:{port}/{db_name}"
 
 
 settings = Settings()

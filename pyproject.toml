@@ -3,11 +3,11 @@ name = "exchange-house"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.13.2,<4.0"
+requires-python = ">=3.13,<4.0"
 dependencies = [
     "fastapi[standard]==0.115.12",
     "pydantic-settings>=2.8.1",
- "tortoise-orm[asyncpg]==0.24.2",
+    "tortoise-orm[asyncpg]==0.24.2",
 ]
 
 
