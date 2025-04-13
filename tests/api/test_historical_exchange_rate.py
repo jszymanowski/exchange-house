@@ -179,7 +179,7 @@ async def test_api_v1_historical_exchange_rate_with_start_date_after_today(
     )
     assert response.status_code == 400
     assert response.json() == {
-        "detail": "start_date must be before or equal to today",
+        "detail": "start_date must be before or equal to today; start_date must be before or equal to end_date",
     }
 
 
@@ -204,3 +204,33 @@ async def test_api_v1_historical_exchange_rate_with_end_date_after_today(
     assert response.json() == {
         "detail": "end_date must be before or equal to today",
     }
+
+
+@pytest.mark.asyncio
+async def test_api_v1_historical_exchange_rate_invalid_base_currency(
+    async_client: AsyncClient,
+) -> None:
+    response = await async_client.get(
+        "/api/v1/historical_exchange_rates",
+        params={"from_iso_code": "XYZ", "to_iso_code": "USD"},
+    )
+    assert response.status_code == 422
+
+    response_detail = response.json()["detail"]
+    assert len(response_detail) == 1
+    assert response_detail[0]["msg"] == "Value error, Invalid currency code: XYZ"
+
+
+@pytest.mark.asyncio
+async def test_api_v1_historical_exchange_rate_invalid_quote_currency(
+    async_client: AsyncClient,
+) -> None:
+    response = await async_client.get(
+        "/api/v1/historical_exchange_rates",
+        params={"from_iso_code": "USD", "to_iso_code": "XYZ"},
+    )
+    assert response.status_code == 422
+
+    response_detail = response.json()["detail"]
+    assert len(response_detail) == 1
+    assert response_detail[0]["msg"] == "Value error, Invalid currency code: XYZ"
