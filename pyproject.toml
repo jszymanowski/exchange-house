@@ -5,20 +5,22 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13,<4.0"
 dependencies = [
-    "fastapi[standard]==0.115.12",
-    "pydantic-settings>=2.8.1",
-    "tortoise-orm[asyncpg]==0.24.2",
+  "aerich==0.8.2",
+  "fastapi[standard]==0.115.12",
+  "pydantic-settings==2.8.1",
+  "tortoise-orm[asyncpg]==0.24.2",
 ]
-
 
 [tool.uv]
 dev-dependencies = [
-    "pytest==8.3.5",
-    "pytest-asyncio==0.26.0",
-    "mypy==1.15.0",
-    "ruff==0.11.5",
-    "coverage<8.0.0,>=7.4.3",
-    "pre-commit>=4.2.0",
+  "pytest==8.3.5",
+  "pytest-asyncio==0.26.0",
+  "mypy==1.15.0",
+  "ruff==0.11.5",
+  "coverage==7.8.0",
+  "pre-commit==4.2.0",
+  "tomlkit>=0.13.2",
+  "pytest-env>=1.1.5",
 ]
 
 [tool.mypy]
@@ -27,21 +29,15 @@ exclude = [".venv", "alembic"]
 python_version = "3.13"
 
 [tool.ruff]
+line-length = 120
 exclude = ["alembic"]
 target-version = "py313"
 
 [tool.ruff.lint]
-select = [
-    "E",      # pycodestyle errors
-    "W",      # pycodestyle warnings
-    "F",      # pyflakes
-    "I",      # isort
-    "B",      # flake8-bugbear
-    "C4",     # flake8-comprehensions
-    "UP",     # pyupgrade
-    "ARG001", # unused arguments in functions
-]
-ignore = [
-    "E501", # line too long, handled by black
-    "W191", # indentation contains tabs
-]
+select = ["E", "W", "F", "I", "B", "C4", "UP", "ARG001"]
+ignore = ["E501", "W191"]
+
+[tool.aerich]
+tortoise_orm = "app.core.database.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."

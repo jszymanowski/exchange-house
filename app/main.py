@@ -2,26 +2,35 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from tortoise.contrib.fastapi import tortoise_exception_handlers
 
 from app.api.routes import router as api_router
+from app.core.config import settings
 from app.core.database import register_orm
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
-    # app startup
-    try:
-        async with register_orm(app):
-            # db connected
-            yield
-            # app teardown
-        # db connections closed
-    except Exception as e:
-        # TODO: log this, once a logger is added
-        print(f"Database connection error: {e}")
-        raise
+    if settings.is_test:
+        yield
+        return
+    else:
+        # app startup
+        try:
+            async with register_orm(app):
+                # db connected
+                yield
+                # app teardown
+            # db connections closed
+        except Exception as e:
+            # TODO: log this, once a logger is added
+            print(f"Database connection error: {e}")
+            raise
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    exception_handlers=tortoise_exception_handlers(),
+)
 
 app.include_router(api_router)
