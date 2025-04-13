@@ -1,11 +1,16 @@
 import uuid
-from datetime import datetime, timezone
 
 from tortoise import fields
 from tortoise.models import Model
 
 
 class ExchangeRate(Model):
+    """
+    Model representing exchange rates between currency pairs.
+
+    Stores historical exchange rate data with source information.
+    """
+
     id: fields.UUIDField = fields.UUIDField(default=uuid.uuid4, pk=True)
     as_of: fields.DateField = fields.DateField(null=False)
     base_currency_code: fields.CharField = fields.CharField(max_length=3, null=False)
@@ -15,11 +20,11 @@ class ExchangeRate(Model):
     )
     data_source: fields.CharField = fields.CharField(max_length=20, null=False)
     created_at: fields.DatetimeField = fields.DatetimeField(
-        default=datetime.now(timezone.utc),  # noqa: UP017
+        auto_now=True,
         null=False,
     )
     updated_at: fields.DatetimeField = fields.DatetimeField(
-        default=datetime.now(timezone.utc),  # noqa: UP017
+        auto_now_add=True,
         null=False,
     )
 

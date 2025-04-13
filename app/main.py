@@ -9,11 +9,15 @@ from app.core.database import register_orm
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     # app startup
-    async with register_orm(app):
-        # db connected
-        yield
-        # app teardown
-    # db connections closed
+    try:
+        async with register_orm(app):
+            # db connected
+            yield
+            # app teardown
+        # db connections closed
+    except Exception as e:
+        app.logger.error(f"Database connection error: {e}")
+        raise
 
 
 app = FastAPI(lifespan=lifespan)

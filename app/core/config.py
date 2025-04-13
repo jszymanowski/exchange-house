@@ -1,5 +1,3 @@
-# mypy: ignore-errors
-
 import os
 from functools import cached_property
 
@@ -15,8 +13,11 @@ class Settings(BaseSettings):
         user = os.getenv("POSTGRES_USER")
         password = os.getenv("POSTGRES_PASSWORD")
         host = os.getenv("POSTGRES_HOST")
-        port = 5432
+        port = os.getenv("POSTGRES_PORT", "5432")
         db_name = os.getenv("POSTGRES_DB")
+
+        if not all([user, password, host, db_name]):
+            raise ValueError("Missing required database environment variables")
 
         return f"asyncpg://{user}:{password}@{host}:{port}/{db_name}"
 
