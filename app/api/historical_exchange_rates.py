@@ -68,8 +68,5 @@ async def historical_exchange_rates(
             from_iso_code=from_iso_code,
             to_iso_code=to_iso_code,
         )
-        for date in (
-            start_date + timedelta(days=i)
-            for i in range((end_date - start_date).days + 1)
-        )
+        for date in (start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1))
     ]
