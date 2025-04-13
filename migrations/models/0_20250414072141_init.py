@@ -27,4 +27,6 @@ CREATE TABLE IF NOT EXISTS "aerich" (
 
 async def downgrade(_db: BaseDBAsyncClient) -> str:
     return """
+        DROP TABLE IF EXISTS "exchange_rates";
+        DROP TABLE IF EXISTS "aerich";
         """
