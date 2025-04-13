@@ -15,7 +15,7 @@ async def latest_exchange_rate(
 ) -> ExchangeRateResponse:
     return ExchangeRateResponse(
         rate=Decimal(1.0),
-        date=date.today(),
+        date=date(2025, 4, 1),
         from_iso_code=from_iso_code,
         to_iso_code=to_iso_code,
     )
