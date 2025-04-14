@@ -2,35 +2,13 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
-from tortoise import Tortoise
-from tortoise.contrib.fastapi import RegisterTortoise
 
-from app.core.database import TORTOISE_ORM
-from app.main import app
 from app.models.exchange_rate import ExchangeRate
-
-
-@pytest.fixture(autouse=True)
-async def initialize_tests():
-    """Initialize Tortoise ORM with the pytest-postgresql database."""
-    # Source: https://tortoise.github.io/examples/fastapi.html?h=drop_databases#main-py
-    # Perhaps this should be moved to app.main.lifespan
-
-    async with RegisterTortoise(
-        app=app,
-        config=TORTOISE_ORM,
-        generate_schemas=True,
-        _create_db=True,
-    ):
-        # db connected
-        yield
-        # app teardown
-    # db connections closed
-    await Tortoise._drop_databases()
+from tests.utilities.database_helper import DatabaseTestHelper
 
 
 @pytest.mark.asyncio
-async def test_exchange_rate_model() -> None:
+async def test_exchange_rate_model(test_database: DatabaseTestHelper) -> None:
     exchange_rate = ExchangeRate(
         as_of=date(2021, 1, 1),
         base_currency_code="USD",
@@ -41,9 +19,10 @@ async def test_exchange_rate_model() -> None:
 
     await exchange_rate.save()
 
-    committed_record = await ExchangeRate.get(id=exchange_rate.id)
+    record_count = await test_database.count_records(ExchangeRate)
+    assert record_count == 1
 
-    print(committed_record)
+    committed_record = await ExchangeRate.get(id=exchange_rate.id)
 
     assert committed_record.id is not None
     assert committed_record.as_of == date(2021, 1, 1)
@@ -54,7 +33,7 @@ async def test_exchange_rate_model() -> None:
 
 
 @pytest.mark.asyncio
-async def test_exchange_rate_model_another() -> None:
+async def test_exchange_rate_model_another(test_database: DatabaseTestHelper) -> None:
     exchange_rate = ExchangeRate(
         as_of=date(2021, 1, 1),
         base_currency_code="USD",
@@ -65,9 +44,10 @@ async def test_exchange_rate_model_another() -> None:
 
     await exchange_rate.save()
 
-    committed_record = await ExchangeRate.get(id=exchange_rate.id)
+    record_count = await test_database.count_records(ExchangeRate)
+    assert record_count == 1
 
-    print(committed_record)
+    committed_record = await ExchangeRate.get(id=exchange_rate.id)
 
     assert committed_record.id is not None
     assert committed_record.as_of == date(2021, 1, 1)
