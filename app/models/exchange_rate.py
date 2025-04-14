@@ -16,7 +16,7 @@ class ExchangeRate(Model):
     base_currency_code: fields.CharField = fields.CharField(max_length=3, null=False)
     quote_currency_code: fields.CharField = fields.CharField(max_length=3, null=False)
     rate: fields.DecimalField = fields.DecimalField(max_digits=18, decimal_places=8, null=False)
-    data_source: fields.CharField = fields.CharField(max_length=20, null=False)
+    data_source: fields.CharField = fields.CharField(max_length=50, null=False)
     created_at: fields.DatetimeField = fields.DatetimeField(
         auto_now=True,
         null=False,

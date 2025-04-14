@@ -21,8 +21,6 @@ async def async_client() -> AsyncGenerator[AsyncClient]:
 @pytest.fixture
 async def test_database() -> AsyncGenerator[DatabaseTestHelper]:
     """Initialize Tortoise ORM with the pytest-postgresql database."""
-    # Source: https://tortoise.github.io/examples/fastapi.html?h=drop_databases#main-py
-    # Perhaps this should be moved to app.main.lifespan
 
     async with RegisterTortoise(
         app=app,
