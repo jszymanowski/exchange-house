@@ -14,10 +14,10 @@ services:
       - WORKERS=4
       # TODO: move these to secrets
       - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
-      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     ports:
       - "3177:8000"
     networks:
