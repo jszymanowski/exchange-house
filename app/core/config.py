@@ -27,13 +27,7 @@ class Settings(BaseSettings):
         if not all([user, password, host, db_name]):
             raise ValueError("Missing required database environment variables")
 
-        # TODO: this may not be necessary -- perhaps asyncpg can always be used
-        if self.is_test:
-            protocol = "asyncpg"
-        else:
-            protocol = "asyncpg"
-
-        return f"{protocol}://{user}:{password}@{host}:{port}/{db_name}"
+        return f"asyncpg://{user}:{password}@{host}:{port}/{db_name}"
 
 
 settings = Settings()
