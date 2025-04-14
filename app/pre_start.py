@@ -34,8 +34,7 @@ async def check_db_connection() -> bool:
 
 async def init_db() -> bool:
     try:
-        async with Command(tortoise_config=TORTOISE_ORM, app="models") as command:
-            await command.migrate("test")
+        async with Command(tortoise_config=TORTOISE_ORM, location="../migrations") as command:
             await command.upgrade()
             return True
     except Exception as e:
