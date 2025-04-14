@@ -2,19 +2,20 @@ from datetime import date
 
 from fastapi import APIRouter
 
+from app.core.dependencies import exchange_rate_service_dependency
+from app.services.exchange_rate_service import ExchangeRateServiceInterface
+
 router = APIRouter()
 
 
 @router.get("/available_dates")
-async def available_dates() -> list[date]:
+async def available_dates(
+    exchange_rate_service: ExchangeRateServiceInterface = exchange_rate_service_dependency,
+) -> list[date]:
     """
     Retrieve a list of available dates for exchange rate data.
 
     Returns:
         list[date]: List of dates for which exchange rate data is available
     """
-    return [
-        date(2025, 4, 1),
-        date(2025, 4, 2),
-        date(2025, 4, 3),
-    ]
+    return await exchange_rate_service.get_available_dates()
