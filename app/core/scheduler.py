@@ -4,6 +4,7 @@ from typing import TypedDict
 from apscheduler.events import JobExecutionEvent
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
+from app.core.config import settings
 from app.core.logger import logger
 
 
@@ -38,7 +39,7 @@ class JobMetrics:
                 stats["failures"] = stats.get("failures", 0)
 
 
-scheduler = AsyncIOScheduler()
+scheduler = AsyncIOScheduler(timezone=settings.timezone, job_defaults={"coalesce": True, "max_instances": 1})
 metrics = JobMetrics()
 
 

@@ -1,9 +1,8 @@
-import os
-
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from filelock import FileLock, Timeout
 
+from app.core.config import settings
 from app.core.logger import logger
 from app.core.scheduler import job_listener
 from app.tasks.jobs import heartbeat_task
@@ -18,16 +17,21 @@ class SchedulerManager:
 
     def configure_jobs(self) -> None:
         self.scheduler.add_listener(job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
-
-        self.scheduler.add_job(heartbeat_task, "cron", minute="*/5", id="heartbeat", name="Heartbeat check")
+        heartbeat_interval = settings.heartbeat_interval
+        self.scheduler.add_job(
+            heartbeat_task, "cron", minute=heartbeat_interval, id="heartbeat", name="Heartbeat check"
+        )
 
     async def start(self) -> None:
         # Don't start the scheduler outside of production
-        if os.environ.get("ENV") != "production":
+        if not settings.is_production:
             return
 
         try:
-            self.lock.acquire(blocking=False)
+            acquired = self.lock.acquire(blocking=False)
+            if not acquired:
+                logger.info("Scheduler already running in another worker")
+                return
             self._has_lock = True
 
             self.configure_jobs()

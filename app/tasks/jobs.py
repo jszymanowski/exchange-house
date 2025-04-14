@@ -14,7 +14,11 @@ async def heartbeat_task() -> None:
         logger.warning("Heartbeat: check-in failed: URL is not set")
         return
 
-    async with httpx.AsyncClient() as client:
-        await client.get(url)
+    try:
+        async with httpx.AsyncClient() as client:
+            await client.get(url, timeout=10.0)
+    except httpx.HTTPError as e:
+        logger.error(f"Heartbeat check-in failed: {str(e)}")
+        return
 
     logger.info("Heartbeat: check-in complete")

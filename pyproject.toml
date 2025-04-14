@@ -30,7 +30,7 @@ exclude = [".venv", "alembic"]
 python_version = "3.13"
 
 [[tool.mypy.overrides]]
-module = "aerich"
+module = ["aerich", "apscheduler.events", "apscheduler.schedulers.asyncio"]
 ignore_missing_imports = true
 
 [tool.ruff]
