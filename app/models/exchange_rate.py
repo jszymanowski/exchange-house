@@ -11,7 +11,7 @@ class ExchangeRate(Model):
     Stores historical exchange rate data with source information.
     """
 
-    id: fields.UUIDField = fields.UUIDField(default=uuid.uuid4, pk=True)
+    id: fields.UUIDField = fields.UUIDField(default=uuid.uuid4, primary_key=True)
     as_of: fields.DateField = fields.DateField(null=False)
     base_currency_code: fields.CharField = fields.CharField(max_length=3, null=False)
     quote_currency_code: fields.CharField = fields.CharField(max_length=3, null=False)
