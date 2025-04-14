@@ -52,7 +52,6 @@ async def test_get_currency_pairs() -> None:
     ]
 
 
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_get_latest_rate_success() -> None:
     base_currency_code = "USD"
@@ -67,7 +66,7 @@ async def test_get_latest_rate_success() -> None:
     assert result.base_currency_code == base_currency_code
     assert result.quote_currency_code == quote_currency_code
     assert quantize_decimal(result.rate) == quantize_decimal(expected_rate)
-    assert result.date == as_of
+    assert result.as_of == as_of
 
 
 @pytest.mark.skip(reason="Not yet implemented")
@@ -85,7 +84,7 @@ async def test_get_latest_rate_success_custom_from_currency() -> None:
     assert result.base_currency_code == base_currency_code
     assert result.quote_currency_code == quote_currency_code
     assert quantize_decimal(result.rate) == quantize_decimal(expected_rate)
-    assert result.date == as_of
+    assert result.as_of == as_of
 
 
 @pytest.mark.skip(reason="Not yet implemented")
@@ -103,7 +102,7 @@ async def test_get_latest_rate_success_same_currency() -> None:
     assert result.base_currency_code == base_currency_code
     assert result.quote_currency_code == quote_currency_code
     assert quantize_decimal(result.rate) == quantize_decimal(expected_rate)
-    assert result.date == as_of
+    assert result.as_of == as_of
 
 
 @pytest.mark.skip(reason="Not yet implemented")
@@ -121,7 +120,7 @@ async def test_get_latest_rate_success_custom_to_currency() -> None:
     assert result.base_currency_code == base_currency_code
     assert result.quote_currency_code == quote_currency_code
     assert quantize_decimal(result.rate) == quantize_decimal(expected_rate)
-    assert result.date == as_of
+    assert result.as_of == as_of
 
 
 @pytest.mark.skip(reason="Not yet implemented")

@@ -16,115 +16,25 @@ class ExchangeRateServiceInterface:
     async def get_available_dates(self) -> list[date]:
         raise RuntimeError("Must be implemented")
 
-    async def get_latest_rate(self, from_iso_code: str, to_iso_code: str, as_of: date) -> ExchangeRate | None:
+    async def get_latest_rate(
+        self, base_currency_code: str, quote_currency_code: str, as_of: date
+    ) -> ExchangeRate | None:
         raise RuntimeError("Must be implemented")
 
     async def get_historical_rates(
         self,
-        from_iso_code: str,
-        to_iso_code: str,
+        base_currency_code: str,
+        quote_currency_code: str,
         start_date: date | None = None,
         limit: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
         raise RuntimeError("Must be implemented")
 
-    async def create_rate(self, as_of: date, from_iso_code: str, to_iso_code: str, rate: Decimal) -> list[ExchangeRate]:
+    async def create_rate(
+        self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal
+    ) -> list[ExchangeRate]:
         raise RuntimeError("Must be implemented")
-
-
-# class LegacyExchangeRateService(ExchangeRateServiceInterface):
-#     def __init__(self, db_session: AsyncSession):
-#         self.db_session = db_session
-
-#     async def get_currency_pairs(self) -> list[CurrencyPair]:
-#         query = select(LegacyExchangeRate).distinct(LegacyExchangeRate.from_iso_code, LegacyExchangeRate.to_iso_code)
-#         result = await self.db_session.execute(query)
-#         exchange_rates = result.scalars().all()
-#         logging.info(f"exchange_rates: {exchange_rates}")
-
-#         return [CurrencyPair.from_db(exchange_rate) for exchange_rate in exchange_rates]
-
-#     async def get_available_dates(self) -> list[date]:
-#         stmt = select(LegacyExchangeRate.as_of).distinct()
-#         result = await self.db_session.execute(stmt)
-#         return [row[0] for row in result.fetchall()]
-
-#     async def get_latest_rate(self, from_iso_code: str, to_iso_code: str, as_of: date) -> Optional[ExchangeRate]:
-#         if from_iso_code == to_iso_code:
-#             return ExchangeRate(
-#                 rate=Decimal(1),
-#                 date=as_of,
-#                 from_iso_code=from_iso_code,
-#                 to_iso_code=to_iso_code,
-#             )
-
-#         query = (
-#             select(LegacyExchangeRate)
-#             .where(
-#                 and_(
-#                     LegacyExchangeRate.from_iso_code == from_iso_code,
-#                     LegacyExchangeRate.to_iso_code == to_iso_code,
-#                     LegacyExchangeRate.as_of <= as_of,
-#                 )
-#             )
-#             .order_by(LegacyExchangeRate.as_of.desc())
-#             .limit(1)
-#         )
-
-#         result = await self.db_session.execute(query)
-#         exchange_rate = result.scalar_one_or_none()
-
-#         if exchange_rate:
-#             return ExchangeRate(
-#                 rate=exchange_rate.rate,
-#                 date=exchange_rate.as_of,
-#                 from_iso_code=CurrencyCode(exchange_rate.from_iso_code),
-#                 to_iso_code=CurrencyCode(exchange_rate.to_iso_code),
-#             )
-
-#         return None
-
-#     async def get_historical_rates(
-#         self,
-#         from_iso_code: str,
-#         to_iso_code: str,
-#         start_date: Optional[date] = None,
-#         limit: Optional[int] = None,
-#         sort_order: Literal["asc", "desc"] = "asc",
-#     ) -> list[ExchangeRate]:
-#         query = select(LegacyExchangeRate).where(
-#             LegacyExchangeRate.from_iso_code == from_iso_code,
-#             LegacyExchangeRate.to_iso_code == to_iso_code,
-#         )
-#         if sort_order == "desc":
-#             query = query.order_by(LegacyExchangeRate.as_of.desc())
-#         else:
-#             query = query.order_by(LegacyExchangeRate.as_of.asc())
-
-#         if start_date is not None:
-#             query = query.where(LegacyExchangeRate.as_of >= start_date)
-#         if limit is not None:
-#             query = query.limit(limit)
-#         result = await self.db_session.execute(query)
-#         exchange_rates = result.scalars().all()
-
-#         return [ExchangeRate.from_db(exchange_rate) for exchange_rate in exchange_rates]
-
-#     async def create_rate(self, as_of: date, from_iso_code: str, to_iso_code: str, rate: Decimal) -> list[ExchangeRate]:
-#         if from_iso_code == to_iso_code:
-#             return []
-
-#         forward_rate = LegacyExchangeRate(as_of=as_of, from_iso_code=from_iso_code, to_iso_code=to_iso_code, rate=rate)
-#         _inverse_rate = 1 / rate
-#         inverse_rate = LegacyExchangeRate(
-#             as_of=as_of, from_iso_code=to_iso_code, to_iso_code=from_iso_code, rate=_inverse_rate
-#         )
-#         self.db_session.add_all([forward_rate, inverse_rate])
-
-#         await self.db_session.commit()
-
-#         return [ExchangeRate.from_db(forward_rate), ExchangeRate.from_db(inverse_rate)]
 
 
 class ExchangeRateService(ExchangeRateServiceInterface):
@@ -141,48 +51,33 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         )
         return [CurrencyPair(**pair) for pair in distinct_pairs]
 
-    # async def get_latest_rate(self, from_iso_code: str, to_iso_code: str, as_of: date) -> ExchangeRate | None:
-    #     if from_iso_code == to_iso_code:
-    #         return ExchangeRate(
-    #             rate=Decimal(1),
-    #             date=as_of,
-    #             from_iso_code=from_iso_code,
-    #             to_iso_code=to_iso_code,
-    #         )
+    async def get_latest_rate(
+        self, base_currency_code: str, quote_currency_code: str, as_of: date
+    ) -> ExchangeRate | None:
+        if base_currency_code == quote_currency_code:
+            return ExchangeRate(
+                rate=Decimal(1),
+                date=as_of,
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+            )
 
-    #     if (from_iso_code == "CUSTOM_AMEX" and to_iso_code == "USD") or (
-    #         from_iso_code == "USD" and to_iso_code == "CUSTOM_AMEX"
-    #     ):
-    #         return get_custom_currency_rate(from_iso_code, to_iso_code, as_of)
+        exchange_rate = (
+            await ExchangeRate.filter(
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+                as_of__lte=as_of,
+            )
+            .order_by("-as_of")
+            .get()
+        )
 
-    #     if (from_iso_code == "CUSTOM_CAPITAL_ONE" and to_iso_code == "USD") or (
-    #         from_iso_code == "USD" and to_iso_code == "CUSTOM_CAPITAL_ONE"
-    #     ):
-    #         return get_custom_currency_rate(from_iso_code, to_iso_code, as_of)
-
-    #     query = (
-    #         self.exchange_house.table(self.table)
-    #         .select("rate, date")
-    #         .eq("base_currency", from_iso_code)
-    #         .eq("target_currency", to_iso_code)
-    #         .order("date", desc=True)
-    #         .limit(1)
-    #     )
-
-    #     response = query.execute()
-
-    #     if not response.data:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_404_NOT_FOUND,
-    #             detail=f"No exchange rates found for {from_iso_code} to {to_iso_code}",
-    #         )
-
-    #     return self._parse_response(response.data[0], from_iso_code, to_iso_code)
+        return exchange_rate
 
     # async def get_historical_rates(
     #     self,
-    #     from_iso_code: str,
-    #     to_iso_code: str,
+    #     base_currency_code: str,
+    #     quote_currency_code: str,
     #     start_date: Optional[date] = None,
     #     limit: Optional[int] = None,
     #     sort_order: Literal["asc", "desc"] = "asc",
@@ -203,8 +98,8 @@ class ExchangeRateService(ExchangeRateServiceInterface):
     #     query = (
     #         self.exchange_house.table(self.table)
     #         .select("rate, date")
-    #         .eq("base_currency", from_iso_code)
-    #         .eq("target_currency", to_iso_code)
+    #         .eq("base_currency", base_currency_code)
+    #         .eq("target_currency", quote_currency_code)
     #         .gte("date", start_date.isoformat())
     #         .lte("date", end_date.isoformat())
     #         .order("date", desc=(sort_order == "desc"))
@@ -217,31 +112,31 @@ class ExchangeRateService(ExchangeRateServiceInterface):
     #     if not all_rates:
     #         raise HTTPException(
     #             status_code=status.HTTP_404_NOT_FOUND,
-    #             detail=f"No exchange rates found for {from_iso_code}"
-    #             f" to {to_iso_code} between {start_date} and {end_date}",
+    #             detail=f"No exchange rates found for {base_currency_code}"
+    #             f" to {quote_currency_code} between {start_date} and {end_date}",
     #         )
 
     #     if len(all_rates) == MAX_RECORDS_PER_REQUEST:
     #         logger.warning(f"Reached the maximum number of records per request: {MAX_RECORDS_PER_REQUEST}")
 
     #     return [
-    #         self._parse_response(data=rate, from_iso_code=from_iso_code, to_iso_code=to_iso_code) for rate in all_rates
+    #         self._parse_response(data=rate, base_currency_code=base_currency_code, quote_currency_code=quote_currency_code) for rate in all_rates
     #     ]
 
-    # async def create_rate(self, as_of: date, from_iso_code: str, to_iso_code: str, rate: Decimal) -> list[ExchangeRate]:
-    #     if from_iso_code == to_iso_code:
+    # async def create_rate(self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal) -> list[ExchangeRate]:
+    #     if base_currency_code == quote_currency_code:
     #         return []
 
     #     forward_rate = {
-    #         "base_currency": from_iso_code,
-    #         "target_currency": to_iso_code,
+    #         "base_currency": base_currency_code,
+    #         "target_currency": quote_currency_code,
     #         "rate": float(rate),
     #         "date": as_of.isoformat(),
     #     }
     #     _inverse_rate = 1 / rate
     #     inverse_rate = {
-    #         "base_currency": to_iso_code,
-    #         "target_currency": from_iso_code,
+    #         "base_currency": quote_currency_code,
+    #         "target_currency": base_currency_code,
     #         "rate": float(_inverse_rate),
     #         "date": as_of.isoformat(),
     #     }
@@ -253,10 +148,10 @@ class ExchangeRateService(ExchangeRateServiceInterface):
     #     except Exception as e:
     #         raise HTTPException(
     #             status_code=status.HTTP_400_BAD_REQUEST,
-    #             detail=f"Failed to create exchange rate for {from_iso_code} to {to_iso_code} on {as_of} with error {e}",
+    #             detail=f"Failed to create exchange rate for {base_currency_code} to {quote_currency_code} on {as_of} with error {e}",
     #         ) from e
 
     #     return [self._parse_response(rate, rate["base_currency"], rate["target_currency"]) for rate in response.data]
 
-    # def _parse_response(self, data: ExchangeRateResponse, from_iso_code: str, to_iso_code: str) -> ExchangeRate:
-    #     return ExchangeRate.from_exchange_house_api(data, from_iso_code, to_iso_code)
+    # def _parse_response(self, data: ExchangeRateResponse, base_currency_code: str, quote_currency_code: str) -> ExchangeRate:
+    #     return ExchangeRate.from_exchange_house_api(data, base_currency_code, quote_currency_code)
