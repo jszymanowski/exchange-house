@@ -13,17 +13,17 @@ fi
 uv run -m app.pre_start
 
 # Initialize database, or run migrations if already initialized
-echo "-- aerich migrate --dry-run"
-aerich migrate --dry-run
-echo "---------------------------"
-if aerich migrate --dry-run 2>&1 | grep -q "You need to run \`aerich init-db\`"; then
-  echo "First-time setup: Initializing Aerich..."
-  aerich init -t app.core.database.TORTOISE_ORM
-  aerich init-db
-else
-  echo "Running migrations..."
-  aerich upgrade
-fi
+# echo "-- aerich migrate --dry-run"
+# aerich migrate --dry-run
+# echo "---------------------------"
+# if aerich migrate --dry-run 2>&1 | grep -q "You need to run \`aerich init-db\`"; then
+#   echo "First-time setup: Initializing Aerich..."
+#   aerich init -t app.core.database.TORTOISE_ORM
+#   aerich init-db
+# else
+#   echo "Running migrations..."
+#   aerich upgrade
+# fi
 
-# Start the application
-fastapi run --workers 4 --host 0.0.0.0 --port 8000 app/main.py
+# # Start the application
+# fastapi run --workers 4 --host 0.0.0.0 --port 8000 app/main.py
