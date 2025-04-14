@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field, field_validator
 
 from app.core.dependencies import exchange_rate_service_dependency
-from app.data.valid_currencies import valid_currencies
+from app.data.currencies import is_valid_currency
 from app.schema.exchange_rate_response import ExchangeRateResponse
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
@@ -23,10 +23,10 @@ class LatestExchangeRateQueryParams(BaseModel):
 
     @field_validator("base_currency_code", "quote_currency_code")
     @classmethod
-    def validate_iso_code(cls, v: str) -> str:
-        if v not in valid_currencies:
-            raise ValueError(f"Invalid currency code: {v}")
-        return v
+    def validate_iso_code(cls, value: str) -> str:
+        if not is_valid_currency(value):
+            raise ValueError(f"Invalid currency code: {value}")
+        return value
 
 
 @router.get("/latest_exchange_rate")
@@ -37,18 +37,6 @@ async def latest_exchange_rate(
     base_currency_code = query_params.base_currency_code
     quote_currency_code = query_params.quote_currency_code
     desired_date = query_params.desired_date or date.today()
-
-    if base_currency_code not in valid_currencies:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid base_currency_code: {base_currency_code}",
-        )
-
-    if quote_currency_code not in valid_currencies:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"Invalid quote_currency_code: {quote_currency_code}",
-        )
 
     result = await exchange_rate_service.get_latest_rate(base_currency_code, quote_currency_code, desired_date)
 

@@ -5,7 +5,7 @@ from typing import Annotated
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field, field_validator
 
-from app.data.valid_currencies import valid_currencies
+from app.data.currencies import is_valid_currency
 from app.schema.exchange_rate_response import ExchangeRateResponse
 
 router = APIRouter()
@@ -27,10 +27,10 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
 
     @field_validator("base_currency_code", "quote_currency_code")
     @classmethod
-    def validate_iso_code(cls, v: str) -> str:
-        if v not in valid_currencies:
-            raise ValueError(f"Invalid currency code: {v}")
-        return v
+    def validate_iso_code(cls, value: str) -> str:
+        if not is_valid_currency(value):
+            raise ValueError(f"Invalid currency code: {value}")
+        return value
 
 
 # TODO: Add pagination
