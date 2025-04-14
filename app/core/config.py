@@ -8,6 +8,10 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
+    PROJECT_NAME: str = "Exchange House"
+    PROJECT_DESCRIPTION: str = "A simple API for exchange rates"
+    PROJECT_VERSION: str = "v1"
+
     @property
     def environment(self) -> str:
         return os.getenv("ENV", "development")
