@@ -13,6 +13,8 @@ from app.models.exchange_rate import ExchangeRate
 @pytest.fixture(autouse=True)
 async def initialize_tests():
     """Initialize Tortoise ORM with the pytest-postgresql database."""
+    # Source: https://tortoise.github.io/examples/fastapi.html?h=drop_databases#main-py
+    # Perhaps this should be moved to app.main.lifespan
 
     async with RegisterTortoise(
         app=app,
