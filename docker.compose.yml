@@ -24,7 +24,9 @@ services:
       - exchange-house-network
       - external_proxy_net
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
+    restart: on-failure
 
   postgres:
     container_name: exchange-house-postgres
@@ -40,3 +42,13 @@ services:
     networks:
       - exchange-house-network
     restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-exchange_house_production}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
