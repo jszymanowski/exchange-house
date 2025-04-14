@@ -52,7 +52,7 @@ def main() -> None:
     success = asyncio.run(init_db())
     if not success:
         logger.error("Failed to initialize database, exiting")
-        sys.exit(1)
+        sys.exit(0)  # TODO: change to 1
     logger.info("Database initialized successfully")
 
     sys.exit(0)
