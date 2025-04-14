@@ -5,3 +5,4 @@
 #### TODO
 
 - [ ] uvicorn
+- [ ] run `aerich upgrade` on boot
