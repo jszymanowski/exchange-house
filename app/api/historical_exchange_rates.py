@@ -20,12 +20,12 @@ def get_default_end_date() -> date:
 
 
 class HistoricalExchangeRatesQueryParams(BaseModel):
-    from_iso_code: str
-    to_iso_code: str
+    base_currency_code: str
+    quote_currency_code: str
     start_date: date = Field(default_factory=get_default_start_date)
     end_date: date = Field(default_factory=get_default_end_date)
 
-    @field_validator("from_iso_code", "to_iso_code")
+    @field_validator("base_currency_code", "quote_currency_code")
     @classmethod
     def validate_iso_code(cls, v: str) -> str:
         if v not in valid_currencies:
@@ -40,8 +40,8 @@ async def historical_exchange_rates(
 ) -> list[ExchangeRateResponse]:
     start_date = query_params.start_date
     end_date = query_params.end_date
-    from_iso_code = query_params.from_iso_code
-    to_iso_code = query_params.to_iso_code
+    base_currency_code = query_params.base_currency_code
+    quote_currency_code = query_params.quote_currency_code
 
     today = date.today()
     validation_errors = []
@@ -65,8 +65,8 @@ async def historical_exchange_rates(
         ExchangeRateResponse(
             rate=Decimal(1.0),
             date=date,
-            from_iso_code=from_iso_code,
-            to_iso_code=to_iso_code,
+            base_currency_code=base_currency_code,
+            quote_currency_code=quote_currency_code,
         )
         for date in (start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1))
     ]

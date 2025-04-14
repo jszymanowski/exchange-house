@@ -34,7 +34,7 @@ exclude = ["alembic"]
 target-version = "py313"
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I", "B", "C4", "UP", "ARG001"]
+select = ["E", "W", "F", "I", "B", "C4", "UP"]
 ignore = ["E501", "W191"]
 
 [tool.aerich]

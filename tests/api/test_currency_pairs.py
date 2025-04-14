@@ -10,19 +10,19 @@ async def test_api_v1_currency_pairs(
     assert response.status_code == 200
     assert response.json() == [
         {
-            "from_iso_code": "USD",
-            "to_iso_code": "EUR",
+            "base_currency_code": "USD",
+            "quote_currency_code": "EUR",
         },
         {
-            "from_iso_code": "EUR",
-            "to_iso_code": "USD",
+            "base_currency_code": "EUR",
+            "quote_currency_code": "USD",
         },
         {
-            "from_iso_code": "USD",
-            "to_iso_code": "GBP",
+            "base_currency_code": "USD",
+            "quote_currency_code": "GBP",
         },
         {
-            "from_iso_code": "GBP",
-            "to_iso_code": "USD",
+            "base_currency_code": "GBP",
+            "quote_currency_code": "USD",
         },
     ]

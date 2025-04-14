@@ -13,19 +13,19 @@ router = APIRouter()
 async def currency_pairs() -> list[CurrencyPairResponse]:
     return [
         CurrencyPairResponse(
-            from_iso_code="USD",
-            to_iso_code="EUR",
+            base_currency_code="USD",
+            quote_currency_code="EUR",
         ),
         CurrencyPairResponse(
-            from_iso_code="EUR",
-            to_iso_code="USD",
+            base_currency_code="EUR",
+            quote_currency_code="USD",
         ),
         CurrencyPairResponse(
-            from_iso_code="USD",
-            to_iso_code="GBP",
+            base_currency_code="USD",
+            quote_currency_code="GBP",
         ),
         CurrencyPairResponse(
-            from_iso_code="GBP",
-            to_iso_code="USD",
+            base_currency_code="GBP",
+            quote_currency_code="USD",
         ),
     ]

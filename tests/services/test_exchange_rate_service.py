@@ -32,7 +32,6 @@ async def exchange_rates(test_database: DatabaseTestHelper) -> list[ExchangeRate
         ),
     ]
     await ExchangeRate.bulk_create(exchange_rates)
-    await test_database.done()
 
     return exchange_rates
 
