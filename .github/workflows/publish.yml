@@ -49,6 +49,12 @@ jobs:
         with:
           sarif_file: "trivy-results.sarif"
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+          # This explicitly sets the driver to use containers instead of the default Docker driver
+
       - name: Build and push server image
         uses: docker/build-push-action@v6
         with:
