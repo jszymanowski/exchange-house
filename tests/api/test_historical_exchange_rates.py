@@ -4,14 +4,17 @@ from unittest.mock import patch
 import pytest
 from httpx import AsyncClient
 
+from app.services.exchange_rate_service import ExchangeRateServiceInterface
+
 
 @pytest.mark.asyncio
 @patch("app.api.historical_exchange_rates.date")
-async def test_api_v1_historical_exchange_rate(
+async def test_api_v1_historical_exchange_rates(
     mock_date,
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    fixed_date = date(2025, 4, 1)
+    fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
     response = await async_client.get(
@@ -21,17 +24,17 @@ async def test_api_v1_historical_exchange_rate(
     assert response.status_code == 200
 
     data = response.json()
-    assert len(data) == 3653
+    assert len(data) == 5
 
     assert data[0] == {
-        "rate": "1",
-        "date": "2015-04-02",
+        "rate": "1.12",
+        "date": "2024-04-02",
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
-        "date": "2025-04-01",
+        "date": "2024-01-01",
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
     }
@@ -39,11 +42,12 @@ async def test_api_v1_historical_exchange_rate(
 
 @pytest.mark.asyncio
 @patch("app.api.historical_exchange_rates.date")
-async def test_api_v1_historical_exchange_rate_with_start_date(
+async def test_api_v1_historical_exchange_rates_with_start_date(
     mock_date,
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    fixed_date = date(2025, 4, 1)
+    fixed_date = date(2024, 3, 16)
     mock_date.today.return_value = fixed_date
 
     response = await async_client.get(
@@ -51,23 +55,23 @@ async def test_api_v1_historical_exchange_rate_with_start_date(
         params={
             "base_currency_code": "USD",
             "quote_currency_code": "EUR",
-            "start_date": "2024-12-31",
+            "start_date": "2024-01-02",
         },
     )
     assert response.status_code == 200
 
     data = response.json()
-    assert len(data) == 92
+    assert len(data) == 3
 
     assert data[0] == {
-        "rate": "1",
-        "date": "2024-12-31",
+        "rate": "1.05",
+        "date": "2024-01-05",
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
     }
     assert data[-1] == {
-        "rate": "1",
-        "date": "2025-04-01",
+        "rate": "1.02",
+        "date": "2024-01-02",
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
     }
@@ -75,11 +79,12 @@ async def test_api_v1_historical_exchange_rate_with_start_date(
 
 @pytest.mark.asyncio
 @patch("app.api.historical_exchange_rates.date")
-async def test_api_v1_historical_exchange_rate_with_end_date(
+async def test_api_v1_historical_exchange_rates_with_end_date(
     mock_date,
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    fixed_date = date(2025, 4, 1)
+    fixed_date = date(2024, 3, 16)
     mock_date.today.return_value = fixed_date
 
     response = await async_client.get(
@@ -87,63 +92,65 @@ async def test_api_v1_historical_exchange_rate_with_end_date(
         params={
             "base_currency_code": "USD",
             "quote_currency_code": "EUR",
-            "end_date": "2024-12-31",
+            "end_date": "2024-01-05",
         },
     )
     assert response.status_code == 200
 
     data = response.json()
-    assert len(data) == 3562
+    assert len(data) == 4
 
     assert data[0] == {
-        "rate": "1",
-        "date": "2015-04-02",
+        "rate": "1.05",
+        "date": "2024-01-05",
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
-        "date": "2024-12-31",
+        "date": "2024-01-01",
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
     }
 
 
 @pytest.mark.asyncio
-async def test_api_v1_historical_exchange_rate_with_start_and_end_date(
+async def test_api_v1_historical_exchange_rates_with_start_and_end_date(
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
         params={
             "base_currency_code": "USD",
             "quote_currency_code": "EUR",
-            "start_date": "2024-12-31",
-            "end_date": "2025-03-15",
+            "start_date": "2023-12-31",
+            "end_date": "2024-10-11",
         },
     )
     assert response.status_code == 200
 
     data = response.json()
-    assert len(data) == 75
+    assert len(data) == 6
 
     assert data[0] == {
-        "rate": "1",
-        "date": "2024-12-31",
+        "rate": "0.98",
+        "date": "2024-10-10",
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
-        "date": "2025-03-15",
+        "date": "2024-01-01",
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
     }
 
 
 @pytest.mark.asyncio
-async def test_api_v1_historical_exchange_rate_with_start_date_after_end_date(
+async def test_api_v1_historical_exchange_rates_with_start_date_after_end_date(
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
@@ -162,11 +169,12 @@ async def test_api_v1_historical_exchange_rate_with_start_date_after_end_date(
 
 @pytest.mark.asyncio
 @patch("app.api.historical_exchange_rates.date")
-async def test_api_v1_historical_exchange_rate_with_start_date_after_today(
+async def test_api_v1_historical_exchange_rates_with_start_date_after_today(
     mock_date,
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    fixed_date = date(2025, 4, 1)
+    fixed_date = date(2024, 4, 1)
     mock_date.today.return_value = fixed_date
 
     response = await async_client.get(
@@ -174,7 +182,7 @@ async def test_api_v1_historical_exchange_rate_with_start_date_after_today(
         params={
             "base_currency_code": "USD",
             "quote_currency_code": "EUR",
-            "start_date": "2025-04-02",
+            "start_date": "2024-04-02",
         },
     )
     assert response.status_code == 400
@@ -185,11 +193,12 @@ async def test_api_v1_historical_exchange_rate_with_start_date_after_today(
 
 @pytest.mark.asyncio
 @patch("app.api.historical_exchange_rates.date")
-async def test_api_v1_historical_exchange_rate_with_end_date_after_today(
+async def test_api_v1_historical_exchange_rates_with_end_date_after_today(
     mock_date,
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    fixed_date = date(2025, 4, 1)
+    fixed_date = date(2024, 4, 1)
     mock_date.today.return_value = fixed_date
 
     response = await async_client.get(
@@ -207,8 +216,9 @@ async def test_api_v1_historical_exchange_rate_with_end_date_after_today(
 
 
 @pytest.mark.asyncio
-async def test_api_v1_historical_exchange_rate_invalid_base_currency(
+async def test_api_v1_historical_exchange_rates_invalid_base_currency(
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
@@ -222,8 +232,9 @@ async def test_api_v1_historical_exchange_rate_invalid_base_currency(
 
 
 @pytest.mark.asyncio
-async def test_api_v1_historical_exchange_rate_invalid_quote_currency(
+async def test_api_v1_historical_exchange_rates_invalid_quote_currency(
     async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",

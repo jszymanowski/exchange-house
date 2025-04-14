@@ -1,12 +1,13 @@
 from datetime import date, timedelta
-from decimal import Decimal
 from typing import Annotated
 
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field, field_validator
 
+from app.core.dependencies import exchange_rate_service_dependency
 from app.data.currencies import is_valid_currency
 from app.schema.exchange_rate_response import ExchangeRateResponse
+from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 router = APIRouter()
 
@@ -37,6 +38,7 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
 @router.get("/historical_exchange_rates")
 async def historical_exchange_rates(
     query_params: Annotated[HistoricalExchangeRatesQueryParams, Query()],
+    exchange_rate_service: ExchangeRateServiceInterface = exchange_rate_service_dependency,
 ) -> list[ExchangeRateResponse]:
     start_date = query_params.start_date
     end_date = query_params.end_date
@@ -61,12 +63,21 @@ async def historical_exchange_rates(
             detail="; ".join(validation_errors),
         )
 
+    exchange_rates = await exchange_rate_service.get_historical_rates(
+        base_currency_code=base_currency_code,
+        quote_currency_code=quote_currency_code,
+        start_date=start_date,
+        end_date=end_date,
+        limit=10_000,
+        sort_order="desc",
+    )
+
     return [
         ExchangeRateResponse(
-            rate=Decimal(1.0),
-            date=date,
-            base_currency_code=base_currency_code,
-            quote_currency_code=quote_currency_code,
+            rate=exchange_rate.rate,
+            date=exchange_rate.as_of,
+            base_currency_code=exchange_rate.base_currency_code,
+            quote_currency_code=exchange_rate.quote_currency_code,
         )
-        for date in (start_date + timedelta(days=i) for i in range((end_date - start_date).days + 1))
+        for exchange_rate in exchange_rates
     ]

@@ -129,7 +129,9 @@ async def test_get_historical_rates_success() -> None:
     start_date = date(2023, 1, 1)
 
     service = ExchangeRateService()
-    results = await service.get_historical_rates(base_currency_code, quote_currency_code, start_date)
+    results = await service.get_historical_rates(
+        base_currency_code=base_currency_code, quote_currency_code=quote_currency_code, start_date=start_date
+    )
 
     assert len(results) == 2
     assert quantize_decimal(results[0].rate) == quantize_decimal("0.85")
@@ -146,7 +148,9 @@ async def test_get_historical_rates_not_found() -> None:
     start_date = date(2023, 1, 1)
 
     service = ExchangeRateService()
-    results = await service.get_historical_rates(base_currency_code, quote_currency_code, start_date)
+    results = await service.get_historical_rates(
+        base_currency_code=base_currency_code, quote_currency_code=quote_currency_code, start_date=start_date
+    )
 
     assert results == []
 
@@ -159,7 +163,12 @@ async def test_get_historical_rates_with_limit() -> None:
     limit = 1
 
     service = ExchangeRateService()
-    results = await service.get_historical_rates(base_currency_code, quote_currency_code, start_date, limit)
+    results = await service.get_historical_rates(
+        base_currency_code=base_currency_code,
+        quote_currency_code=quote_currency_code,
+        start_date=start_date,
+        limit=limit,
+    )
 
     assert len(results) == 1
     assert quantize_decimal(results[0].rate) == quantize_decimal("0.85")
@@ -175,7 +184,10 @@ async def test_get_historical_rates_with_sort_order_desc() -> None:
 
     service = ExchangeRateService()
     results = await service.get_historical_rates(
-        base_currency_code, quote_currency_code, start_date, sort_order=sort_order
+        base_currency_code=base_currency_code,
+        quote_currency_code=quote_currency_code,
+        start_date=start_date,
+        sort_order=sort_order,
     )
 
     assert len(results) == 2

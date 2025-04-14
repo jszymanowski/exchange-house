@@ -46,7 +46,7 @@ jobs:
           POSTGRES_HOST: localhost
           POSTGRES_PORT: 5432
           POSTGRES_DB: exchange_house_test
-        run: uv run bash scripts/test.sh "Coverage for ${{ github.sha }}"
+        run: uv run bash scripts/test.sh --report-title "Coverage for ${{ github.sha }}"
 
       - name: Store coverage files
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

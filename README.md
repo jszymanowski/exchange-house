@@ -7,3 +7,4 @@
 - [ ] currency code validation
 - [ ] use pydantic for API param validations
 - [ ] add transaction to creation
+- [ ] use consistent number of decimal places
