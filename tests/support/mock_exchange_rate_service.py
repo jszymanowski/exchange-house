@@ -14,26 +14,18 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
 
     async def get_currency_pairs(self) -> list[CurrencyPair]:
         return [
-            CurrencyPair(base_currency_code="USD", quote_currency_code="SGD"),
-            CurrencyPair(base_currency_code="SGD", quote_currency_code="USD"),
-            CurrencyPair(base_currency_code="USD", quote_currency_code="SGD"),
-            CurrencyPair(base_currency_code="SGD", quote_currency_code="USD"),
-            CurrencyPair(base_currency_code="EUR", quote_currency_code="JPY"),
-            CurrencyPair(base_currency_code="JPY", quote_currency_code="EUR"),
-            CurrencyPair(base_currency_code="EUR", quote_currency_code="USD"),
-            CurrencyPair(base_currency_code="USD", quote_currency_code="EUR"),
-            # Crypto
             CurrencyPair(base_currency_code="BTC", quote_currency_code="USD"),
+            CurrencyPair(base_currency_code="EUR", quote_currency_code="USD"),
+            CurrencyPair(base_currency_code="GBP", quote_currency_code="USD"),
+            CurrencyPair(base_currency_code="JPY", quote_currency_code="USD"),
+            CurrencyPair(base_currency_code="SGD", quote_currency_code="USD"),
             CurrencyPair(base_currency_code="USD", quote_currency_code="BTC"),
-            # Unsupported currency
-            CurrencyPair(
-                base_currency_code="XYZ",
-                quote_currency_code="USD",
-            ),
-            CurrencyPair(
-                base_currency_code="USD",
-                quote_currency_code="XYZ",
-            ),
+            CurrencyPair(base_currency_code="USD", quote_currency_code="EUR"),
+            CurrencyPair(base_currency_code="USD", quote_currency_code="GBP"),
+            CurrencyPair(base_currency_code="USD", quote_currency_code="JPY"),
+            CurrencyPair(base_currency_code="USD", quote_currency_code="SGD"),
+            CurrencyPair(base_currency_code="USD", quote_currency_code="XYZ"),
+            CurrencyPair(base_currency_code="XYZ", quote_currency_code="USD"),
         ]
 
     async def get_latest_rate(
@@ -48,14 +40,21 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
                 quote_currency_code=quote_currency_code,
                 rate=Decimal(1),
                 as_of=as_of,
-            )[0]
+            )
         elif base_currency_code == "USD" and quote_currency_code == "EUR":
             return build_exchange_rate(
                 base_currency_code=base_currency_code,
                 quote_currency_code=quote_currency_code,
                 rate=Decimal(1.02),
                 as_of=as_of,
-            )[0]
+            )
+        elif base_currency_code == "USD" and quote_currency_code == "GBP":
+            return build_exchange_rate(
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+                rate=Decimal(1.09),
+                as_of=as_of,
+            )
 
         return None
 

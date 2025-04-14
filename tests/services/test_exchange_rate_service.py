@@ -9,25 +9,25 @@ from app.models.exchange_rate import ExchangeRate
 from app.services.exchange_rate_service import ExchangeRateService
 from tests.support.database_helper import DatabaseTestHelper
 from tests.support.decimal import quantize_decimal
-from tests.support.factories import build_exchange_rate
+from tests.support.factories import build_exchange_rate_pair
 
 
 @pytest.fixture(autouse=True)
 async def exchange_rates(test_database: DatabaseTestHelper) -> list[ExchangeRate]:
     exchange_rates = [
-        *build_exchange_rate(
+        *build_exchange_rate_pair(
             base_currency_code="USD", quote_currency_code="EUR", as_of=date(2023, 1, 1), rate=Decimal("0.85")
         ),
-        *build_exchange_rate(
+        *build_exchange_rate_pair(
             base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 1), rate=Decimal("100")
         ),
-        *build_exchange_rate(
+        *build_exchange_rate_pair(
             base_currency_code="USD", quote_currency_code="EUR", as_of=date(2023, 1, 20), rate=Decimal("0.87")
         ),
-        *build_exchange_rate(
+        *build_exchange_rate_pair(
             base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 20), rate=Decimal("102")
         ),
-        *build_exchange_rate(
+        *build_exchange_rate_pair(
             base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 15), rate=Decimal("101")
         ),
     ]
