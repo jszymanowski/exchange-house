@@ -25,7 +25,7 @@ jobs:
         run: docker build -t temp-image-for-scan .
 
       - name: Run Trivy vulnerability scanner in table format first
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # 0.30.0
         with:
           image-ref: "temp-image-for-scan"
           exit-code: "0"
@@ -34,7 +34,7 @@ jobs:
           format: "table" # Use table format for human readability
 
       - name: Run Trivy vulnerability scanner in SARIF format
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@6c175e9c4083a92bbca2f9724c8a5e33bc2d97a5 # 0.30.0
         with:
           image-ref: "temp-image-for-scan"
           exit-code: "0"
@@ -44,19 +44,19 @@ jobs:
           output: "trivy-results.sarif"
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@45775bd8235c68ba998cffa5171334d58593da47 # v3
         if: always()
         with:
           sarif_file: "trivy-results.sarif"
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3
         with:
           driver: docker-container
           # This explicitly sets the driver to use containers instead of the default Docker driver
 
       - name: Build and push server image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@471d1dc4e07e5cdedd4c2171150001c434f0b7a4 # v6
         with:
           context: .
           push: true
