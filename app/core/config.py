@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
         # TODO: this may not be necessary -- perhaps asyncpg can always be used
         if self.is_test:
-            protocol = "postgresql"
+            protocol = "asyncpg"
         else:
             protocol = "asyncpg"
 
