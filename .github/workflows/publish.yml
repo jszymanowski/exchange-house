@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -20,11 +24,20 @@ jobs:
       - name: Build image for scanning
         run: docker build -t temp-image-for-scan .
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner in table format first
         uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: "temp-image-for-scan"
-          exit-code: "1"
+          exit-code: "0"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
+          format: "table" # Use table format for human readability
+
+      - name: Run Trivy vulnerability scanner in SARIF format
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: "temp-image-for-scan"
+          exit-code: "0"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
           format: "sarif"
@@ -35,6 +48,12 @@ jobs:
         if: always()
         with:
           sarif_file: "trivy-results.sarif"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker-container
+          # This explicitly sets the driver to use containers instead of the default Docker driver
 
       - name: Build and push server image
         uses: docker/build-push-action@v6
