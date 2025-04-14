@@ -38,6 +38,6 @@ COPY ./app /app/app
 RUN --mount=type=cache,target=/root/.cache/uv \
   uv sync
 
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x ./entrypoint.sh
 
-CMD ["/app/entrypoint.sh"]
+CMD ["./entrypoint.sh"]
