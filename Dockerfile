@@ -29,8 +29,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 ENV PYTHONPATH=/app
 
-
-COPY ./pyproject.toml ./uv.lock ./migrations /app/
+COPY ./pyproject.toml ./uv.lock ./migrations ./scripts/entrypoint.sh /app/
 
 COPY ./app /app/app
 
@@ -39,4 +38,6 @@ COPY ./app /app/app
 RUN --mount=type=cache,target=/root/.cache/uv \
   uv sync
 
-CMD ["fastapi", "run", "--workers", "4", "app/main.py"]
+RUN chmod +x ./entrypoint.sh
+
+CMD ["./entrypoint.sh"]
