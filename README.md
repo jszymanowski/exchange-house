@@ -5,3 +5,4 @@
 #### TODO
 
 - [ ] currency code validation
+- [ ] add transaction to creation

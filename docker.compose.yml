@@ -14,10 +14,10 @@ services:
       - WORKERS=4
       # TODO: move these to secrets
       - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-exchange-house-production}
-      - POSTGRES_PORT=${POSTGRES_PORT:-5432}
+      - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
     ports:
       - "3177:8080"
     networks:
@@ -28,11 +28,11 @@ services:
 
   postgres:
     container_name: exchange-house-postgres
-    image: postgres:17@sha256:fe3f571d128e8efadcd8b2fde0e2b73ebab6dbec33f6bfe69d98c682c7d8f7bd
+    image: postgres:17
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-exchange-house-production}
+      - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
     volumes:
       - ${POSTGRES_DATA_PATH:-/mnt/cache/appdata/exchange-house-postgres}:/var/lib/postgresql/data
     ports:
