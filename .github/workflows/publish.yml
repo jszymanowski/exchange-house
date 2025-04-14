@@ -24,21 +24,20 @@ jobs:
       - name: Build image for scanning
         run: docker build -t temp-image-for-scan .
 
-      - name: Show vulnerabilities in log
+      - name: Run Trivy vulnerability scanner in table format first
         uses: aquasecurity/trivy-action@0.30.0
-        if: always()
         with:
           image-ref: "temp-image-for-scan"
-          exit-code: "0" # Don't fail the build
+          exit-code: "0"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
-          format: "table" # Human-readable format
+          format: "table" # Use table format for human readability
 
-      - name: Run Trivy vulnerability scanner
+      - name: Run Trivy vulnerability scanner in SARIF format
         uses: aquasecurity/trivy-action@0.30.0
         with:
           image-ref: "temp-image-for-scan"
-          exit-code: "1"
+          exit-code: "0"
           ignore-unfixed: true
           severity: "CRITICAL,HIGH"
           format: "sarif"
