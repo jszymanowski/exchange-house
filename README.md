@@ -6,3 +6,4 @@
 
 - [ ] uvicorn
 - [ ] run `aerich upgrade` on boot
+- [ ] currency code validation

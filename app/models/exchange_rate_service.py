@@ -8,7 +8,38 @@ from app.models.exchange_rate import ExchangeRate
 MAX_RECORDS_PER_REQUEST = 1000
 
 
-class ExchangeRateService:
+class ExchangeRateServiceInterface:
+    class Meta:
+        abstract = True
+
+    async def get_available_dates(self) -> list[date]:
+        raise RuntimeError("Must be implemented")
+
+    async def get_currency_pairs(self) -> list[CurrencyPair]:
+        raise RuntimeError("Must be implemented")
+
+    async def get_latest_rate(
+        self, base_currency_code: str, quote_currency_code: str, as_of: date | None = None
+    ) -> ExchangeRate | None:
+        raise RuntimeError("Must be implemented")
+
+    async def get_historical_rates(
+        self,
+        base_currency_code: str,
+        quote_currency_code: str,
+        start_date: date | None = None,
+        limit: int | None = None,
+        sort_order: Literal["asc", "desc"] = "asc",
+    ) -> list[ExchangeRate]:
+        raise RuntimeError("Must be implemented")
+
+    async def create_rate(
+        self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal, source: str
+    ) -> list[ExchangeRate]:
+        raise RuntimeError("Must be implemented")
+
+
+class ExchangeRateService(ExchangeRateServiceInterface):
     async def get_available_dates(self) -> list[date]:
         distinct_dates = await ExchangeRate.all().distinct().order_by("as_of").values("as_of")
         return [d["as_of"] for d in distinct_dates]
