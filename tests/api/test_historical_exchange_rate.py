@@ -16,7 +16,7 @@ async def test_api_v1_historical_exchange_rate(
 
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
-        params={"from_iso_code": "USD", "to_iso_code": "EUR"},
+        params={"base_currency_code": "USD", "quote_currency_code": "EUR"},
     )
     assert response.status_code == 200
 
@@ -26,14 +26,14 @@ async def test_api_v1_historical_exchange_rate(
     assert data[0] == {
         "rate": "1",
         "date": "2015-04-02",
-        "from_iso_code": "USD",
-        "to_iso_code": "EUR",
+        "base_currency_code": "USD",
+        "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
         "date": "2025-04-01",
-        "from_iso_code": "USD",
-        "to_iso_code": "EUR",
+        "base_currency_code": "USD",
+        "quote_currency_code": "EUR",
     }
 
 
@@ -49,8 +49,8 @@ async def test_api_v1_historical_exchange_rate_with_start_date(
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
         params={
-            "from_iso_code": "USD",
-            "to_iso_code": "EUR",
+            "base_currency_code": "USD",
+            "quote_currency_code": "EUR",
             "start_date": "2024-12-31",
         },
     )
@@ -62,14 +62,14 @@ async def test_api_v1_historical_exchange_rate_with_start_date(
     assert data[0] == {
         "rate": "1",
         "date": "2024-12-31",
-        "from_iso_code": "USD",
-        "to_iso_code": "EUR",
+        "base_currency_code": "USD",
+        "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
         "date": "2025-04-01",
-        "from_iso_code": "USD",
-        "to_iso_code": "EUR",
+        "base_currency_code": "USD",
+        "quote_currency_code": "EUR",
     }
 
 
@@ -85,8 +85,8 @@ async def test_api_v1_historical_exchange_rate_with_end_date(
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
         params={
-            "from_iso_code": "USD",
-            "to_iso_code": "EUR",
+            "base_currency_code": "USD",
+            "quote_currency_code": "EUR",
             "end_date": "2024-12-31",
         },
     )
@@ -98,14 +98,14 @@ async def test_api_v1_historical_exchange_rate_with_end_date(
     assert data[0] == {
         "rate": "1",
         "date": "2015-04-02",
-        "from_iso_code": "USD",
-        "to_iso_code": "EUR",
+        "base_currency_code": "USD",
+        "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
         "date": "2024-12-31",
-        "from_iso_code": "USD",
-        "to_iso_code": "EUR",
+        "base_currency_code": "USD",
+        "quote_currency_code": "EUR",
     }
 
 
@@ -116,8 +116,8 @@ async def test_api_v1_historical_exchange_rate_with_start_and_end_date(
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
         params={
-            "from_iso_code": "USD",
-            "to_iso_code": "EUR",
+            "base_currency_code": "USD",
+            "quote_currency_code": "EUR",
             "start_date": "2024-12-31",
             "end_date": "2025-03-15",
         },
@@ -130,14 +130,14 @@ async def test_api_v1_historical_exchange_rate_with_start_and_end_date(
     assert data[0] == {
         "rate": "1",
         "date": "2024-12-31",
-        "from_iso_code": "USD",
-        "to_iso_code": "EUR",
+        "base_currency_code": "USD",
+        "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
         "date": "2025-03-15",
-        "from_iso_code": "USD",
-        "to_iso_code": "EUR",
+        "base_currency_code": "USD",
+        "quote_currency_code": "EUR",
     }
 
 
@@ -148,8 +148,8 @@ async def test_api_v1_historical_exchange_rate_with_start_date_after_end_date(
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
         params={
-            "from_iso_code": "USD",
-            "to_iso_code": "EUR",
+            "base_currency_code": "USD",
+            "quote_currency_code": "EUR",
             "start_date": "2024-12-31",
             "end_date": "2023-03-15",
         },
@@ -172,8 +172,8 @@ async def test_api_v1_historical_exchange_rate_with_start_date_after_today(
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
         params={
-            "from_iso_code": "USD",
-            "to_iso_code": "EUR",
+            "base_currency_code": "USD",
+            "quote_currency_code": "EUR",
             "start_date": "2025-04-02",
         },
     )
@@ -195,8 +195,8 @@ async def test_api_v1_historical_exchange_rate_with_end_date_after_today(
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
         params={
-            "from_iso_code": "USD",
-            "to_iso_code": "EUR",
+            "base_currency_code": "USD",
+            "quote_currency_code": "EUR",
             "end_date": "2030-04-01",
         },
     )
@@ -212,7 +212,7 @@ async def test_api_v1_historical_exchange_rate_invalid_base_currency(
 ) -> None:
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
-        params={"from_iso_code": "XYZ", "to_iso_code": "USD"},
+        params={"base_currency_code": "XYZ", "quote_currency_code": "USD"},
     )
     assert response.status_code == 422
 
@@ -227,7 +227,7 @@ async def test_api_v1_historical_exchange_rate_invalid_quote_currency(
 ) -> None:
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
-        params={"from_iso_code": "USD", "to_iso_code": "XYZ"},
+        params={"base_currency_code": "USD", "quote_currency_code": "XYZ"},
     )
     assert response.status_code == 422
 
