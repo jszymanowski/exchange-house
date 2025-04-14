@@ -10,7 +10,7 @@ MAX_RECORDS_PER_REQUEST = 1000
 
 class ExchangeRateService:
     async def get_available_dates(self) -> list[date]:
-        distinct_dates = await ExchangeRate.all().distinct().values("as_of")
+        distinct_dates = await ExchangeRate.all().distinct().order_by("as_of").values("as_of")
         return [d["as_of"] for d in distinct_dates]
 
     async def get_currency_pairs(self) -> list[CurrencyPair]:

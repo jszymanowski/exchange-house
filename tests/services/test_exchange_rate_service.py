@@ -27,6 +27,9 @@ async def exchange_rates(test_database: DatabaseTestHelper) -> list[ExchangeRate
         *build_exchange_rate(
             base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 20), rate=Decimal("102")
         ),
+        *build_exchange_rate(
+            base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 15), rate=Decimal("101")
+        ),
     ]
     await ExchangeRate.bulk_create(exchange_rates)
     await test_database.done()
@@ -39,9 +42,10 @@ async def test_get_available_dates() -> None:
     service = ExchangeRateService()
     results = await service.get_available_dates()
 
-    assert len(results) == 2
+    assert len(results) == 3
     assert results[0] == date(2023, 1, 1)
-    assert results[1] == date(2023, 1, 20)
+    assert results[1] == date(2023, 1, 15)
+    assert results[2] == date(2023, 1, 20)
 
 
 @pytest.mark.asyncio
