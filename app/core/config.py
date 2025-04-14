@@ -8,6 +8,10 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
+    PROJECT_NAME: str = "Exchange House"
+    PROJECT_DESCRIPTION: str = "A simple API for exchange rates"
+    PROJECT_VERSION: str = "v1"
+
     @property
     def environment(self) -> str:
         return os.getenv("ENV", "development")
@@ -15,6 +19,22 @@ class Settings(BaseSettings):
     @property
     def is_test(self) -> bool:
         return self.environment == "test"
+
+    @property
+    def is_production(self) -> bool:
+        return self.environment == "production"
+
+    @property
+    def timezone(self) -> str:
+        return os.getenv("TIMEZONE", "UTC")
+
+    @property
+    def heartbeat_check_url(self) -> str | None:
+        return os.getenv("HEARTBEAT_CHECK_URL")
+
+    @property
+    def heartbeat_interval(self) -> str:
+        return os.getenv("HEARTBEAT_INTERVAL", "*/5")
 
     @cached_property
     def DATABASE_URL(self) -> str:
