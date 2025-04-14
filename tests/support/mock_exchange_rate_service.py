@@ -3,7 +3,7 @@ from decimal import Decimal
 from typing import Literal
 
 from app.models.exchange_rate import CurrencyPair, ExchangeRate
-from app.models.exchange_rate_service import ExchangeRateServiceInterface
+from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 
 class MockExchangeRateService(ExchangeRateServiceInterface):
