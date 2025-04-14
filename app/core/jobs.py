@@ -5,7 +5,7 @@ from filelock import FileLock, Timeout
 from app.core.config import settings
 from app.core.logger import logger
 from app.core.scheduler import job_listener
-from app.tasks.jobs import heartbeat_task
+from app.tasks.jobs import heartbeat_task, latest_exchange_rates_task
 
 
 class SchedulerManager:
@@ -17,9 +17,17 @@ class SchedulerManager:
 
     def configure_jobs(self) -> None:
         self.scheduler.add_listener(job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
-        heartbeat_interval = settings.heartbeat_interval
+
         self.scheduler.add_job(
-            heartbeat_task, "cron", minute=heartbeat_interval, id="heartbeat", name="Heartbeat check"
+            heartbeat_task, "cron", minute=settings.heartbeat_interval, id="heartbeat", name="Heartbeat check"
+        )
+        self.scheduler.add_job(
+            latest_exchange_rates_task,
+            "cron",
+            hour=settings.exchange_rates_refresh_hour,
+            minute=settings.exchange_rates_refresh_minute,
+            id="latest_exchange_rates",
+            name="Latest exchange rates",
         )
 
     async def start(self) -> None:
