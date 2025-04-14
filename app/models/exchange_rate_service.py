@@ -82,35 +82,32 @@ class ExchangeRateService:
 
         return exchange_rates
 
-    # async def create_rate(self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal) -> list[ExchangeRate]:
-    #     if base_currency_code == quote_currency_code:
-    #         return []
+    async def create_rate(
+        self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal, source: str
+    ) -> list[ExchangeRate]:
+        if base_currency_code == quote_currency_code:
+            return []
 
-    #     forward_rate = {
-    #         "base_currency": base_currency_code,
-    #         "target_currency": quote_currency_code,
-    #         "rate": float(rate),
-    #         "date": as_of.isoformat(),
-    #     }
-    #     _inverse_rate = 1 / rate
-    #     inverse_rate = {
-    #         "base_currency": quote_currency_code,
-    #         "target_currency": base_currency_code,
-    #         "rate": float(_inverse_rate),
-    #         "date": as_of.isoformat(),
-    #     }
+        forward_rate = ExchangeRate(
+            base_currency_code=base_currency_code,
+            quote_currency_code=quote_currency_code,
+            rate=rate,
+            as_of=as_of,
+            data_source=source,
+        )
+        inverse_rate = ExchangeRate(
+            base_currency_code=quote_currency_code,
+            quote_currency_code=base_currency_code,
+            rate=1 / rate,
+            as_of=as_of,
+            data_source=source,
+        )
 
-    #     query = self.exchange_house.table(self.table).insert([forward_rate, inverse_rate])
+        try:
+            await ExchangeRate.bulk_create([forward_rate, inverse_rate])
+        except Exception as e:
+            raise ValueError(
+                f"Failed to create exchange rate for {base_currency_code} to {quote_currency_code} on {as_of} with error {e}"
+            ) from e
 
-    #     try:
-    #         response = query.execute()
-    #     except Exception as e:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_400_BAD_REQUEST,
-    #             detail=f"Failed to create exchange rate for {base_currency_code} to {quote_currency_code} on {as_of} with error {e}",
-    #         ) from e
-
-    #     return [self._parse_response(rate, rate["base_currency"], rate["target_currency"]) for rate in response.data]
-
-    # def _parse_response(self, data: ExchangeRateResponse, base_currency_code: str, quote_currency_code: str) -> ExchangeRate:
-    #     return ExchangeRate.from_exchange_house_api(data, base_currency_code, quote_currency_code)
+        return [forward_rate, inverse_rate]

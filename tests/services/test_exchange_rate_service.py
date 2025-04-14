@@ -3,7 +3,6 @@ from decimal import Decimal
 from typing import Literal
 
 import pytest
-from fastapi import HTTPException
 
 from app.models.currency_pair import CurrencyPair
 from app.models.exchange_rate import ExchangeRate
@@ -180,44 +179,45 @@ async def test_get_historical_rates_with_sort_order_desc() -> None:
     assert results[0].as_of > results[1].as_of
 
 
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_create_rate_success() -> None:
     base_currency_code = "USD"
     quote_currency_code = "EUR"
-    as_of = date(2023, 1, 1)
-    rate = Decimal("0.85")
+    as_of = date(2023, 1, 30)
+    rate = Decimal("0.90")
+    source = "test"
 
     service = ExchangeRateService()
-    result = await service.create_rate(as_of, base_currency_code, quote_currency_code, rate)
+    result = await service.create_rate(as_of, base_currency_code, quote_currency_code, rate, source)
 
     assert len(result) == 2
+    assert result[0].id is not None
     assert result[0].base_currency_code == base_currency_code
     assert result[0].quote_currency_code == quote_currency_code
     assert quantize_decimal(result[0].rate) == quantize_decimal(rate)
-    assert result[0].date == as_of
+    assert result[0].as_of == as_of
+    assert result[0].data_source == source
 
+    assert result[1].id is not None
     assert result[1].base_currency_code == quote_currency_code
     assert result[1].quote_currency_code == base_currency_code
     assert quantize_decimal(result[1].rate) == quantize_decimal(1 / rate)
-    assert result[1].date == as_of
+    assert result[1].as_of == as_of
+    assert result[1].data_source == source
 
 
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_create_rate_failure() -> None:
     base_currency_code = "USD"
     quote_currency_code = "EUR"
     as_of = date(2023, 1, 1)
     rate = Decimal("0.85")
+    source = "test"
 
     service = ExchangeRateService()
 
-    with pytest.raises(HTTPException) as excinfo:
-        await service.create_rate(as_of, base_currency_code, quote_currency_code, rate)
+    with pytest.raises(ValueError) as err:
+        await service.create_rate(as_of, base_currency_code, quote_currency_code, rate, source)
 
-    assert excinfo.value.status_code == 400
-    assert (
-        f"Failed to create exchange rate for {base_currency_code} to {quote_currency_code} on {as_of}"
-        in excinfo.value.detail
-    )
+    expected_message = f"Failed to create exchange rate for {base_currency_code} to {quote_currency_code} on {as_of}"
+    assert expected_message in str(err.value)
