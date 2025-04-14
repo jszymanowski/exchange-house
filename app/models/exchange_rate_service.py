@@ -1,43 +1,11 @@
 from datetime import date
 from decimal import Decimal
-from typing import Literal
 
 from app.models.currency_pair import CurrencyPair
 from app.models.exchange_rate import ExchangeRate
 
 
-class ExchangeRateServiceInterface:
-    class Meta:
-        abstract = True
-
-    async def get_currency_pairs(self) -> list[CurrencyPair]:
-        raise RuntimeError("Must be implemented")
-
-    async def get_available_dates(self) -> list[date]:
-        raise RuntimeError("Must be implemented")
-
-    async def get_latest_rate(
-        self, base_currency_code: str, quote_currency_code: str, as_of: date
-    ) -> ExchangeRate | None:
-        raise RuntimeError("Must be implemented")
-
-    async def get_historical_rates(
-        self,
-        base_currency_code: str,
-        quote_currency_code: str,
-        start_date: date | None = None,
-        limit: int | None = None,
-        sort_order: Literal["asc", "desc"] = "asc",
-    ) -> list[ExchangeRate]:
-        raise RuntimeError("Must be implemented")
-
-    async def create_rate(
-        self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal
-    ) -> list[ExchangeRate]:
-        raise RuntimeError("Must be implemented")
-
-
-class ExchangeRateService(ExchangeRateServiceInterface):
+class ExchangeRateService:
     async def get_available_dates(self) -> list[date]:
         distinct_dates = await ExchangeRate.all().distinct().values("as_of")
         return [d["as_of"] for d in distinct_dates]
@@ -52,12 +20,15 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         return [CurrencyPair(**pair) for pair in distinct_pairs]
 
     async def get_latest_rate(
-        self, base_currency_code: str, quote_currency_code: str, as_of: date
+        self, base_currency_code: str, quote_currency_code: str, as_of: date | None = None
     ) -> ExchangeRate | None:
+        if as_of is None:
+            as_of = date.today()
+
         if base_currency_code == quote_currency_code:
             return ExchangeRate(
                 rate=Decimal(1),
-                date=as_of,
+                as_of=as_of,
                 base_currency_code=base_currency_code,
                 quote_currency_code=quote_currency_code,
             )
@@ -69,7 +40,7 @@ class ExchangeRateService(ExchangeRateServiceInterface):
                 as_of__lte=as_of,
             )
             .order_by("-as_of")
-            .get()
+            .first()
         )
 
         return exchange_rate

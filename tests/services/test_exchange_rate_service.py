@@ -20,7 +20,13 @@ async def exchange_rates(test_database: DatabaseTestHelper) -> list[ExchangeRate
             base_currency_code="USD", quote_currency_code="EUR", as_of=date(2023, 1, 1), rate=Decimal("0.85")
         ),
         *build_exchange_rate(
-            base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 2), rate=Decimal("100")
+            base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 1), rate=Decimal("100")
+        ),
+        *build_exchange_rate(
+            base_currency_code="USD", quote_currency_code="EUR", as_of=date(2023, 1, 20), rate=Decimal("0.87")
+        ),
+        *build_exchange_rate(
+            base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 20), rate=Decimal("102")
         ),
     ]
     await ExchangeRate.bulk_create(exchange_rates)
@@ -36,7 +42,7 @@ async def test_get_available_dates() -> None:
 
     assert len(results) == 2
     assert results[0] == date(2023, 1, 1)
-    assert results[1] == date(2023, 1, 2)
+    assert results[1] == date(2023, 1, 20)
 
 
 @pytest.mark.asyncio
@@ -56,6 +62,22 @@ async def test_get_currency_pairs() -> None:
 async def test_get_latest_rate_success() -> None:
     base_currency_code = "USD"
     quote_currency_code = "EUR"
+    expected_rate = Decimal("0.87")
+
+    service = ExchangeRateService()
+    result = await service.get_latest_rate(base_currency_code, quote_currency_code)
+
+    assert result is not None
+    assert result.base_currency_code == base_currency_code
+    assert result.quote_currency_code == quote_currency_code
+    assert quantize_decimal(result.rate) == quantize_decimal(expected_rate)
+    assert result.as_of == date(2023, 1, 20)
+
+
+@pytest.mark.asyncio
+async def test_get_latest_rate_success_with_as_of() -> None:
+    base_currency_code = "USD"
+    quote_currency_code = "EUR"
     as_of = date(2023, 1, 1)
     expected_rate = Decimal("0.85")
 
@@ -69,25 +91,6 @@ async def test_get_latest_rate_success() -> None:
     assert result.as_of == as_of
 
 
-@pytest.mark.skip(reason="Not yet implemented")
-@pytest.mark.asyncio
-async def test_get_latest_rate_success_custom_from_currency() -> None:
-    base_currency_code = "CUSTOM_CAPITAL_ONE"
-    quote_currency_code = "USD"
-    as_of = date(2023, 1, 1)
-    expected_rate = Decimal("0.005")
-
-    service = ExchangeRateService()
-    result = await service.get_latest_rate(base_currency_code, quote_currency_code, as_of)
-
-    assert result is not None
-    assert result.base_currency_code == base_currency_code
-    assert result.quote_currency_code == quote_currency_code
-    assert quantize_decimal(result.rate) == quantize_decimal(expected_rate)
-    assert result.as_of == as_of
-
-
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_get_latest_rate_success_same_currency() -> None:
     base_currency_code = "EUR"
@@ -105,25 +108,6 @@ async def test_get_latest_rate_success_same_currency() -> None:
     assert result.as_of == as_of
 
 
-@pytest.mark.skip(reason="Not yet implemented")
-@pytest.mark.asyncio
-async def test_get_latest_rate_success_custom_to_currency() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "CUSTOM_AMEX"
-    as_of = date(2023, 1, 1)
-    expected_rate = Decimal("166.66666667")
-
-    service = ExchangeRateService()
-    result = await service.get_latest_rate(base_currency_code, quote_currency_code, as_of)
-
-    assert result is not None
-    assert result.base_currency_code == base_currency_code
-    assert result.quote_currency_code == quote_currency_code
-    assert quantize_decimal(result.rate) == quantize_decimal(expected_rate)
-    assert result.as_of == as_of
-
-
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_get_latest_rate_not_found() -> None:
     base_currency_code = "USD"
@@ -131,12 +115,9 @@ async def test_get_latest_rate_not_found() -> None:
     as_of = date(2023, 1, 1)
 
     service = ExchangeRateService()
+    result = await service.get_latest_rate(base_currency_code, quote_currency_code, as_of)
 
-    with pytest.raises(HTTPException) as excinfo:
-        await service.get_latest_rate(base_currency_code, quote_currency_code, as_of)
-
-    assert excinfo.value.status_code == 404
-    assert f"No exchange rates found for {base_currency_code} to {quote_currency_code}" in excinfo.value.detail
+    assert result is None
 
 
 @pytest.mark.skip(reason="Not yet implemented")
