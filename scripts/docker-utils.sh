@@ -1,22 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 remove_docker_container() {
   local container_name="$1"
 
-  echo "\nRemoving existing container: $container_name"
+  if [ -z "$container_name" ]; then
+    printf "Error: Container name is required\n" >&2
+    return 1
+  fi
+
+  printf "\nRemoving existing container: %s\n" "$container_name"
 
   # Check if the container exists before stopping and removing it
   if docker ps -aq --filter "name=$container_name" | grep -q .; then
     docker stop "$container_name" >/dev/null 2>&1
     docker rm "$container_name" >/dev/null 2>&1
+  else
+    printf "Container %s does not exist or is already removed\n" "$container_name"
   fi
 }
 
 build_docker_image() {
   local image_name="$1"
 
-  echo "\nBuilding image"
-  docker build -t $image_name .
+  printf "\nBuilding image\n"
+  docker build -t "$image_name" .
 }
 
 build_docker_container() {
@@ -25,8 +32,8 @@ build_docker_container() {
   local host_port="$3"
   local container_port="$4"
 
-  echo "\nBuilding container"
-  docker run -d -p $host_port:$container_port --name $container_name $image_name
+  printf "\nBuilding container\n"
+  docker run -d -p "$host_port":"$container_port" --name "$container_name" "$image_name"
 }
 
 display_docker_container_info() {
@@ -34,7 +41,7 @@ display_docker_container_info() {
   local container_name="$2"
   local host_port="$3"
 
-  echo "\nBuilt:"
+  printf "\nBuilt:\n"
   echo "  - view at: http://localhost:$host_port"
   echo "  - view logs: docker logs $container_name"
   echo "  - open shell console: docker exec -it $container_name sh"
@@ -43,4 +50,9 @@ display_docker_container_info() {
   echo "  - remove container: docker rm $container_name"
   echo "  - remove image: docker rmi $image_name"
   echo "  - view running containers: docker ps"
+
+  # Verify container is running
+  if ! docker ps --filter "name=$container_name" --format '{{.Names}}' | grep -q "$container_name"; then
+    printf "\nWARNING: Container %s is not running. Check logs with: docker logs %s\n" "$container_name" "$container_name"
+  fi
 }
