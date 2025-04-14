@@ -36,6 +36,10 @@ class Settings(BaseSettings):
     def heartbeat_interval(self) -> str:
         return os.getenv("HEARTBEAT_INTERVAL", "*/5")
 
+    @property
+    def refresh_completed_url(self) -> str | None:
+        return os.getenv("REFRESH_COMPLETED_URL")
+
     @cached_property
     def OPEN_EXCHANGE_RATES_APP_ID(self) -> str | None:
         if self.is_test:
