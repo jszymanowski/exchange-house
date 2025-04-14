@@ -1,0 +1,48 @@
+name: Publish to GHCR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+
+      - name: Log in to GHCR
+        run: echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u "${{ secrets.GHCR_USERNAME }}" --password-stdin
+
+      - name: Build image for scanning
+        run: docker build -t temp-image-for-scan .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.30.0
+        with:
+          image-ref: "temp-image-for-scan"
+          exit-code: "1"
+          ignore-unfixed: true
+          severity: "CRITICAL,HIGH"
+          format: "sarif"
+          output: "trivy-results.sarif"
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: "trivy-results.sarif"
+
+      - name: Build and push server image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ secrets.GHCR_USERNAME }}/exchange-house:latest
+            ghcr.io/${{ secrets.GHCR_USERNAME }}/exchange-house:${{ github.sha }}
+          cache-from: type=registry,ref=ghcr.io/${{ secrets.GHCR_USERNAME }}/exchange-house:buildcache
+          cache-to: type=registry,ref=ghcr.io/${{ secrets.GHCR_USERNAME }}/exchange-house:buildcache,mode=max
