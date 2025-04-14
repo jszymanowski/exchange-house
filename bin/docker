@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+source "$SCRIPT_DIR/../scripts/docker-utils.sh"
+
+image_name=exchange-house-dev
+container_name=exchange-house-container
+container_port=8000
+host_port=3177
+
+remove_docker_container $container_name
+build_docker_image $image_name
+build_docker_container $image_name $container_name $host_port $container_port
+display_docker_container_info $image_name $container_name $host_port
