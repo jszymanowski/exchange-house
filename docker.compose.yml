@@ -1,6 +1,9 @@
 networks:
   exchange-house-network:
     name: exchange-house-network
+  external_proxy_net:
+    external: true
+    name: proxy_net
 
 services:
   exchange-house:
@@ -19,6 +22,7 @@ services:
       - "3177:8000"
     networks:
       - exchange-house-network
+      - external_proxy_net
     depends_on:
       - postgres
 
