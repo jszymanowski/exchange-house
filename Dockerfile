@@ -29,7 +29,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 ENV PYTHONPATH=/app
 
-COPY ./pyproject.toml ./uv.lock ./migrations ./scripts/entrypoint.sh ./status_check.py /app/
+COPY ./pyproject.toml ./uv.lock ./migrations ./scripts/entrypoint.sh /app/
 
 COPY ./app /app/app
 
@@ -38,6 +38,6 @@ COPY ./app /app/app
 RUN --mount=type=cache,target=/root/.cache/uv \
   uv sync
 
-RUN chmod +x /app/scripts/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
 
-CMD ["./scripts/entrypoint.sh"]
+CMD ["/app/entrypoint.sh"]
