@@ -2,6 +2,7 @@ import json
 from datetime import date
 from importlib import resources
 
+import httpx
 import pytest
 from pytest_httpx import HTTPXMock
 
@@ -97,5 +98,18 @@ class TestOpenExchangeRatesApi:
         )
 
         with pytest.raises(NotFoundError, match="/api/some_path not found: Method Not Allowed"):
+            await api_client.get("some_path")
+        assert len(httpx_mock.get_requests()) == 1
+
+    async def test_get_unexpected_status_code(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
+        """Test that unexpected status codes are handled correctly."""
+        httpx_mock.add_response(
+            method="GET",
+            url="https://openexchangerates.org/api/some_path?app_id=FAKE_OER_APP_ID",
+            content=b"Internal Server Error",
+            status_code=500,
+        )
+
+        with pytest.raises(httpx.HTTPStatusError):
             await api_client.get("some_path")
         assert len(httpx_mock.get_requests()) == 1

@@ -38,7 +38,7 @@ class TestHealthchecksClient:
 
         with pytest.raises(
             ValueError,
-            match="Heartbeat check-in failed: 404",
+            match="Healthcheck URL not found: http://healthchecks.home/ping/some-id",
         ):
             await api_client.ping(url)
 

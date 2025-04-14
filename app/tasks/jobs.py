@@ -25,9 +25,13 @@ async def latest_exchange_rates_task() -> None:
     metrics.record_job_start(job_id)
 
     exchange_rates_service = await get_exchange_rate_service()
-
     exchange_rate_refresh = ExchangeRateRefresh(exchange_rate_service=exchange_rates_service)
-    await exchange_rate_refresh.save()
+    try:
+        await exchange_rate_refresh.save()
+    except Exception as e:
+        logger.error(f"Exchange rate refresh failed: {str(e)}")
+        # TODO: Consider adding metrics.record_job_failure(job_id) if available
+        return
 
     if not settings.refresh_completed_url:
         logger.warning("Refresh completed, but check-in failed: URL is not set")

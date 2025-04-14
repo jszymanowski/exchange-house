@@ -41,11 +41,19 @@ class Settings(BaseSettings):
         return os.getenv("REFRESH_COMPLETED_URL")
 
     @cached_property
-    def OPEN_EXCHANGE_RATES_APP_ID(self) -> str | None:
+    def open_exchange_rates_app_id(self) -> str | None:
         if self.is_test:
             return "FAKE_OER_APP_ID"
 
         return os.getenv("OPEN_EXCHANGE_RATES_APP_ID")
+
+    @property
+    def exchange_rates_refresh_hour(self) -> str:
+        return os.getenv("EXCHANGE_RATES_REFRESH_HOUR", "13")
+
+    @property
+    def exchange_rates_refresh_minute(self) -> str:
+        return os.getenv("EXCHANGE_RATES_REFRESH_MINUTE", "00")
 
     @cached_property
     def DATABASE_URL(self) -> str:

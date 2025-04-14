@@ -51,3 +51,33 @@ async def test_exchange_rate_refresh(httpx_mock: HTTPXMock, test_database: Datab
     assert record_count == 672
 
     assert len(httpx_mock.get_requests()) == 2
+
+
+@pytest.mark.asyncio
+async def test_exchange_rate_refresh_handles_api_error(
+    httpx_mock: HTTPXMock, test_database: DatabaseTestHelper
+) -> None:
+    start_date = date(2025, 1, 31)
+    end_date = date(2025, 1, 31)
+
+    # Mock API error response
+    error_response = {"error": True, "status": 400, "message": "not_available", "description": "Invalid API key"}
+    httpx_mock.add_response(
+        method="GET",
+        url="https://openexchangerates.org/api/historical/2025-01-31.json?app_id=FAKE_OER_APP_ID",
+        json=error_response,
+        status_code=400,
+    )
+
+    exchange_rate_service = ExchangeRateService()
+    subject = ExchangeRateRefresh(start_date=start_date, end_date=end_date, exchange_rate_service=exchange_rate_service)
+
+    # Verify that the error is properly propagated
+    with pytest.raises(Exception) as excinfo:
+        await subject.save()
+
+    assert "Invalid API key" in str(excinfo.value)
+
+    # Verify no records were created
+    record_count = await test_database.count_records(ExchangeRate)
+    assert record_count == 0

@@ -24,8 +24,8 @@ class SchedulerManager:
         self.scheduler.add_job(
             latest_exchange_rates_task,
             "cron",
-            hour="13",
-            minute="00",
+            hour=settings.exchange_rates_refresh_hour,
+            minute=settings.exchange_rates_refresh_minute,
             id="latest_exchange_rates",
             name="Latest exchange rates",
         )

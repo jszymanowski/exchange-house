@@ -2,12 +2,9 @@ from datetime import date
 from typing import Any, cast
 
 import httpx
-from fastapi import FastAPI
 from pydantic import BaseModel
 
 from app.core.config import settings
-
-app = FastAPI()
 
 
 class OpenExchangeRatesError(Exception):
@@ -35,17 +32,37 @@ class HistoricalRatesResponse(BaseModel):
 
 
 class OpenExchangeRatesClient:
-    def __init__(self) -> None:
+    def __init__(self, timeout: float = 30.0) -> None:
+        """Initialize the Open Exchange Rates API client.
+
+        Args:
+            timeout: Request timeout in seconds.
+
+        Raises:
+            ValueError: If the API key is not set in the environment.
+        """
         self.base_url = "https://openexchangerates.org/api"
         self.headers = {"Content-Type": "application/json"}
-        self.api_key = str(settings.OPEN_EXCHANGE_RATES_APP_ID)
-
+        self.timeout = timeout
+        self.api_key = str(settings.open_exchange_rates_app_id)
         if not self.api_key:
             raise ValueError("OPEN_EXCHANGE_RATES_APP_ID is not set")
 
     async def historical_rates_for(self, date: date) -> HistoricalRatesResponse:
-        response = await self.get(f"historical/{date.strftime('%Y-%m-%d')}.json")
+        """Fetch historical exchange rates for a specific date.
 
+        Args:
+            date: The date to fetch rates for.
+
+        Returns:
+            HistoricalRatesResponse: The parsed response with exchange rates.
+
+        Raises:
+            AuthenticationError: If authentication fails.
+            RequestError: If the request is invalid.
+            NotFoundError: If the resource is not found.
+        """
+        response = await self.get(f"historical/{date.strftime('%Y-%m-%d')}.json")
         return HistoricalRatesResponse.model_validate(response)
 
     async def get(self, path: str) -> dict[str, Any]:
@@ -65,7 +82,3 @@ class OpenExchangeRatesClient:
 
             response.raise_for_status()
             return cast(dict[str, Any], response.json())
-
-
-def get_open_exchange_rates_api_client() -> OpenExchangeRatesClient:
-    return OpenExchangeRatesClient()

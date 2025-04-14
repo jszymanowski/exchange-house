@@ -17,8 +17,12 @@ class HealthchecksClient:
             async with httpx.AsyncClient() as client:
                 response = await client.get(url, timeout=self.TIMEOUT_SECONDS)
 
-                if response.status_code >= 400:
-                    raise ValueError(f"Heartbeat check-in failed: {response.status_code}")
+                if response.status_code == 404:
+                    raise ValueError(f"Healthcheck URL not found: {url}")
+                elif response.status_code == 403:
+                    raise ValueError(f"Forbidden access to healthcheck URL: {url}")
+                elif response.status_code >= 400:
+                    raise ValueError(f"Healthcheck failed with status code: {response.status_code}")
         except httpx.HTTPError as e:
             raise ValueError(f"Heartbeat check-in failed: {str(e)}") from e
 
