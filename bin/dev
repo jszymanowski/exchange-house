@@ -3,4 +3,4 @@
 set -e
 set -x
 
-uv run ./scripts/test.sh "$@"
+uv run -m app.start
