@@ -8,7 +8,7 @@ from tortoise.contrib.fastapi import RegisterTortoise
 
 from app.core.database import TORTOISE_ORM
 from app.main import app
-from tests.utilities.database_helper import DatabaseTestHelper
+from tests.support.database_helper import DatabaseTestHelper
 
 
 @pytest.fixture
