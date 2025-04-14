@@ -11,7 +11,7 @@ def api_client() -> HealthchecksClient:
 
 @pytest.mark.asyncio
 class TestHealthchecksClient:
-    async def test_ping(self, api_client: HealthchecksClient, httpx_mock: HTTPXMock) -> None:
+    async def test_ping_success(self, api_client: HealthchecksClient, httpx_mock: HTTPXMock) -> None:
         url = "http://healthchecks.home/ping/some-id"
 
         httpx_mock.add_response(

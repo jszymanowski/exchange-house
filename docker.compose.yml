@@ -12,6 +12,9 @@ services:
     environment:
       - ENV=production
       - WORKERS=4
+      - HEARTBEAT_CHECK_URL=${HEARTBEAT_CHECK_URL}
+      - REFRESH_COMPLETED_URL=${REFRESH_COMPLETED_URL}
+      - OPEN_EXCHANGE_RATES_APP_ID=${OPEN_EXCHANGE_RATES_APP_ID}
       # TODO: move these to secrets
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
