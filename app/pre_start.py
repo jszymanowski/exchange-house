@@ -27,8 +27,12 @@ async def check_db_connection():
     return False
 
 
-if __name__ == "__main__":
+def main() -> None:
     success = asyncio.run(check_db_connection())
     if not success:
         sys.exit(1)  # Exit with error code if DB connection failed
     sys.exit(0)  # Exit successfully if DB connection succeeded
+
+
+if __name__ == "__main__":
+    main()
