@@ -29,7 +29,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 ENV PYTHONPATH=/app
 
-COPY ./pyproject.toml ./uv.lock ./migrations ./scripts/entrypoint.sh /app/
+COPY ./pyproject.toml ./uv.lock ./scripts/entrypoint.sh /app/
+COPY ./migrations /app/migrations
 
 COPY ./app /app/app
 
