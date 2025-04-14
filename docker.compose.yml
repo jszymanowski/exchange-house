@@ -16,7 +16,7 @@ services:
       - POSTGRES_HOST=postgres
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-exchange-house-production}
+      - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     ports:
       - "3177:8000"
