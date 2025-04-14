@@ -1,0 +1,8 @@
+{
+  "files.exclude": {
+    "**/.venv": true,
+    "**/__pycache__": true,
+    "**/htmlcov": true,
+    "**/.coverage": true
+  }
+}
