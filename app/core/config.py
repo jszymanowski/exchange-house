@@ -38,6 +38,9 @@ class Settings(BaseSettings):
 
     @cached_property
     def OPEN_EXCHANGE_RATES_APP_ID(self) -> str | None:
+        if self.is_test:
+            return "FAKE_OER_APP_ID"
+
         return os.getenv("OPEN_EXCHANGE_RATES_APP_ID")
 
     @cached_property

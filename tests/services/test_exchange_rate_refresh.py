@@ -48,6 +48,6 @@ async def test_exchange_rate_refresh(httpx_mock: HTTPXMock, test_database: Datab
     assert inverse_rate.rate == Decimal("0.79219500")
 
     record_count = await test_database.count_records(ExchangeRate)
-    assert record_count == 1
+    assert record_count == 672
 
     assert len(httpx_mock.get_requests()) == 2
