@@ -2,9 +2,11 @@ from datetime import date
 from decimal import Decimal
 
 import pytest
-from tortoise import Tortoise
+from tortoise import Tortoise, connections
+from tortoise.backends.base.client import BaseDBAsyncClient
 
 from app.core.config import settings
+from app.core.database import TORTOISE_ORM
 from app.models.exchange_rate import ExchangeRate
 
 
@@ -14,15 +16,17 @@ async def initialize_tests():
 
     print(settings.DATABASE_URL)
 
-    await Tortoise.init(
-        db_url=settings.DATABASE_URL,
-        modules={"models": ["app.models", "aerich.models"]},
-    )
+    await Tortoise.init(TORTOISE_ORM)
+
+    conn: BaseDBAsyncClient = connections.get("default")
+    await conn.db_create()
+
     await Tortoise.generate_schemas()
 
     yield
 
-    await Tortoise.close_connections()
+    await Tortoise._drop_databases()
+    await connections.close_all()
 
 
 @pytest.mark.asyncio
