@@ -15,20 +15,30 @@ async def check_db_connection() -> bool:
     for attempt in range(max_retries):
         try:
             # Try to connect to the database
+            logger.info(f"Attempt {attempt + 1}/{max_retries}: Connecting to database...")
             await Tortoise.init(TORTOISE_ORM)
 
-            # If connection successful, disconnect and return
+            # If connection successful, try to run a simple query to ensure full readiness
+            conn = Tortoise.get_connection("default")
+            await conn.execute_query("SELECT 1")
+
+            # If we get here, connection is fully established
             await Tortoise.close_connections()
-            print("Database is available and ready.")
+            logger.info("Database is available and ready.")
             return True
-        except ConnectionRefusedError as e:
-            print(f"Attempt {attempt + 1}/{max_retries}: Database connection refused ({str(e)})")
-            await asyncio.sleep(retry_interval)
+
         except Exception as e:
-            print(f"Attempt {attempt + 1}/{max_retries}: Database not ready yet - unexpected error ({str(e)})")
+            logger.warning(
+                f"Attempt {attempt + 1}/{max_retries}: Database not ready yet - {e.__class__.__name__}: {str(e)}"
+            )
+            # Close any partial connections before retrying
+            try:
+                await Tortoise.close_connections()
+            except Exception as e:
+                pass
             await asyncio.sleep(retry_interval)
 
-    print("Failed to connect to the database after maximum retries")
+    logger.error("Failed to connect to the database after maximum retries")
     return False
 
 
@@ -43,9 +53,10 @@ async def init_db() -> bool:
 
 
 def main() -> None:
+    logger.info("Starting database connection check...")
     success = asyncio.run(check_db_connection())
     if not success:
-        logger.error("Failed to connect to database, exiting")
+        logger.error("Failed to initialize database, exiting")
         sys.exit(1)
     logger.info("Database connection successful")
 
