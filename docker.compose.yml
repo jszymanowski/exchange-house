@@ -19,7 +19,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB:-exchange-house-production}
       - POSTGRES_PORT=${POSTGRES_PORT:-5432}
     ports:
-      - "3177:8000"
+      - "3177:8080"
     networks:
       - exchange-house-network
       - external_proxy_net
