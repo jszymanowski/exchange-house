@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     def is_test(self) -> bool:
         return self.environment == "test"
 
+    @property
+    def heartbeat_check_url(self) -> str | None:
+        return os.getenv("HEARTBEAT_CHECK_URL")
+
     @cached_property
     def DATABASE_URL(self) -> str:
         user = os.getenv("POSTGRES_USER", "postgres")
