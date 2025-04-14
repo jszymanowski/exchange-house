@@ -28,6 +28,7 @@ class ExchangeRateServiceInterface:
         base_currency_code: str,
         quote_currency_code: str,
         start_date: date | None = None,
+        end_date: date | None = None,
         limit: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
@@ -84,10 +85,13 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         base_currency_code: str,
         quote_currency_code: str,
         start_date: date | None = None,
+        end_date: date | None = None,
         limit: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
-        end_date = date.today()
+        if end_date is None:
+            end_date = date.today()
+
         if start_date is None:
             start_date = end_date - timedelta(days=365.25 * 10)
 

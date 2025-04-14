@@ -63,32 +63,66 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
         base_currency_code: str,
         quote_currency_code: str,
         start_date: date | None = None,
+        end_date: date | None = None,
         limit: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
         rates = [
-            ExchangeRate(
-                date=date(2024, 1, 1),
+            build_exchange_rate(
+                as_of=date(2024, 1, 1),
                 base_currency_code=base_currency_code,
                 quote_currency_code=quote_currency_code,
                 rate=Decimal(1),
             ),
-            ExchangeRate(
-                date=date(2024, 1, 2),
+            build_exchange_rate(
+                as_of=date(2024, 1, 2),
                 base_currency_code=base_currency_code,
                 quote_currency_code=quote_currency_code,
                 rate=Decimal(1.02),
             ),
-            ExchangeRate(
-                date=date(2024, 1, 3),
+            build_exchange_rate(
+                as_of=date(2024, 1, 3),
                 base_currency_code=base_currency_code,
                 quote_currency_code=quote_currency_code,
                 rate=Decimal(1.04),
             ),
+            build_exchange_rate(
+                as_of=date(2024, 1, 5),
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+                rate=Decimal(1.05),
+            ),
+            build_exchange_rate(
+                as_of=date(2024, 4, 2),
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+                rate=Decimal(1.12),
+            ),
+            build_exchange_rate(
+                as_of=date(2024, 10, 10),
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+                rate=Decimal(0.98),
+            ),
+            build_exchange_rate(
+                as_of=date(2024, 10, 22),
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+                rate=Decimal(0.95),
+            ),
+            build_exchange_rate(
+                as_of=date(2024, 10, 31),
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+                rate=Decimal(0.92),
+            ),
         ]
 
         if start_date is not None:
-            rates = [rate for rate in rates if rate.date >= start_date]
+            rates = [rate for rate in rates if rate.as_of >= start_date]
+
+        if end_date is not None:
+            rates = [rate for rate in rates if rate.as_of <= end_date]
 
         if limit is not None:
             rates = rates[:limit]
