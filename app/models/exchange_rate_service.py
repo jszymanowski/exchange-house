@@ -1,8 +1,11 @@
-from datetime import date
+from datetime import date, timedelta
 from decimal import Decimal
+from typing import Literal
 
 from app.models.currency_pair import CurrencyPair
 from app.models.exchange_rate import ExchangeRate
+
+MAX_RECORDS_PER_REQUEST = 1000
 
 
 class ExchangeRateService:
@@ -45,54 +48,39 @@ class ExchangeRateService:
 
         return exchange_rate
 
-    # async def get_historical_rates(
-    #     self,
-    #     base_currency_code: str,
-    #     quote_currency_code: str,
-    #     start_date: Optional[date] = None,
-    #     limit: Optional[int] = None,
-    #     sort_order: Literal["asc", "desc"] = "asc",
-    # ) -> list[ExchangeRate]:
-    #     end_date = date.today()
-    #     if start_date is None:
-    #         start_date = end_date - timedelta(days=365.25 * 10)
+    async def get_historical_rates(
+        self,
+        base_currency_code: str,
+        quote_currency_code: str,
+        start_date: date | None = None,
+        limit: int | None = None,
+        sort_order: Literal["asc", "desc"] = "asc",
+    ) -> list[ExchangeRate]:
+        end_date = date.today()
+        if start_date is None:
+            start_date = end_date - timedelta(days=365.25 * 10)
 
-    #     if start_date > end_date:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_400_BAD_REQUEST,
-    #             detail="start_date must be before or equal to today",
-    #         )
+        if limit is None:
+            limit = MAX_RECORDS_PER_REQUEST
 
-    #     if limit is None:
-    #         limit = MAX_RECORDS_PER_REQUEST
+        if start_date > end_date:
+            raise ValueError("start_date must be before or equal to today")
 
-    #     query = (
-    #         self.exchange_house.table(self.table)
-    #         .select("rate, date")
-    #         .eq("base_currency", base_currency_code)
-    #         .eq("target_currency", quote_currency_code)
-    #         .gte("date", start_date.isoformat())
-    #         .lte("date", end_date.isoformat())
-    #         .order("date", desc=(sort_order == "desc"))
-    #         .limit(limit)
-    #     )
+        exchange_rates = (
+            await ExchangeRate.filter(
+                base_currency_code=base_currency_code,
+                quote_currency_code=quote_currency_code,
+                as_of__lte=end_date,
+                as_of__gte=start_date,
+            )
+            .order_by(sort_order == "desc" and "-as_of" or "as_of")
+            .limit(limit)
+        )
+        # TODO: Uncomment this when we have a logger
+        # if len(all_rates) == MAX_RECORDS_PER_REQUEST:
+        #     logger.warning(f"Reached the maximum number of records per request: {MAX_RECORDS_PER_REQUEST}")
 
-    #     response = query.execute()
-    #     all_rates = response.data
-
-    #     if not all_rates:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_404_NOT_FOUND,
-    #             detail=f"No exchange rates found for {base_currency_code}"
-    #             f" to {quote_currency_code} between {start_date} and {end_date}",
-    #         )
-
-    #     if len(all_rates) == MAX_RECORDS_PER_REQUEST:
-    #         logger.warning(f"Reached the maximum number of records per request: {MAX_RECORDS_PER_REQUEST}")
-
-    #     return [
-    #         self._parse_response(data=rate, base_currency_code=base_currency_code, quote_currency_code=quote_currency_code) for rate in all_rates
-    #     ]
+        return exchange_rates
 
     # async def create_rate(self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal) -> list[ExchangeRate]:
     #     if base_currency_code == quote_currency_code:

@@ -120,7 +120,6 @@ async def test_get_latest_rate_not_found() -> None:
     assert result is None
 
 
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_get_historical_rates_success() -> None:
     base_currency_code = "USD"
@@ -132,13 +131,12 @@ async def test_get_historical_rates_success() -> None:
 
     assert len(results) == 2
     assert quantize_decimal(results[0].rate) == quantize_decimal("0.85")
-    assert results[0].date == date(2023, 1, 1)
+    assert results[0].as_of == date(2023, 1, 1)
 
-    assert quantize_decimal(results[1].rate) == quantize_decimal("0.86")
-    assert results[1].date == date(2023, 1, 2)
+    assert quantize_decimal(results[1].rate) == quantize_decimal("0.87")
+    assert results[1].as_of == date(2023, 1, 20)
 
 
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_get_historical_rates_not_found() -> None:
     base_currency_code = "USD"
@@ -146,15 +144,11 @@ async def test_get_historical_rates_not_found() -> None:
     start_date = date(2023, 1, 1)
 
     service = ExchangeRateService()
+    results = await service.get_historical_rates(base_currency_code, quote_currency_code, start_date)
 
-    with pytest.raises(HTTPException) as excinfo:
-        await service.get_historical_rates(base_currency_code, quote_currency_code, start_date)
-
-    assert excinfo.value.status_code == 404
-    assert f"No exchange rates found for {base_currency_code}" in excinfo.value.detail
+    assert results == []
 
 
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_get_historical_rates_with_limit() -> None:
     base_currency_code = "USD"
@@ -167,10 +161,9 @@ async def test_get_historical_rates_with_limit() -> None:
 
     assert len(results) == 1
     assert quantize_decimal(results[0].rate) == quantize_decimal("0.85")
-    assert results[0].date == date(2023, 1, 1)
+    assert results[0].as_of == date(2023, 1, 1)
 
 
-@pytest.mark.skip(reason="Not yet implemented")
 @pytest.mark.asyncio
 async def test_get_historical_rates_with_sort_order_desc() -> None:
     base_currency_code = "USD"
@@ -184,7 +177,7 @@ async def test_get_historical_rates_with_sort_order_desc() -> None:
     )
 
     assert len(results) == 2
-    assert results[0].date > results[1].date
+    assert results[0].as_of > results[1].as_of
 
 
 @pytest.mark.skip(reason="Not yet implemented")
