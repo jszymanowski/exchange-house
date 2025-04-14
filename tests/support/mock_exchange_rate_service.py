@@ -10,7 +10,7 @@ from tests.support.factories import build_exchange_rate
 
 class MockExchangeRateService(ExchangeRateServiceInterface):
     async def get_available_dates(self) -> list[date]:
-        return [date(2024, 1, 1), date(2024, 1, 2), date(2024, 1, 3)]
+        return [date(2025, 4, 1), date(2025, 4, 2), date(2025, 4, 3)]
 
     async def get_currency_pairs(self) -> list[CurrencyPair]:
         return [
