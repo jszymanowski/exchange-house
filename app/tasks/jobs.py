@@ -1,8 +1,10 @@
 import httpx
 
 from app.core.config import settings
+from app.core.dependencies import get_exchange_rate_service
 from app.core.logger import logger
 from app.core.scheduler import metrics
+from app.services.exchange_rate_refresh import ExchangeRateRefresh
 
 
 async def heartbeat_task() -> None:
@@ -22,3 +24,13 @@ async def heartbeat_task() -> None:
         return
 
     logger.info("Heartbeat: check-in complete")
+
+
+async def latest_exchange_rates_task() -> None:
+    job_id = "exchange_rate_notification"
+    metrics.record_job_start(job_id)
+
+    exchange_rates_service = await get_exchange_rate_service()
+
+    exchange_rate_refresh = ExchangeRateRefresh(exchange_rate_service=exchange_rates_service)
+    await exchange_rate_refresh.save()

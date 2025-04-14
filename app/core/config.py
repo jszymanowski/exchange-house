@@ -37,6 +37,10 @@ class Settings(BaseSettings):
         return os.getenv("HEARTBEAT_INTERVAL", "*/5")
 
     @cached_property
+    def OPEN_EXCHANGE_RATES_APP_ID(self) -> str | None:
+        return os.getenv("OPEN_EXCHANGE_RATES_APP_ID")
+
+    @cached_property
     def DATABASE_URL(self) -> str:
         user = os.getenv("POSTGRES_USER", "postgres")
         password = os.getenv("POSTGRES_PASSWORD", "postgres")
