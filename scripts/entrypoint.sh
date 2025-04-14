@@ -13,14 +13,8 @@ fi
 uv run -m app.pre_start
 
 # Initialize database, or run migrations if already initialized
-if aerich migrate --dry-run 2>&1 | grep -q "You need to run \`aerich init-db\`"; then
-  echo "First-time setup: Initializing Aerich..."
-  aerich init -t app.core.database.TORTOISE_ORM
-  aerich init-db
-else
-  echo "Running migrations..."
-  aerich upgrade
-fi
+echo "Running migrations..."
+uv run aerich upgrade
 
 # Start the application
 uv run -m app.start
