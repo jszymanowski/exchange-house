@@ -128,14 +128,18 @@ class ExchangeRateServiceInterface:
 
 
 class ExchangeRateService(ExchangeRateServiceInterface):
-    async def get_currency_pairs(self) -> list[CurrencyPair]:
-        distinct_pairs = await ExchangeRate.all().distinct().values("base_currency_code", "quote_currency_code")
-        return [CurrencyPair(**pair) for pair in distinct_pairs]
+    async def get_available_dates(self) -> list[date]:
+        distinct_dates = await ExchangeRate.all().distinct().values("as_of")
+        return [d["as_of"] for d in distinct_dates]
 
-    # async def get_available_dates(self) -> list[date]:
-    #     query = self.exchange_house.rpc("get_distinct_dates")
-    #     response = query.execute()
-    #     return [date.fromisoformat(row["date"]) for row in response.data]
+    async def get_currency_pairs(self) -> list[CurrencyPair]:
+        distinct_pairs = (
+            await ExchangeRate.all()
+            .distinct()
+            .order_by("base_currency_code", "quote_currency_code")
+            .values("base_currency_code", "quote_currency_code")
+        )
+        return [CurrencyPair(**pair) for pair in distinct_pairs]
 
     # async def get_latest_rate(self, from_iso_code: str, to_iso_code: str, as_of: date) -> ExchangeRate | None:
     #     if from_iso_code == to_iso_code:

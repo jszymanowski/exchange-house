@@ -17,17 +17,19 @@ class ExchangeRateParams(TypedDict, total=False):
     updated_at: datetime | None
 
 
-def build_exchange_rate(**kwargs: ExchangeRateParams | dict) -> ExchangeRate:
+def build_exchange_rate(**kwargs: ExchangeRateParams | dict) -> tuple[ExchangeRate, ExchangeRate]:
     defaults = {
-        "id": uuid.uuid4(),
         "as_of": date.today(),
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
         "rate": Decimal("0.85"),
         "data_source": "test",
     }
+    attributes = defaults | kwargs
+    inverse_attributes = attributes | {
+        "base_currency_code": attributes["quote_currency_code"],
+        "quote_currency_code": attributes["base_currency_code"],
+        "rate": Decimal("1") / attributes["rate"],
+    }
 
-    # # Override defaults with any kwargs provided
-    # defaults.update(kwargs)
-
-    return ExchangeRate(**(defaults | kwargs))
+    return ExchangeRate(**attributes), ExchangeRate(**inverse_attributes)
