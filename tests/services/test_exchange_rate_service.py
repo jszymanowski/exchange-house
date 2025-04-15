@@ -30,6 +30,10 @@ async def exchange_rates(test_database: DatabaseTestHelper) -> list[ExchangeRate
         *build_exchange_rate_pair(
             base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 15), rate=Decimal("101")
         ),
+        # Invalid currencies
+        *build_exchange_rate_pair(
+            base_currency_code="BTC", quote_currency_code="USD", as_of=date(2023, 1, 15), rate=Decimal("0.00002")
+        ),
     ]
     await ExchangeRate.bulk_create(exchange_rates)
 

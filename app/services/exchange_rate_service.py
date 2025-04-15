@@ -51,7 +51,16 @@ class ExchangeRateService(ExchangeRateServiceInterface):
             .order_by("base_currency_code", "quote_currency_code")
             .values("base_currency_code", "quote_currency_code")
         )
-        return [CurrencyPair(**pair) for pair in distinct_pairs]
+
+        valid_pairs = []
+        for pair in distinct_pairs:
+            try:
+                valid_pairs.append(CurrencyPair(**pair))
+            except ValueError:
+                # Skip invalid currency pairs
+                continue
+
+        return valid_pairs
 
     async def get_latest_rate(
         self, base_currency_code: Currency, quote_currency_code: Currency, as_of: date | None = None
