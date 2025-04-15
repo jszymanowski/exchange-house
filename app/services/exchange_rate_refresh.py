@@ -2,9 +2,9 @@ from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from app.core.logger import logger
-from app.integrations.open_exchange_rates import OpenExchangeRatesClient
+from app.integrations.open_exchange_rates import HistoricalRatesResponse, OpenExchangeRatesClient
 from app.models import Currency
-from app.services.exchange_rate_service import ExchangeRateServiceInterface
+from app.services.exchange_rate_service import CreateRateParams, ExchangeRateServiceInterface
 
 
 class ExchangeRateRefresh:
@@ -50,18 +50,24 @@ class ExchangeRateRefresh:
         for target_date in dates:
             try:
                 data = await self.api_client.historical_rates_for(target_date)
-                for to_currency, rate in data.rates.items():
-                    await self.exchange_rates_service.create_rate(
-                        as_of=target_date,
-                        base_currency_code=self.BASE_CURRENCY,
-                        quote_currency_code=Currency(to_currency),
-                        rate=Decimal(rate),
-                        source=self.DATA_SOURCE,
-                    )
+                await self._save_rates(target_date, data)
 
             except Exception as e:
                 logger.error(f"Error processing rates for date {target_date}: {str(e)}", exc_info=True)
                 raise
+
+    async def _save_rates(self, target_date: date, data: HistoricalRatesResponse) -> None:
+        params = [
+            CreateRateParams(
+                as_of=target_date,
+                base_currency_code=self.BASE_CURRENCY,
+                quote_currency_code=Currency(to_currency),
+                rate=Decimal(rate),
+                source=self.DATA_SOURCE,
+            )
+            for to_currency, rate in data.rates.items()
+        ]
+        await self.exchange_rates_service.bulk_create_rates(params)
 
     async def _get_all_dates(self) -> list[date]:
         """Get a list of dates that need exchange rates to be fetched.
