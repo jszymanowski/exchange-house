@@ -1,5 +1,0 @@
-2025-04-15 16:18:45,149 - tortoise - INFO - Tortoise-ORM started, {'default': <tortoise.backends.asyncpg.client.AsyncpgDBClient object at 0x1039701a0>}, {'models': {'ExchangeRate': <class 'app.models.exchange_rate.ExchangeRate'>, 'Aerich': <class 'aerich.models.Aerich'>}}
-2025-04-15 16:18:52,944 - tortoise - INFO - Tortoise-ORM shutdown
-2025-04-15 16:18:53,450 - tortoise - INFO - Tortoise-ORM started, {'default': <tortoise.backends.asyncpg.client.AsyncpgDBClient object at 0x1075141a0>}, {'models': {'ExchangeRate': <class 'app.models.exchange_rate.ExchangeRate'>, 'Aerich': <class 'aerich.models.Aerich'>}}
-2025-04-15 16:19:06,791 - tortoise - INFO - Tortoise-ORM shutdown
-2025-04-15 16:19:29,212 - tortoise - INFO - Tortoise-ORM started, {'default': <tortoise.backends.asyncpg.client.AsyncpgDBClient object at 0x1092141a0>}, {'models': {'ExchangeRate': <class 'app.models.exchange_rate.ExchangeRate'>, 'Aerich': <class 'aerich.models.Aerich'>}}
