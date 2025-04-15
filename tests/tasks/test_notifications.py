@@ -1,6 +1,6 @@
 from datetime import date
 from decimal import Decimal
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -30,7 +30,7 @@ async def test_send_exchange_rate_refresh_email_success():
     ):
         mock_email_settings.admin_email = "admin@example.com"
 
-        mock_email_service = MagicMock()
+        mock_email_service = AsyncMock()
         mock_email_service_class.return_value = mock_email_service
 
         await send_exchange_rate_refresh_email(exchange_rates_service=mock_exchange_rate_service)

@@ -40,4 +40,8 @@ async def send_exchange_rate_refresh_email(
     """
 
     email_service = EmailService(recipient=email_settings.admin_email, subject=subject, body=body)
-    email_service.send_async()
+    await email_service.send_async()
+
+    logger.info("Exchange rate refresh email sent")
+
+    return
