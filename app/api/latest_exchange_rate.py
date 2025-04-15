@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
 from app.core.dependencies import exchange_rate_service_dependency
-from app.models import Currency
+from app.models import AvailableDate, Currency
 from app.schema.exchange_rate_response import ExchangeRateResponse
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
@@ -19,7 +19,7 @@ def get_default_desired_date() -> date:
 class LatestExchangeRateQueryParams(BaseModel):
     base_currency_code: Currency
     quote_currency_code: Currency
-    desired_date: date | None = Field(default_factory=get_default_desired_date)
+    desired_date: AvailableDate | None = Field(default_factory=get_default_desired_date)
 
 
 @router.get("/latest_exchange_rate")

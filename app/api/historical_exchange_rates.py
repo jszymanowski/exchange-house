@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field
 
 from app.core.dependencies import exchange_rate_service_dependency
-from app.models import Currency
+from app.models import AvailableDate, Currency
 from app.schema.exchange_rate_response import (
     ExchangeRateData,
     HistoricalExchangeRateResponse,
@@ -29,8 +29,8 @@ MAX_RECORDS_PER_REQUEST = 1_000
 class HistoricalExchangeRatesQueryParams(BaseModel):
     base_currency_code: Currency
     quote_currency_code: Currency
-    start_date: date = Field(default_factory=get_default_start_date)
-    end_date: date = Field(default_factory=get_default_end_date)
+    start_date: AvailableDate = Field(default_factory=get_default_start_date)
+    end_date: AvailableDate = Field(default_factory=get_default_end_date)
     limit: int = Field(default=MAX_RECORDS_PER_REQUEST, ge=1, le=MAX_RECORDS_PER_REQUEST)
     order: Literal["asc", "desc"] = Field(default="desc")
 

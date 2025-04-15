@@ -354,10 +354,10 @@ async def test_api_v1_historical_exchange_rates_with_end_date_after_today(
             "end_date": "2030-04-01",
         },
     )
-    assert response.status_code == 400
-    assert response.json() == {
-        "detail": "end_date must be before or equal to today",
-    }
+    assert response.status_code == 422
+    response_detail = response.json()["detail"]
+    assert len(response_detail) == 1
+    assert response_detail[0]["msg"] == "Date must be in the past or today"
 
 
 @pytest.mark.asyncio
