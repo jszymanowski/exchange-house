@@ -7,7 +7,7 @@ class AvailableDate(date):
     """A date in the past or today."""
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, _source, handler) -> core_schema.CoreSchema:
+    def __get_pydantic_core_schema__(cls, _source, handler) -> core_schema.CoreSchema:  # type: ignore
         return core_schema.no_info_after_validator_function(cls.validate, handler(date))
 
     @classmethod
