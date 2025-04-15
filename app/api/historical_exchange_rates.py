@@ -1,12 +1,15 @@
 from datetime import date, timedelta
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field, field_validator
 
 from app.core.dependencies import exchange_rate_service_dependency
 from app.data.currencies import is_valid_currency
-from app.schema.exchange_rate_response import ExchangeRateResponse
+from app.schema.exchange_rate_response import (
+    ExchangeRateData,
+    HistoricalExchangeRateResponse,
+)
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 router = APIRouter()
@@ -20,11 +23,16 @@ def get_default_end_date() -> date:
     return date.today()
 
 
+MAX_RECORDS_PER_REQUEST = 1_000
+
+
 class HistoricalExchangeRatesQueryParams(BaseModel):
     base_currency_code: str
     quote_currency_code: str
     start_date: date = Field(default_factory=get_default_start_date)
     end_date: date = Field(default_factory=get_default_end_date)
+    limit: int = Field(default=MAX_RECORDS_PER_REQUEST, ge=1, le=MAX_RECORDS_PER_REQUEST)
+    order: Literal["asc", "desc"] = Field(default="desc")
 
     @field_validator("base_currency_code", "quote_currency_code")
     @classmethod
@@ -39,11 +47,13 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
 async def historical_exchange_rates(
     query_params: Annotated[HistoricalExchangeRatesQueryParams, Query()],
     exchange_rate_service: ExchangeRateServiceInterface = exchange_rate_service_dependency,
-) -> list[ExchangeRateResponse]:
+) -> HistoricalExchangeRateResponse:
     start_date = query_params.start_date
     end_date = query_params.end_date
     base_currency_code = query_params.base_currency_code
     quote_currency_code = query_params.quote_currency_code
+    limit = query_params.limit
+    order = query_params.order
 
     today = date.today()
     validation_errors = []
@@ -68,16 +78,14 @@ async def historical_exchange_rates(
         quote_currency_code=quote_currency_code,
         start_date=start_date,
         end_date=end_date,
-        limit=10_000,
-        sort_order="desc",
+        limit=limit,
+        sort_order=order,
     )
 
-    return [
-        ExchangeRateResponse(
-            rate=exchange_rate.rate,
-            date=exchange_rate.as_of,
-            base_currency_code=exchange_rate.base_currency_code,
-            quote_currency_code=exchange_rate.quote_currency_code,
-        )
-        for exchange_rate in exchange_rates
-    ]
+    exchange_rate_data = [ExchangeRateData.from_model(exchange_rate) for exchange_rate in exchange_rates]
+
+    return HistoricalExchangeRateResponse(
+        base_currency_code=base_currency_code,
+        quote_currency_code=quote_currency_code,
+        data=exchange_rate_data,
+    )
