@@ -2,7 +2,7 @@ from datetime import date, datetime, timedelta
 from decimal import Decimal
 
 from app.core.logger import logger
-from app.integrations.open_exchange_rates import OpenExchangeRatesClient
+from app.integrations.open_exchange_rates import HistoricalRatesResponse, OpenExchangeRatesClient
 from app.models import Currency
 from app.services.exchange_rate_service import CreateRateParams, ExchangeRateServiceInterface
 
@@ -56,7 +56,7 @@ class ExchangeRateRefresh:
                 logger.error(f"Error processing rates for date {target_date}: {str(e)}", exc_info=True)
                 raise
 
-    async def _save_rates(self, target_date: date, data: dict[str, Decimal]) -> None:
+    async def _save_rates(self, target_date: date, data: HistoricalRatesResponse) -> None:
         params = [
             CreateRateParams(
                 as_of=target_date,

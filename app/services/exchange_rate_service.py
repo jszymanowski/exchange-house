@@ -2,6 +2,8 @@ from datetime import date, timedelta
 from decimal import Decimal
 from typing import Literal, TypedDict
 
+from tortoise.transactions import atomic
+
 from app.models import Currency, CurrencyPair, ExchangeRate
 
 
@@ -37,6 +39,9 @@ class ExchangeRateServiceInterface:
         limit: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
+        raise RuntimeError("Must be implemented")
+
+    async def bulk_create_rates(self, params_set: list[CreateRateParams]) -> None:
         raise RuntimeError("Must be implemented")
 
     async def create_rate(
@@ -129,7 +134,7 @@ class ExchangeRateService(ExchangeRateServiceInterface):
 
         return await query.all()
 
-    # @atomic
+    @atomic()
     async def bulk_create_rates(self, params_set: list[CreateRateParams]) -> None:
         for params in params_set:
             await self.create_rate(**params)
