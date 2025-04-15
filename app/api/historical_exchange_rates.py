@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from typing import Annotated, Literal
+from typing import Annotated, Literal, cast
 
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field
@@ -15,12 +15,12 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 router = APIRouter()
 
 
-def get_default_start_date() -> date:
-    return date.today() - timedelta(days=365.25 * 10)
+def get_default_start_date() -> AvailableDate:
+    return cast(AvailableDate, date.today() - timedelta(days=365.25 * 10))
 
 
-def get_default_end_date() -> date:
-    return date.today()
+def get_default_end_date() -> AvailableDate:
+    return cast(AvailableDate, date.today())
 
 
 MAX_RECORDS_PER_REQUEST = 1_000

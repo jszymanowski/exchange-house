@@ -3,11 +3,11 @@ from datetime import date
 from pydantic_core import PydanticCustomError, core_schema
 
 
-class AvailableDate:
+class AvailableDate(date):
     """A date in the past or today."""
 
     @classmethod
-    def __get_pydantic_core_schema__(cls, _source, handler):
+    def __get_pydantic_core_schema__(cls, _source, handler):  # type: ignore
         return core_schema.no_info_after_validator_function(cls.validate, handler(date))
 
     @classmethod

@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Annotated
+from typing import Annotated, cast
 
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field
@@ -12,8 +12,8 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 router = APIRouter()
 
 
-def get_default_desired_date() -> date:
-    return date.today()
+def get_default_desired_date() -> AvailableDate:
+    return cast(AvailableDate, date.today())
 
 
 class LatestExchangeRateQueryParams(BaseModel):
