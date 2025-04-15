@@ -4,9 +4,8 @@
 
 #### TODO
 
-- [ ] currency code validation
 - [ ] use pydantic for API param validations
 - [ ] add transaction to creation
 - [ ] use consistent number of decimal places
 - [ ] set up email for refresh
-- [ ] check for and remove any unsupported currencies (e.g., BTC)
+- [ ] update refresh process to handle unsupported currencies gracefullly
