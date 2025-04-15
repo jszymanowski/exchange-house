@@ -1,11 +1,8 @@
 from pydantic import BaseModel
 
+from app.models import Currency
+
 
 class CurrencyPairResponse(BaseModel):
-    """Response model for currency pair data."""
-
-    base_currency_code: str
-    """ISO code for the source currency."""
-
-    quote_currency_code: str
-    """ISO code for the target currency."""
+    base_currency_code: Currency
+    quote_currency_code: Currency

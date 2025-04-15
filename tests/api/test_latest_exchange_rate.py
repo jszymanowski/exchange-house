@@ -77,7 +77,10 @@ async def test_api_v1_latest_exchange_rate_invalid_base_currency(
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
-    assert response_detail[0]["msg"] == "Value error, Invalid currency code: XYZ"
+    assert (
+        response_detail[0]["msg"]
+        == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, testing and precious metals codes are not allowed."
+    )
 
 
 @pytest.mark.asyncio
@@ -93,4 +96,7 @@ async def test_api_v1_latest_exchange_rate_invalid_quote_currency(
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
-    assert response_detail[0]["msg"] == "Value error, Invalid currency code: XYZ"
+    assert (
+        response_detail[0]["msg"]
+        == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, testing and precious metals codes are not allowed."
+    )

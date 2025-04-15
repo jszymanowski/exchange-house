@@ -1,10 +1,6 @@
 from enum import Enum
 
 
-def is_valid_currency(currency_code: str) -> bool:
-    return currency_code in CurrencyCode
-
-
 class CurrencyCode(Enum):
     AED = "AED"
     AFN = "AFN"

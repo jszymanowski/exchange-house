@@ -8,6 +8,8 @@ dependencies = [
   "aerich==0.8.2",
   "apscheduler>=3.11.0",
   "fastapi[standard]==0.115.12",
+  "pycountry>=24.6.1",
+  "pydantic-extra-types>=2.10.3",
   "pydantic-settings==2.8.1",
   "tortoise-orm[asyncpg]==0.24.2",
 ]
