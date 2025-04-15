@@ -435,6 +435,16 @@ async def test_api_v1_historical_exchange_rates_with_invalid_limit(
 
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
+        params={"base_currency_code": "USD", "quote_currency_code": "EUR", "limit": "3.14159"},
+    )
+    assert response.status_code == 422
+
+    response_detail = response.json()["detail"]
+    assert len(response_detail) == 1
+    assert response_detail[0]["msg"] == "Input should be a valid integer, unable to parse string as an integer"
+
+    response = await async_client.get(
+        "/api/v1/historical_exchange_rates",
         params={"base_currency_code": "USD", "quote_currency_code": "EUR", "limit": "INFINITYANDBEYOND"},
     )
     assert response.status_code == 422
