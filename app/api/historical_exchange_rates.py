@@ -31,7 +31,7 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
     quote_currency_code: str
     start_date: date = Field(default_factory=get_default_start_date)
     end_date: date = Field(default_factory=get_default_end_date)
-    limit: int = Field(default=MAX_RECORDS_PER_REQUEST)
+    limit: int = Field(default=MAX_RECORDS_PER_REQUEST, ge=1, le=MAX_RECORDS_PER_REQUEST)
     order: Literal["asc", "desc"] = Field(default="desc")
 
     @field_validator("base_currency_code", "quote_currency_code")
