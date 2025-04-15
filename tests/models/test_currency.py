@@ -22,6 +22,9 @@ class TestCurrency:
         assert Currency(currency_code) == Currency("USD")
         assert Currency("USD") == BaseCurrency(currency_code)
         assert Currency(currency_code) == "USD"
+        assert Currency(currency_code) == "usd"
+        assert Currency(currency_code) == "usD"
+        assert Currency(currency_code) == "USd"
         assert BaseCurrency(currency_code) == Currency("USD")
 
         # Pydantic Currency (BaseCurrency) and Currency equality methods are not overridden

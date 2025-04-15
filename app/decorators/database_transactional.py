@@ -11,6 +11,8 @@ def database_transactional(func: Callable[..., Any]) -> Callable[..., Any]:
     """
     Decorator to make a function transactional when used alone,
     but able to participate in a parent transaction when nested.
+
+    If an exception occurs, the transaction will be automatically rolled back.
     """
 
     @wraps(func)

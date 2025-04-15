@@ -5,7 +5,7 @@ from pydantic_extra_types.currency_code import Currency as BaseCurrency
 
 class Currency(BaseCurrency):
     def is_valid(self) -> bool:
-        return self.iso_code in Currency.allowed_currencies
+        return self.iso_code in BaseCurrency.allowed_currencies
 
     def __eq__(self, other: Any) -> bool:
         if isinstance(other, Currency):
@@ -15,7 +15,7 @@ class Currency(BaseCurrency):
             return self.iso_code == other.upper()
 
         elif isinstance(other, str):
-            return self.iso_code == other
+            return self.iso_code == other.upper()
 
         return NotImplemented
 
