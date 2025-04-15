@@ -4,8 +4,6 @@ from typing import Literal
 
 from app.models import Currency, CurrencyPair, ExchangeRate
 
-MAX_RECORDS_PER_REQUEST = 1000
-
 
 class ExchangeRateServiceInterface:
     class Meta:
