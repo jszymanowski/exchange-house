@@ -21,6 +21,8 @@ services:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
+    volumes:
+      - ${LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house/logs}:/app/logs
     ports:
       - "3177:8080"
     networks:

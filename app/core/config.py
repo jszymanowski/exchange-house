@@ -29,6 +29,10 @@ class Settings(BaseSettings):
         return os.getenv("TIMEZONE", "UTC")
 
     @property
+    def logging_level(self) -> str:
+        return os.getenv("LOGGING_LEVEL", "INFO").upper()
+
+    @property
     def heartbeat_check_url(self) -> str | None:
         return os.getenv("HEARTBEAT_CHECK_URL")
 

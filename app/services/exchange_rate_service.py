@@ -1,8 +1,19 @@
 from datetime import date, timedelta
 from decimal import Decimal
-from typing import Literal
+from typing import Literal, TypedDict
 
+from tortoise.backends.base.client import BaseDBAsyncClient
+
+from app.decorators.database_transactional import database_transactional
 from app.models import Currency, CurrencyPair, ExchangeRate
+
+
+class CreateRateParams(TypedDict):
+    as_of: date
+    base_currency_code: Currency
+    quote_currency_code: Currency
+    rate: Decimal
+    source: str
 
 
 class ExchangeRateServiceInterface:
@@ -29,6 +40,9 @@ class ExchangeRateServiceInterface:
         limit: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
+        raise RuntimeError("Must be implemented")
+
+    async def bulk_create_rates(self, params_set: list[CreateRateParams]) -> None:
         raise RuntimeError("Must be implemented")
 
     async def create_rate(
@@ -121,8 +135,22 @@ class ExchangeRateService(ExchangeRateServiceInterface):
 
         return await query.all()
 
+    @database_transactional
+    async def bulk_create_rates(
+        self, params_set: list[CreateRateParams], db_connection: BaseDBAsyncClient | None = None
+    ) -> None:
+        for params in params_set:
+            await self.create_rate(**params, db_connection=db_connection)
+
+    @database_transactional
     async def create_rate(
-        self, as_of: date, base_currency_code: Currency, quote_currency_code: Currency, rate: Decimal, source: str
+        self,
+        as_of: date,
+        base_currency_code: Currency,
+        quote_currency_code: Currency,
+        rate: Decimal,
+        source: str,
+        db_connection: BaseDBAsyncClient | None = None,
     ) -> list[ExchangeRate]:
         if base_currency_code == quote_currency_code:
             return []
@@ -143,7 +171,8 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         )
 
         try:
-            await ExchangeRate.bulk_create([forward_rate, inverse_rate])
+            await forward_rate.save(using_db=db_connection)
+            await inverse_rate.save(using_db=db_connection)
         except Exception as e:
             raise ValueError(
                 f"Failed to create exchange rate for {base_currency_code} to {quote_currency_code} on {as_of} with error {e}"

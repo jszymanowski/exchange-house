@@ -9,6 +9,7 @@ from app.api.routes import router as api_router
 from app.core.config import settings
 from app.core.database import register_orm
 from app.core.jobs import scheduler_manager
+from app.core.logger import setup_logging
 
 
 @asynccontextmanager
@@ -18,6 +19,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
         return
     else:
         # app startup
+        setup_logging()
         try:
             async with register_orm(app):
                 # db connected

@@ -35,18 +35,25 @@ async def test_exchange_rate_refresh(httpx_mock: HTTPXMock, test_database: Datab
 
     exchange_rate_service = ExchangeRateService()
 
+    record_count = await test_database.count_records(ExchangeRate)
+    assert record_count == 0
     subject = ExchangeRateRefresh(start_date=start_date, end_date=end_date, exchange_rate_service=exchange_rate_service)
     await subject.save()
 
     forward_rate = await exchange_rate_service.get_latest_rate("GBP", "USD", date(2025, 1, 31))
     inverse_rate = await exchange_rate_service.get_latest_rate("USD", "GBP", date(2025, 1, 31))
+    unsupported_rate = await exchange_rate_service.get_latest_rate("BTC", "USD", date(2025, 1, 31))
 
     assert forward_rate is not None
     assert inverse_rate is not None
+    assert unsupported_rate is not None
 
     assert forward_rate.rate == Decimal("1.26231547")
     assert inverse_rate.rate == Decimal("0.79219500")
+    assert unsupported_rate.rate == Decimal("44959.60559276")
 
+    # 672 records = 168 unique currencies * 2 rates (forward and inverse) * 2 days (1/31 and 2/1)
+    # Note: fixture data has 169 currencies.  USD is ignored (not written to DB).
     record_count = await test_database.count_records(ExchangeRate)
     assert record_count == 672
 
