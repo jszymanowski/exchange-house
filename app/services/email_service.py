@@ -36,6 +36,8 @@ class EmailService(BaseModel):
             server.login(self.email_settings.smtp_username, self.email_settings.smtp_password)  # type: ignore
             server.sendmail(self.email_settings.smtp_username, self.recipient, f"Subject: {subject}\n\n{body}")  # type: ignore
 
+        return
+
     @perform_in_background
     def send_async(self) -> None:
         self.send()
