@@ -1,8 +1,16 @@
 from datetime import date, timedelta
 from decimal import Decimal
-from typing import Literal
+from typing import Literal, TypedDict
 
 from app.models import Currency, CurrencyPair, ExchangeRate
+
+
+class CreateRateParams(TypedDict):
+    as_of: date
+    base_currency_code: Currency
+    quote_currency_code: Currency
+    rate: Decimal
+    source: str
 
 
 class ExchangeRateServiceInterface:
@@ -121,6 +129,11 @@ class ExchangeRateService(ExchangeRateServiceInterface):
 
         return await query.all()
 
+    # @atomic
+    async def bulk_create_rates(self, params_set: list[CreateRateParams]) -> None:
+        for params in params_set:
+            await self.create_rate(**params)
+
     async def create_rate(
         self, as_of: date, base_currency_code: Currency, quote_currency_code: Currency, rate: Decimal, source: str
     ) -> list[ExchangeRate]:
@@ -143,7 +156,8 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         )
 
         try:
-            await ExchangeRate.bulk_create([forward_rate, inverse_rate])
+            await forward_rate.save()
+            await inverse_rate.save()
         except Exception as e:
             raise ValueError(
                 f"Failed to create exchange rate for {base_currency_code} to {quote_currency_code} on {as_of} with error {e}"
