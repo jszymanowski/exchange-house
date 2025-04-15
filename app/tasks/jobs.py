@@ -4,6 +4,7 @@ from app.core.logger import logger
 from app.core.scheduler import metrics
 from app.integrations.healthchecks import get_healthchecks_client
 from app.services.exchange_rate_refresh import ExchangeRateRefresh
+from app.tasks.notifications import send_exchange_rate_refresh_email
 
 
 async def heartbeat_task() -> None:
@@ -28,6 +29,7 @@ async def latest_exchange_rates_task() -> None:
     exchange_rate_refresh = ExchangeRateRefresh(exchange_rate_service=exchange_rates_service)
     try:
         await exchange_rate_refresh.save()
+        await send_exchange_rate_refresh_email()
     except Exception as e:
         logger.error(f"Exchange rate refresh failed: {str(e)}")
         # TODO: Consider adding metrics.record_job_failure(job_id) if available

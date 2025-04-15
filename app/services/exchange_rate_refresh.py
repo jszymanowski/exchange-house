@@ -51,7 +51,6 @@ class ExchangeRateRefresh:
             try:
                 data = await self.api_client.historical_rates_for(target_date)
                 await self._save_rates(target_date, data)
-
             except Exception as e:
                 logger.error(f"Error processing rates for date {target_date}: {str(e)}", exc_info=True)
                 raise
