@@ -74,3 +74,32 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+class EmailSettings(BaseSettings):
+    @property
+    def is_configured(self) -> bool:
+        return all([self.smtp_server, self.smtp_port, self.smtp_username, self.smtp_password])
+
+    @property
+    def smtp_server(self) -> str | None:
+        return os.getenv("SMTP_SERVER")
+
+    @property
+    def smtp_port(self) -> int:
+        return int(os.getenv("SMTP_PORT", "587"))
+
+    @property
+    def smtp_username(self) -> str | None:
+        return os.getenv("SMTP_USERNAME")
+
+    @property
+    def smtp_password(self) -> str | None:
+        return os.getenv("SMTP_PASSWORD")
+
+    @property
+    def admin_email(self) -> str | None:
+        return os.getenv("ADMIN_EMAIL")
+
+
+email_settings = EmailSettings()
