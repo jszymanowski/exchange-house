@@ -30,11 +30,15 @@ class EmailService(BaseModel):
         subject = self.subject
         body = self.body
 
-        # mypy doesn't recognize that email_settings.is_configured is True means the smtp_*properties are not None
-        with SMTP(self.email_settings.smtp_server, self.email_settings.smtp_port) as server:  # type: ignore
-            server.starttls()
-            server.login(self.email_settings.smtp_username, self.email_settings.smtp_password)  # type: ignore
-            server.sendmail(self.email_settings.smtp_username, self.recipient, f"Subject: {subject}\n\n{body}")  # type: ignore
+        try:
+            # mypy doesn't recognize that email_settings.is_configured is True means the smtp_*properties are not None
+            with SMTP(self.email_settings.smtp_server, self.email_settings.smtp_port) as server:  # type: ignore
+                server.starttls()
+                server.login(self.email_settings.smtp_username, self.email_settings.smtp_password)  # type: ignore
+                server.sendmail(self.email_settings.smtp_username, self.recipient, f"Subject: {subject}\n\n{body}")  # type: ignore
+                logger.info(f"Email sent successfully to {self.recipient}")
+        except Exception as e:
+            logger.error(f"Failed to send email: {str(e)}")
 
         return
 

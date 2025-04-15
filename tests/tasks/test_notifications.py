@@ -51,7 +51,7 @@ async def test_send_exchange_rate_refresh_email_success():
         assert call_args["subject"] == expected_subject
         assert all(content in call_args["body"] for content in expected_body_content)
 
-        mock_email_service.send.assert_called_once()
+        mock_email_service.send_async.assert_called_once()
 
 
 @pytest.mark.asyncio
