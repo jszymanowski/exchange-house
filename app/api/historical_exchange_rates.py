@@ -23,11 +23,15 @@ def get_default_end_date() -> date:
     return date.today()
 
 
+MAX_RECORDS_PER_REQUEST = 1_000
+
+
 class HistoricalExchangeRatesQueryParams(BaseModel):
     base_currency_code: str
     quote_currency_code: str
     start_date: date = Field(default_factory=get_default_start_date)
     end_date: date = Field(default_factory=get_default_end_date)
+    limit: int = Field(default=MAX_RECORDS_PER_REQUEST)
 
     @field_validator("base_currency_code", "quote_currency_code")
     @classmethod
@@ -47,7 +51,7 @@ async def historical_exchange_rates(
     end_date = query_params.end_date
     base_currency_code = query_params.base_currency_code
     quote_currency_code = query_params.quote_currency_code
-
+    limit = query_params.limit
     today = date.today()
     validation_errors = []
 
@@ -71,7 +75,7 @@ async def historical_exchange_rates(
         quote_currency_code=quote_currency_code,
         start_date=start_date,
         end_date=end_date,
-        limit=10_000,
+        limit=limit,
         sort_order="desc",
     )
 

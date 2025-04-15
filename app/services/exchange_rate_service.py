@@ -95,27 +95,25 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         if start_date is None:
             start_date = end_date - timedelta(days=365.25 * 10)
 
-        if limit is None:
-            limit = MAX_RECORDS_PER_REQUEST
-
         if start_date > end_date:
             raise ValueError("start_date must be before or equal to today")
 
-        exchange_rates = (
-            await ExchangeRate.filter(
-                base_currency_code=base_currency_code,
-                quote_currency_code=quote_currency_code,
-                as_of__lte=end_date,
-                as_of__gte=start_date,
-            )
-            .order_by(sort_order == "desc" and "-as_of" or "as_of")
-            .limit(limit)
+        query = ExchangeRate.filter(
+            base_currency_code=base_currency_code,
+            quote_currency_code=quote_currency_code,
+            as_of__lte=end_date,
+            as_of__gte=start_date,
         )
-        # TODO: Uncomment this when we have a logger
-        # if len(all_rates) == MAX_RECORDS_PER_REQUEST:
-        #     logger.warning(f"Reached the maximum number of records per request: {MAX_RECORDS_PER_REQUEST}")
 
-        return exchange_rates
+        if limit is not None:
+            query = query.limit(limit)
+
+        if sort_order == "desc":
+            query = query.order_by("-as_of")
+        else:
+            query = query.order_by("as_of")
+
+        return await query.all()
 
     async def create_rate(
         self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal, source: str
