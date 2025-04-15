@@ -6,7 +6,10 @@ from pydantic import BaseModel, Field, field_validator
 
 from app.core.dependencies import exchange_rate_service_dependency
 from app.data.currencies import is_valid_currency
-from app.schema.exchange_rate_response import ExchangeRateResponse
+from app.schema.exchange_rate_response import (
+    ExchangeRateData,
+    HistoricalExchangeRateResponse,
+)
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 router = APIRouter()
@@ -39,7 +42,7 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
 async def historical_exchange_rates(
     query_params: Annotated[HistoricalExchangeRatesQueryParams, Query()],
     exchange_rate_service: ExchangeRateServiceInterface = exchange_rate_service_dependency,
-) -> list[ExchangeRateResponse]:
+) -> HistoricalExchangeRateResponse:
     start_date = query_params.start_date
     end_date = query_params.end_date
     base_currency_code = query_params.base_currency_code
@@ -72,12 +75,10 @@ async def historical_exchange_rates(
         sort_order="desc",
     )
 
-    return [
-        ExchangeRateResponse(
-            rate=exchange_rate.rate,
-            date=exchange_rate.as_of,
-            base_currency_code=exchange_rate.base_currency_code,
-            quote_currency_code=exchange_rate.quote_currency_code,
-        )
-        for exchange_rate in exchange_rates
-    ]
+    exchange_rate_data = [ExchangeRateData.from_model(exchange_rate) for exchange_rate in exchange_rates]
+
+    return HistoricalExchangeRateResponse(
+        base_currency_code=base_currency_code,
+        quote_currency_code=quote_currency_code,
+        data=exchange_rate_data,
+    )

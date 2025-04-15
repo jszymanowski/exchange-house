@@ -23,20 +23,20 @@ async def test_api_v1_historical_exchange_rates(
     )
     assert response.status_code == 200
 
-    data = response.json()
+    response_json = response.json()
+    assert response_json["base_currency_code"] == "USD"
+    assert response_json["quote_currency_code"] == "EUR"
+
+    data = response_json["data"]
     assert len(data) == 5
 
     assert data[0] == {
         "rate": "1.12",
         "date": "2024-04-02",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
         "date": "2024-01-01",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
 
 
@@ -60,20 +60,20 @@ async def test_api_v1_historical_exchange_rates_with_start_date(
     )
     assert response.status_code == 200
 
-    data = response.json()
+    response_json = response.json()
+    assert response_json["base_currency_code"] == "USD"
+    assert response_json["quote_currency_code"] == "EUR"
+
+    data = response_json["data"]
     assert len(data) == 3
 
     assert data[0] == {
         "rate": "1.05",
         "date": "2024-01-05",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1.02",
         "date": "2024-01-02",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
 
 
@@ -97,20 +97,20 @@ async def test_api_v1_historical_exchange_rates_with_end_date(
     )
     assert response.status_code == 200
 
-    data = response.json()
+    response_json = response.json()
+    assert response_json["base_currency_code"] == "USD"
+    assert response_json["quote_currency_code"] == "EUR"
+
+    data = response_json["data"]
     assert len(data) == 4
 
     assert data[0] == {
         "rate": "1.05",
         "date": "2024-01-05",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
         "date": "2024-01-01",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
 
 
@@ -130,20 +130,20 @@ async def test_api_v1_historical_exchange_rates_with_start_and_end_date(
     )
     assert response.status_code == 200
 
-    data = response.json()
+    response_json = response.json()
+    assert response_json["base_currency_code"] == "USD"
+    assert response_json["quote_currency_code"] == "EUR"
+
+    data = response_json["data"]
     assert len(data) == 6
 
     assert data[0] == {
         "rate": "0.98",
         "date": "2024-10-10",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
     assert data[-1] == {
         "rate": "1",
         "date": "2024-01-01",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
 
 
