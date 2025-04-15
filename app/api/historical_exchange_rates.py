@@ -24,6 +24,7 @@ def get_default_end_date() -> AvailableDate:
 
 
 MAX_RECORDS_PER_REQUEST = 10_000  # TODO: lower this with pagination
+DEFAULT_LIMIT = 1_000
 
 
 class HistoricalExchangeRatesQueryParams(BaseModel):
@@ -31,7 +32,7 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
     quote_currency_code: Currency
     start_date: AvailableDate = Field(default_factory=get_default_start_date)
     end_date: AvailableDate = Field(default_factory=get_default_end_date)
-    limit: int = Field(default=MAX_RECORDS_PER_REQUEST, ge=1, le=MAX_RECORDS_PER_REQUEST)
+    limit: int = Field(default=DEFAULT_LIMIT, ge=1, le=MAX_RECORDS_PER_REQUEST)
     order: Literal["asc", "desc"] = Field(default="desc")
 
 
