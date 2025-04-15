@@ -22,7 +22,7 @@ def build_exchange_rate(**kwargs: ExchangeRateParams | dict) -> ExchangeRate:
         "as_of": date.today(),
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
-        "rate": Decimal("0.85"),
+        "rate": Decimal("0.85000000"),
         "data_source": "test",
     }
     attributes = defaults | kwargs
@@ -35,14 +35,14 @@ def build_exchange_rate_pair(**kwargs: ExchangeRateParams | dict) -> tuple[Excha
         "as_of": date.today(),
         "base_currency_code": "USD",
         "quote_currency_code": "EUR",
-        "rate": Decimal("0.85"),
+        "rate": Decimal("0.85000000"),
         "data_source": "test",
     }
     attributes = defaults | kwargs
     inverse_attributes = attributes | {
         "base_currency_code": attributes["quote_currency_code"],
         "quote_currency_code": attributes["base_currency_code"],
-        "rate": Decimal("1") / attributes["rate"],
+        "rate": Decimal("1.00000000") / attributes["rate"],
     }
 
     return build_exchange_rate(**attributes), build_exchange_rate(**inverse_attributes)

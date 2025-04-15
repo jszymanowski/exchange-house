@@ -68,7 +68,7 @@ class ExchangeRateService(ExchangeRateServiceInterface):
 
         if base_currency_code == quote_currency_code:
             return ExchangeRate(
-                rate=Decimal(1),
+                rate=Decimal("1.00000000"),
                 as_of=as_of,
                 base_currency_code=base_currency_code,
                 quote_currency_code=quote_currency_code,
