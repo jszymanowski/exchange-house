@@ -15,12 +15,16 @@ services:
       - HEARTBEAT_CHECK_URL=${HEARTBEAT_CHECK_URL}
       - REFRESH_COMPLETED_URL=${REFRESH_COMPLETED_URL}
       - OPEN_EXCHANGE_RATES_APP_ID=${OPEN_EXCHANGE_RATES_APP_ID}
-      # TODO: move these to secrets
       - POSTGRES_HOST=postgres
       - POSTGRES_PORT=5432
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
       - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
     volumes:
       - ${LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house/logs}:/app/logs
     ports:
