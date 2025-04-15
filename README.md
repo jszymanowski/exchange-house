@@ -9,5 +9,4 @@
 - [ ] add transaction to creation
 - [ ] use consistent number of decimal places
 - [ ] set up email for refresh
-- [ ] add support for limit, sort_order in historical API
-- [ ] investigate whether `MAX_RECORDS_PER_REQUEST` is working (limit doesn't seem to be imposed client-side)
+- [ ] add support for sort_order in historical API

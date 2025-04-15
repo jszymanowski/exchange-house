@@ -1,5 +1,5 @@
 from datetime import date, timedelta
-from typing import Annotated
+from typing import Annotated, Literal
 
 from fastapi import APIRouter, HTTPException, Query, status
 from pydantic import BaseModel, Field, field_validator
@@ -32,6 +32,7 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
     start_date: date = Field(default_factory=get_default_start_date)
     end_date: date = Field(default_factory=get_default_end_date)
     limit: int = Field(default=MAX_RECORDS_PER_REQUEST)
+    order: Literal["asc", "desc"] = Field(default="desc")
 
     @field_validator("base_currency_code", "quote_currency_code")
     @classmethod
@@ -52,6 +53,8 @@ async def historical_exchange_rates(
     base_currency_code = query_params.base_currency_code
     quote_currency_code = query_params.quote_currency_code
     limit = query_params.limit
+    order = query_params.order
+
     today = date.today()
     validation_errors = []
 
@@ -76,7 +79,7 @@ async def historical_exchange_rates(
         start_date=start_date,
         end_date=end_date,
         limit=limit,
-        sort_order="desc",
+        sort_order=order,
     )
 
     exchange_rate_data = [ExchangeRateData.from_model(exchange_rate) for exchange_rate in exchange_rates]
