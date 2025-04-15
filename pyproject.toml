@@ -12,7 +12,7 @@ dependencies = [
   "pydantic-core>=2.33.1",
   "pydantic-extra-types>=2.10.3",
   "pydantic-settings==2.8.1",
-  "tortoise-orm[asyncpg]==0.24.2",
+  "tortoise-orm[asyncpg]==0.25.0",
 ]
 
 [tool.uv]
