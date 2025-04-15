@@ -1,32 +1,25 @@
 from datetime import date
-from typing import Annotated
+from typing import Annotated, cast
 
 from fastapi import APIRouter, HTTPException, Query, status
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, Field
 
 from app.core.dependencies import exchange_rate_service_dependency
-from app.data.currencies import is_valid_currency
+from app.models import AvailableDate, Currency
 from app.schema.exchange_rate_response import ExchangeRateResponse
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 router = APIRouter()
 
 
-def get_default_desired_date() -> date:
-    return date.today()
+def get_default_desired_date() -> AvailableDate:
+    return cast(AvailableDate, date.today())
 
 
 class LatestExchangeRateQueryParams(BaseModel):
-    base_currency_code: str
-    quote_currency_code: str
-    desired_date: date | None = Field(default_factory=get_default_desired_date)
-
-    @field_validator("base_currency_code", "quote_currency_code")
-    @classmethod
-    def validate_iso_code(cls, value: str) -> str:
-        if not is_valid_currency(value):
-            raise ValueError(f"Invalid currency code: {value}")
-        return value
+    base_currency_code: Currency
+    quote_currency_code: Currency
+    desired_date: AvailableDate | None = Field(default_factory=get_default_desired_date)
 
 
 @router.get("/latest_exchange_rate")

@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from app.core.logger import logger
 from app.integrations.open_exchange_rates import OpenExchangeRatesClient
+from app.models import Currency
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 
@@ -13,8 +14,8 @@ class ExchangeRateRefresh:
     the provided exchange rate service.
     """
 
-    SAMPLE_CURRENCY = "EUR"
-    BASE_CURRENCY = "USD"
+    SAMPLE_CURRENCY = Currency("EUR")
+    BASE_CURRENCY = Currency("USD")
     DATA_SOURCE = "openexchangerates.org"
 
     def __init__(
@@ -53,7 +54,7 @@ class ExchangeRateRefresh:
                     await self.exchange_rates_service.create_rate(
                         as_of=target_date,
                         base_currency_code=self.BASE_CURRENCY,
-                        quote_currency_code=to_currency,
+                        quote_currency_code=Currency(to_currency),
                         rate=Decimal(rate),
                         source=self.DATA_SOURCE,
                     )

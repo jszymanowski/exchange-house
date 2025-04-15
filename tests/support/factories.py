@@ -3,14 +3,14 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import TypedDict
 
-from app.models.exchange_rate import ExchangeRate
+from app.models import Currency, ExchangeRate
 
 
 class ExchangeRateParams(TypedDict, total=False):
     id: uuid.UUID
     as_of: date
-    base_currency_code: str
-    quote_currency_code: str
+    base_currency_code: Currency
+    quote_currency_code: Currency
     rate: Decimal
     data_source: str
     created_at: datetime | None

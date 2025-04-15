@@ -2,8 +2,7 @@ from datetime import date, timedelta
 from decimal import Decimal
 from typing import Literal
 
-from app.models.currency_pair import CurrencyPair
-from app.models.exchange_rate import ExchangeRate
+from app.models import Currency, CurrencyPair, ExchangeRate
 
 MAX_RECORDS_PER_REQUEST = 1000
 
@@ -19,14 +18,14 @@ class ExchangeRateServiceInterface:
         raise RuntimeError("Must be implemented")
 
     async def get_latest_rate(
-        self, base_currency_code: str, quote_currency_code: str, as_of: date | None = None
+        self, base_currency_code: Currency, quote_currency_code: Currency, as_of: date | None = None
     ) -> ExchangeRate | None:
         raise RuntimeError("Must be implemented")
 
     async def get_historical_rates(
         self,
-        base_currency_code: str,
-        quote_currency_code: str,
+        base_currency_code: Currency,
+        quote_currency_code: Currency,
         start_date: date | None = None,
         end_date: date | None = None,
         limit: int | None = None,
@@ -35,7 +34,7 @@ class ExchangeRateServiceInterface:
         raise RuntimeError("Must be implemented")
 
     async def create_rate(
-        self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal, source: str
+        self, as_of: date, base_currency_code: Currency, quote_currency_code: Currency, rate: Decimal, source: str
     ) -> list[ExchangeRate]:
         raise RuntimeError("Must be implemented")
 
@@ -55,7 +54,7 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         return [CurrencyPair(**pair) for pair in distinct_pairs]
 
     async def get_latest_rate(
-        self, base_currency_code: str, quote_currency_code: str, as_of: date | None = None
+        self, base_currency_code: Currency, quote_currency_code: Currency, as_of: date | None = None
     ) -> ExchangeRate | None:
         if as_of is None:
             as_of = date.today()
@@ -82,8 +81,8 @@ class ExchangeRateService(ExchangeRateServiceInterface):
 
     async def get_historical_rates(
         self,
-        base_currency_code: str,
-        quote_currency_code: str,
+        base_currency_code: Currency,
+        quote_currency_code: Currency,
         start_date: date | None = None,
         end_date: date | None = None,
         limit: int | None = None,
@@ -116,7 +115,7 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         return await query.all()
 
     async def create_rate(
-        self, as_of: date, base_currency_code: str, quote_currency_code: str, rate: Decimal, source: str
+        self, as_of: date, base_currency_code: Currency, quote_currency_code: Currency, rate: Decimal, source: str
     ) -> list[ExchangeRate]:
         if base_currency_code == quote_currency_code:
             return []

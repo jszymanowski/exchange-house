@@ -9,4 +9,4 @@
 - [ ] add transaction to creation
 - [ ] use consistent number of decimal places
 - [ ] set up email for refresh
-- [ ] add support for sort_order in historical API
+- [ ] check for and remove any unsupported currencies (e.g., BTC)

@@ -13,12 +13,8 @@ async def test_api_v1_currency_pairs(
     response_data = response.json()
 
     assert response.status_code == 200
-    assert len(response_data) == 12
+    assert len(response_data) == 8
     assert response_data == [
-        {
-            "base_currency_code": "BTC",
-            "quote_currency_code": "USD",
-        },
         {
             "base_currency_code": "EUR",
             "quote_currency_code": "USD",
@@ -37,10 +33,6 @@ async def test_api_v1_currency_pairs(
         },
         {
             "base_currency_code": "USD",
-            "quote_currency_code": "BTC",
-        },
-        {
-            "base_currency_code": "USD",
             "quote_currency_code": "EUR",
         },
         {
@@ -54,13 +46,5 @@ async def test_api_v1_currency_pairs(
         {
             "base_currency_code": "USD",
             "quote_currency_code": "SGD",
-        },
-        {
-            "base_currency_code": "USD",
-            "quote_currency_code": "XYZ",
-        },
-        {
-            "base_currency_code": "XYZ",
-            "quote_currency_code": "USD",
         },
     ]

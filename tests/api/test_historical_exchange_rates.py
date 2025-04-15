@@ -354,10 +354,10 @@ async def test_api_v1_historical_exchange_rates_with_end_date_after_today(
             "end_date": "2030-04-01",
         },
     )
-    assert response.status_code == 400
-    assert response.json() == {
-        "detail": "end_date must be before or equal to today",
-    }
+    assert response.status_code == 422
+    response_detail = response.json()["detail"]
+    assert len(response_detail) == 1
+    assert response_detail[0]["msg"] == "Date must be in the past or today"
 
 
 @pytest.mark.asyncio
@@ -373,7 +373,10 @@ async def test_api_v1_historical_exchange_rates_invalid_base_currency(
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
-    assert response_detail[0]["msg"] == "Value error, Invalid currency code: XYZ"
+    assert (
+        response_detail[0]["msg"]
+        == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, testing and precious metals codes are not allowed."
+    )
 
 
 @pytest.mark.asyncio
@@ -389,7 +392,10 @@ async def test_api_v1_historical_exchange_rates_invalid_quote_currency(
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
-    assert response_detail[0]["msg"] == "Value error, Invalid currency code: XYZ"
+    assert (
+        response_detail[0]["msg"]
+        == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, testing and precious metals codes are not allowed."
+    )
 
 
 @pytest.mark.asyncio
@@ -426,6 +432,16 @@ async def test_api_v1_historical_exchange_rates_with_invalid_limit(
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
     assert response_detail[0]["msg"] == "Input should be less than or equal to 1000"
+
+    response = await async_client.get(
+        "/api/v1/historical_exchange_rates",
+        params={"base_currency_code": "USD", "quote_currency_code": "EUR", "limit": "3.14159"},
+    )
+    assert response.status_code == 422
+
+    response_detail = response.json()["detail"]
+    assert len(response_detail) == 1
+    assert response_detail[0]["msg"] == "Input should be a valid integer, unable to parse string as an integer"
 
     response = await async_client.get(
         "/api/v1/historical_exchange_rates",
