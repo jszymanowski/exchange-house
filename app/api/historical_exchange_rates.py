@@ -23,7 +23,7 @@ def get_default_end_date() -> AvailableDate:
     return cast(AvailableDate, date.today())
 
 
-MAX_RECORDS_PER_REQUEST = 1_000
+MAX_RECORDS_PER_REQUEST = 10_000  # TODO: lower this with pagination
 
 
 class HistoricalExchangeRatesQueryParams(BaseModel):
