@@ -10,7 +10,7 @@ if __name__ == "__main__":
     default_workers = 4 if is_production else 1
 
     port = int(os.getenv("PORT", 8080))
-    workers = int(os.getenv("WORKERS", default_workers))
+    workers = int(os.getenv("API_WORKERS", default_workers))
 
     if port <= 0 or port > 65535:
         raise ValueError(f"Invalid port number: {port}")
