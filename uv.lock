@@ -329,12 +329,12 @@ dev = [
 requires-dist = [
     { name = "aerich", specifier = "==0.8.2" },
     { name = "apscheduler", specifier = ">=3.11.0" },
-    { name = "celery", extras = ["redis"], specifier = ">=5.5.1" },
+    { name = "celery", extras = ["redis"], specifier = "==5.5.1" },
     { name = "fastapi", extras = ["standard"], specifier = "==0.115.12" },
-    { name = "flower", specifier = ">=2.0.1" },
-    { name = "pycountry", specifier = ">=24.6.1" },
-    { name = "pydantic-core", specifier = ">=2.33.1" },
-    { name = "pydantic-extra-types", specifier = ">=2.10.3" },
+    { name = "flower", specifier = "==2.0.1" },
+    { name = "pycountry", specifier = "==24.6.1" },
+    { name = "pydantic-core", specifier = "==2.33.1" },
+    { name = "pydantic-extra-types", specifier = "==2.10.3" },
     { name = "pydantic-settings", specifier = "==2.8.1" },
     { name = "tortoise-orm", extras = ["asyncpg"], specifier = "==0.25.0" },
 ]
