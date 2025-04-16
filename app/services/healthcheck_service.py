@@ -4,12 +4,13 @@ from app.core.config import healthcheck_settings
 
 
 class HealthcheckService:
-    async def ping_heartbeat(self) -> None:
-        await self._ping(healthcheck_settings.heartbeat_check_url)
+    def ping_heartbeat(self) -> None:
+        self._ping(healthcheck_settings.heartbeat_check_url)
 
-    async def _ping(self, url: str) -> None:
-        async with httpx.AsyncClient() as client:
-            await client.get(url)
+    def _ping(self, url: str) -> None:
+        with httpx.Client() as client:
+            response = client.get(url)
+            response.raise_for_status()
 
 
 healthcheck_service = HealthcheckService()

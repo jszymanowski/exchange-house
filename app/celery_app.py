@@ -1,6 +1,8 @@
 from celery import Celery
+from celery.schedules import crontab
 
 from app.core.config import celery_settings
+from app.core.logger import logger
 
 celery_app = Celery(
     "worker",
@@ -25,12 +27,12 @@ class BaseTask(celery_app.Task):
 
     def on_success(self, retval, task_id, args, kwargs):
         """Log success."""
-        print(f"Task {task_id} completed successfully with result: {retval}")
+        logger.info(f"Task {task_id} completed successfully with result: {retval}")
         return super().on_success(retval, task_id, args, kwargs)
 
     def on_failure(self, exc, task_id, args, kwargs, einfo):
         """Log failure."""
-        print(f"Task {task_id} failed: {exc}")
+        logger.error(f"Task {task_id} failed: {exc}")
         return super().on_failure(exc, task_id, args, kwargs, einfo)
 
 
@@ -40,8 +42,8 @@ celery_app.Task = BaseTask
 
 celery_app.conf.beat_schedule = {
     "heartbeat": {
-        "task": "app.tasks.heartbeat_task",
-        "schedule": 60.0,  # 1 minute
+        "task": "heartbeat_task",
+        "schedule": crontab(minute="*/5"),
         "args": ("Heartbeat",),
     },
 }

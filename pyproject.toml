@@ -9,6 +9,7 @@ dependencies = [
   "apscheduler>=3.11.0",
   "celery[redis]>=5.5.1",
   "fastapi[standard]==0.115.12",
+  "flower>=2.0.1",
   "pycountry>=24.6.1",
   "pydantic-core>=2.33.1",
   "pydantic-extra-types>=2.10.3",
