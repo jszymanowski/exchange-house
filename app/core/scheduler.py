@@ -38,6 +38,11 @@ class JobMetrics:
             else:
                 stats["failures"] = stats.get("failures", 0)
 
+    def record_job_failure(self, job_id: str) -> None:
+        if job_id in self.job_stats:
+            stats = self.job_stats[job_id]
+            stats["failures"] = stats.get("failures", 0) + 1
+
 
 scheduler = AsyncIOScheduler(timezone=settings.timezone, job_defaults={"coalesce": True, "max_instances": 1})
 metrics = JobMetrics()

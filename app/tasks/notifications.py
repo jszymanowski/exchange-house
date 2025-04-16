@@ -10,7 +10,7 @@ DEFAULT_QUOTE_CURRENCY = Currency("USD")
 
 
 async def send_exchange_rate_refresh_email(
-    exchange_rates_service: ExchangeRateServiceInterface = exchange_rate_service_dependency,
+    exchange_rate_service: ExchangeRateServiceInterface = exchange_rate_service_dependency,
     base_currency: Currency = DEFAULT_BASE_CURRENCY,
     quote_currency: Currency = DEFAULT_QUOTE_CURRENCY,
 ) -> None:
@@ -18,7 +18,7 @@ async def send_exchange_rate_refresh_email(
         logger.warning("No admin email found")
         return
 
-    exchange_rates = await exchange_rates_service.get_historical_rates(
+    exchange_rates = await exchange_rate_service.get_historical_rates(
         base_currency_code=base_currency,
         quote_currency_code=quote_currency,
         limit=2,
@@ -41,7 +41,7 @@ async def send_exchange_rate_refresh_email(
 
     email_service = EmailService(recipient=email_settings.admin_email, subject=subject, body=body)
     try:
-        await email_service.send_async()
+        email_service.send_async()
     except Exception as e:
         logger.error(f"Failed to send email: {str(e)}")
         return

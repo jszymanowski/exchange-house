@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+uv run python -m asyncio
+
+
+# Example of running a task with dependencies
+# from app.core.jobs import create_task_with_dependencies
+# from app.tasks.jobs import latest_exchange_rates_task
+
+# task = create_task_with_dependencies(latest_exchange_rates_task)
+# await task()

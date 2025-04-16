@@ -5,4 +5,5 @@
 #### TODO
 
 - [ ] use pydantic for API param validations
-- [ ] set up email for refresh
+- [ ] review file structure
+  - jobs is weird
