@@ -41,7 +41,7 @@ async def send_exchange_rate_refresh_email(
 
     email_service = EmailService(recipient=email_settings.admin_email, subject=subject, body=body)
     try:
-        await email_service.send_async()
+        email_service.send_async()
     except Exception as e:
         logger.error(f"Failed to send email: {str(e)}")
         return
