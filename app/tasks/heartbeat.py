@@ -14,7 +14,6 @@ def heartbeat_task(self: Task, task_name: str = "Heartbeat") -> None:  # type: i
 
     try:
         healthcheck_service.ping_heartbeat()
+        logger.info("Heartbeat completed: check-in complete")
     except Exception as e:
         logger.error(f"Heartbeat completed, but check-in failed: {str(e)}")
-
-    logger.info("Heartbeat completed: check-in complete")

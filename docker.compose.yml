@@ -99,8 +99,8 @@ services:
 
   redis:
     container_name: exchange-house-redis
-    image: redis:alpine
-    command: redis-server --appendonly yes
+    image: redis:7.2-alpine
+    command: redis-server --appendonly yes #  Enable the Append Only File (AOF) persistence mode, which is generally more durable than the default RDB snapshots.
     expose:
       - "6379"
     volumes:
