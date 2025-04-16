@@ -41,4 +41,5 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 RUN chmod +x ./entrypoint.sh
 
+# By default, run the API server
 CMD ["./entrypoint.sh"]

@@ -22,20 +22,6 @@ async def database_connection() -> AsyncGenerator[None]:
         await Tortoise.close_connections()
 
 
-async def heartbeat_task() -> None:
-    job_id = "heartbeat"
-    metrics.record_job_start(job_id)
-
-    if not settings.heartbeat_check_url:
-        logger.warning("Heartbeat completed, but check-in failed: URL is not set")
-        return
-
-    healthchecks_client = get_healthchecks_client()
-    await healthchecks_client.ping(settings.heartbeat_check_url)
-
-    logger.info("Heartbeat completed: check-in complete")
-
-
 async def latest_exchange_rates_task(exchange_rate_service: ExchangeRateServiceInterface) -> None:
     job_id = "exchange_rate_notification"
     metrics.record_job_start(job_id)

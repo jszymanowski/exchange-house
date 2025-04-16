@@ -9,7 +9,7 @@ from app.core.config import settings
 from app.core.dependencies import get_exchange_rate_service
 from app.core.logger import logger
 from app.core.scheduler import job_listener
-from app.tasks.jobs import heartbeat_task, latest_exchange_rates_task
+from app.tasks.jobs import latest_exchange_rates_task
 
 R = TypeVar("R")
 
@@ -34,10 +34,6 @@ class SchedulerManager:
 
     def configure_jobs(self) -> None:
         self.scheduler.add_listener(job_listener, EVENT_JOB_EXECUTED | EVENT_JOB_ERROR)
-
-        self.scheduler.add_job(
-            heartbeat_task, "cron", minute=settings.heartbeat_interval, id="heartbeat", name="Heartbeat check"
-        )
         self.scheduler.add_job(
             create_task_with_dependencies(latest_exchange_rates_task),
             "cron",

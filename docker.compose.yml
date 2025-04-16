@@ -5,37 +5,72 @@ networks:
     external: true
     name: proxy_net
 
+x-common-env-file: &common-env-file
+  env_file:
+    - .env # see .env.sample for reference
+
+# Common service template
+x-service-common: &service-common
+  <<: *common-env-file
+  image: ghcr.io/jszymanowski/exchange-house:latest
+  networks:
+    - exchange-house-network
+    - external_proxy_net
+  depends_on:
+    postgres:
+      condition: service_healthy
+    redis:
+      condition: service_started
+
 services:
-  exchange-house:
+  api:
+    <<: *service-common
     container_name: exchange-house
-    image: ghcr.io/jszymanowski/exchange-house:latest
-    environment:
-      - ENV=production
-      - WORKERS=4
-      - HEARTBEAT_CHECK_URL=${HEARTBEAT_CHECK_URL}
-      - REFRESH_COMPLETED_URL=${REFRESH_COMPLETED_URL}
-      - OPEN_EXCHANGE_RATES_APP_ID=${OPEN_EXCHANGE_RATES_APP_ID}
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
-      - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
-      - ADMIN_EMAIL=${ADMIN_EMAIL}
-      - SMTP_SERVER=${SMTP_SERVER}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_USERNAME=${SMTP_USERNAME}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
+    command: uv run -m app.pre_start && uv run -m app.start
     volumes:
       - ${LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house/logs}:/app/logs
     ports:
       - "3177:8080"
-    networks:
-      - exchange-house-network
-      - external_proxy_net
-    depends_on:
-      postgres:
-        condition: service_healthy
     restart: on-failure
+
+  worker:
+    <<: *service-common
+    container_name: exchange-house-worker
+    command: celery -A app.celery_app worker --loglevel=info
+    volumes:
+      - ${WORKER_LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house-worker/logs}:/app/logs
+    expose:
+      - "8080"
+    depends_on:
+      api:
+        condition: service_started
+    restart: always
+
+  beat:
+    <<: *service-common
+    container_name: exchange-house-celery-beat
+    command: celery -A app.celery_app beat --loglevel=info
+    volumes:
+      - ${BEAT_LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house-celery-beat/logs}:/app/logs
+    expose:
+      - "8080"
+    depends_on:
+      worker:
+        condition: service_started
+    restart: always
+
+  flower:
+    <<: *service-common
+    container_name: exchange-house-celery-flower
+    command: celery -A app.celery_app flower --port=5555 --loglevel=info
+    volumes:
+      - ${FLOWER_LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house-celery-flower/logs}:/app/logs
+    ports:
+      - "3180:5555"
+    depends_on:
+      worker:
+        condition: service_started
+    restart: always
 
   postgres:
     container_name: exchange-house-postgres
@@ -61,3 +96,20 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  redis:
+    container_name: exchange-house-redis
+    image: redis:7.2-alpine
+    command: redis-server --appendonly yes #  Enable the Append Only File (AOF) persistence mode, which is generally more durable than the default RDB snapshots.
+    expose:
+      - "6379"
+    volumes:
+      - ${REDIS_DATA_PATH:-/mnt/cache/appdata/exchange-house-redis}:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: always
+    networks:
+      - exchange-house-network
