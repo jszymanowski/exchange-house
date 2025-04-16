@@ -47,7 +47,7 @@ async def latest_exchange_rates_task(exchange_rate_service: ExchangeRateServiceI
             await send_exchange_rate_refresh_email(exchange_rate_service=exchange_rate_service)
         except Exception as e:
             logger.error(f"Exchange rate refresh failed: {str(e)}")
-            # TODO: Consider adding metrics.record_job_failure(job_id) if available
+            metrics.record_job_failure(job_id)
             return
 
     if not settings.refresh_completed_url:

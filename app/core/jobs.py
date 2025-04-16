@@ -18,10 +18,8 @@ def create_task_with_dependencies(func: Callable[..., Coroutine[Any, Any, R]]) -
     """Creates a wrapper around a task function that injects required dependencies."""
 
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
-        # Manually create dependencies
         exchange_rate_service = await get_exchange_rate_service()
 
-        # Call the original function with the dependencies
         return await func(*args, exchange_rate_service=exchange_rate_service, **kwargs)
 
     return wrapper
