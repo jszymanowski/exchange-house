@@ -7,7 +7,9 @@ from celery.schedules import crontab
 from app.core.config import celery_settings
 from app.core.logger import logger
 
-# Monkey patch Task class to avoid type errors, as recommended in celery-type docs: https://pypi.org/project/celery-types/
+# Monkey patch Task class to reduce (but not eliminate) type errors, as recommended in celery-type docs: https://pypi.org/project/celery-types/
+# Related issues: https://github.com/python/mypy/issues/18900, https://github.com/sbdchd/celery-types/pull/178
+# A fix may have been made, but has not yet been released (0.23.0 as of this writing).
 Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls)  # type: ignore[attr-defined]
 
 
@@ -19,6 +21,7 @@ celery_app = Celery(
 )
 
 celery_app.conf.update(
+    task_cls="BaseTask",
     task_track_started=True,  # Task will report 'started' state when started
     task_time_limit=10 * 60,  # 10 minutes time limit
     task_soft_time_limit=5 * 60,  # 5 minutes soft time limit
@@ -42,10 +45,6 @@ class BaseTask(Task):  # type: ignore[type-arg]
         """Log failure."""
         logger.error(f"Task {task_id} failed: {exc}")
         return super().on_failure(exc, task_id, args, kwargs, einfo)
-
-
-# Use the custom task class for all tasks by default
-celery_app.conf.task_cls = "BaseTask"
 
 
 celery_app.conf.beat_schedule = {
