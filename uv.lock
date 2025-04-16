@@ -341,16 +341,16 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "celery-types", specifier = ">=0.23.0" },
+    { name = "celery-types", specifier = "==0.23.0" },
     { name = "coverage", specifier = "==7.8.0" },
     { name = "mypy", specifier = "==1.15.0" },
     { name = "pre-commit", specifier = "==4.2.0" },
     { name = "pytest", specifier = "==8.3.5" },
     { name = "pytest-asyncio", specifier = "==0.26.0" },
-    { name = "pytest-env", specifier = ">=1.1.5" },
-    { name = "pytest-httpx", specifier = ">=0.35.0" },
+    { name = "pytest-env", specifier = "==1.1.5" },
+    { name = "pytest-httpx", specifier = "==0.35.0" },
     { name = "ruff", specifier = "==0.11.5" },
-    { name = "tomlkit", specifier = ">=0.13.2" },
+    { name = "tomlkit", specifier = "==0.13.2" },
 ]
 
 [[package]]
