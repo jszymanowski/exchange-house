@@ -37,10 +37,6 @@ class Settings(BaseSettings):
         return os.getenv("HEARTBEAT_CHECK_URL")
 
     @property
-    def heartbeat_interval(self) -> str:
-        return os.getenv("HEARTBEAT_INTERVAL", "*/5")
-
-    @property
     def refresh_completed_url(self) -> str | None:
         return os.getenv("REFRESH_COMPLETED_URL")
 
@@ -125,6 +121,10 @@ class CelerySettings(BaseSettings):
     @property
     def flower_port(self) -> int:
         return int(os.getenv("FLOWER_PORT", "5555"))
+
+    @property
+    def heartbeat_interval(self) -> str:
+        return os.getenv("HEARTBEAT_INTERVAL", "*/5")
 
 
 celery_settings = CelerySettings()

@@ -43,7 +43,7 @@ celery_app.Task = BaseTask
 celery_app.conf.beat_schedule = {
     "heartbeat": {
         "task": "heartbeat_task",
-        "schedule": crontab(minute="*/5"),
+        "schedule": crontab(minute=celery_settings.heartbeat_interval),
         "args": ("Heartbeat",),
     },
 }
