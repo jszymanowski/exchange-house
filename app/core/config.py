@@ -103,3 +103,37 @@ class EmailSettings(BaseSettings):
 
 
 email_settings = EmailSettings()
+
+
+class CelerySettings(BaseSettings):
+    @property
+    def redis_host(self) -> str:
+        return os.getenv("REDIS_HOST", "localhost")
+
+    @property
+    def redis_port(self) -> str:
+        return os.getenv("REDIS_PORT", "6379")
+
+    @property
+    def celery_broker_url(self) -> str:
+        return f"redis://{self.redis_host}:{self.redis_port}/0"
+
+    @property
+    def celery_backend_url(self) -> str:
+        return self.celery_broker_url
+
+    @property
+    def flower_port(self) -> int:
+        return int(os.getenv("FLOWER_PORT", "5555"))
+
+
+celery_settings = CelerySettings()
+
+
+class HealthcheckSettings(BaseSettings):
+    @property
+    def heartbeat_check_url(self) -> str | None:
+        return os.getenv("HEARTBEAT_CHECK_URL")
+
+
+healthcheck_settings = HealthcheckSettings()

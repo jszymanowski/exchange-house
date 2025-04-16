@@ -27,13 +27,13 @@ async def heartbeat_task() -> None:
     metrics.record_job_start(job_id)
 
     if not settings.heartbeat_check_url:
-        logger.warning("Heartbeat completed, but check-in failed: URL is not set")
+        logger.warning("Heartbeat (legacy) completed, but check-in failed: URL is not set")
         return
 
     healthchecks_client = get_healthchecks_client()
     await healthchecks_client.ping(settings.heartbeat_check_url)
 
-    logger.info("Heartbeat completed: check-in complete")
+    logger.info("Heartbeat (legacy) completed: check-in complete")
 
 
 async def latest_exchange_rates_task(exchange_rate_service: ExchangeRateServiceInterface) -> None:
