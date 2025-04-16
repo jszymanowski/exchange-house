@@ -34,7 +34,7 @@ class ExchangeRateRefresh:
         self.start_date = start_date or (datetime.now().date() - timedelta(days=8))
         self.end_date = end_date or (datetime.now().date() - timedelta(days=1))
         self.api_client = OpenExchangeRatesClient()
-        self.exchange_rates_service = exchange_rate_service
+        self.exchange_rate_service = exchange_rate_service
 
     async def save(self) -> None:
         """Fetch and save exchange rates for all required dates.
@@ -66,7 +66,7 @@ class ExchangeRateRefresh:
             )
             for to_currency, rate in data.rates.items()
         ]
-        await self.exchange_rates_service.bulk_create_rates(params)
+        await self.exchange_rate_service.bulk_create_rates(params)
 
     async def _get_all_dates(self) -> list[date]:
         """Get a list of dates that need exchange rates to be fetched.
@@ -80,7 +80,7 @@ class ExchangeRateRefresh:
         frequency_dates = [
             self.start_date + timedelta(days=x) for x in range((self.end_date - self.start_date).days + 1)
         ]
-        existing_dates = await self.exchange_rates_service.get_available_dates()
+        existing_dates = await self.exchange_rate_service.get_available_dates()
         # start_date and end_date are already included in frequency_dates
         all_dates = set(frequency_dates)
         return sorted(all_dates - set(existing_dates))

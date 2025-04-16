@@ -1,5 +1,5 @@
-from collections.abc import Callable
-from typing import Any
+from collections.abc import Callable, Coroutine
+from typing import Any, TypeVar
 
 from apscheduler.events import EVENT_JOB_ERROR, EVENT_JOB_EXECUTED
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -11,16 +11,18 @@ from app.core.logger import logger
 from app.core.scheduler import job_listener
 from app.tasks.jobs import heartbeat_task, latest_exchange_rates_task
 
+R = TypeVar("R")
 
-def create_task_with_dependencies(func: Callable) -> Callable:
+
+def create_task_with_dependencies(func: Callable[..., Coroutine[Any, Any, R]]) -> Callable[..., Coroutine[Any, Any, R]]:
     """Creates a wrapper around a task function that injects required dependencies."""
 
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         # Manually create dependencies
-        exchange_rates_service = await get_exchange_rate_service()
+        exchange_rate_service = await get_exchange_rate_service()
 
         # Call the original function with the dependencies
-        return await func(*args, exchange_rates_service=exchange_rates_service, **kwargs)
+        return await func(*args, exchange_rate_service=exchange_rate_service, **kwargs)
 
     return wrapper
 
