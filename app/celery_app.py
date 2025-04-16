@@ -1,8 +1,15 @@
+from typing import Any
+
 from celery import Celery
+from celery.app.task import Task
 from celery.schedules import crontab
 
 from app.core.config import celery_settings
 from app.core.logger import logger
+
+# Monkey patch Task class to avoid type errors, as recommended in celery-type docs: https://pypi.org/project/celery-types/
+Task.__class_getitem__ = classmethod(lambda cls, *args, **kwargs: cls)  # type: ignore[attr-defined]
+
 
 celery_app = Celery(
     "worker",
@@ -21,23 +28,24 @@ celery_app.conf.update(
 )
 
 
-# Add custom task base to all tasks
-class BaseTask(celery_app.Task):
+class BaseTask(Task):  # type: ignore[type-arg]
     """Base task class with error handling and logging."""
 
-    def on_success(self, retval, task_id, args, kwargs):
+    def on_success(self, retval: Any, task_id: str, args: tuple[Any, ...], kwargs: dict[str, Any]) -> None:
         """Log success."""
         logger.info(f"Task {task_id} completed successfully with result: {retval}")
         return super().on_success(retval, task_id, args, kwargs)
 
-    def on_failure(self, exc, task_id, args, kwargs, einfo):
+    def on_failure(
+        self, exc: Exception, task_id: str, args: tuple[Any, ...], kwargs: dict[str, Any], einfo: Any
+    ) -> None:
         """Log failure."""
         logger.error(f"Task {task_id} failed: {exc}")
         return super().on_failure(exc, task_id, args, kwargs, einfo)
 
 
 # Use the custom task class for all tasks by default
-celery_app.Task = BaseTask
+celery_app.conf.task_cls = "BaseTask"
 
 
 celery_app.conf.beat_schedule = {

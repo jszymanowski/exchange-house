@@ -28,16 +28,15 @@ dev-dependencies = [
   "tomlkit>=0.13.2",
   "pytest-env>=1.1.5",
   "pytest-httpx>=0.35.0",
+  "celery-types>=0.23.0",
 ]
 
 [tool.mypy]
 strict = true
 exclude = [".venv", "alembic"]
+ignore_missing_imports = true
 python_version = "3.13"
 
-[[tool.mypy.overrides]]
-module = ["aerich", "apscheduler.events", "apscheduler.schedulers.asyncio"]
-ignore_missing_imports = true
 
 [tool.ruff]
 line-length = 120

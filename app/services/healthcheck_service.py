@@ -7,7 +7,10 @@ class HealthcheckService:
     def ping_heartbeat(self) -> None:
         self._ping(healthcheck_settings.heartbeat_check_url)
 
-    def _ping(self, url: str) -> None:
+    def _ping(self, url: str | None = None) -> None:
+        if url is None:
+            return
+
         with httpx.Client() as client:
             response = client.get(url)
             response.raise_for_status()
