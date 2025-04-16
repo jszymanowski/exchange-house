@@ -6,7 +6,7 @@ networks:
     name: proxy_net
 
 services:
-  exchange-house:
+  api:
     container_name: exchange-house
     image: ghcr.io/jszymanowski/exchange-house:latest
     environment:
@@ -25,6 +25,8 @@ services:
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USERNAME=${SMTP_USERNAME}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     volumes:
       - ${LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house/logs}:/app/logs
     ports:
@@ -35,7 +37,122 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      redis:
+        condition: service_started
     restart: on-failure
+
+  worker:
+    container_name: exchange-house-worker
+    image: ghcr.io/jszymanowski/exchange-house-worker:latest
+    environment:
+      - ENV=production
+      - WORKERS=4
+      - HEARTBEAT_CHECK_URL=${HEARTBEAT_CHECK_URL}
+      - REFRESH_COMPLETED_URL=${REFRESH_COMPLETED_URL}
+      - OPEN_EXCHANGE_RATES_APP_ID=${OPEN_EXCHANGE_RATES_APP_ID}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    volumes:
+      - ${LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house-worker/logs}:/app/logs
+    ports:
+      - "3178:8080"
+    networks:
+      - exchange-house-network
+      - external_proxy_net
+    depends_on:
+      api:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: always
+
+  scheduler:
+    container_name: exchange-house-scheduler
+    image: ghcr.io/jszymanowski/exchange-house-scheduler:latest
+    environment:
+      - ENV=production
+      - WORKERS=4
+      - HEARTBEAT_CHECK_URL=${HEARTBEAT_CHECK_URL}
+      - REFRESH_COMPLETED_URL=${REFRESH_COMPLETED_URL}
+      - OPEN_EXCHANGE_RATES_APP_ID=${OPEN_EXCHANGE_RATES_APP_ID}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    volumes:
+      - ${LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house-scheduler/logs}:/app/logs
+    ports:
+      - "3179:8080"
+    networks:
+      - exchange-house-network
+      - external_proxy_net
+    depends_on:
+      api:
+        condition: service_started
+      worker:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: always
+
+  flower:
+    container_name: exchange-house-flower
+    image: ghcr.io/jszymanowski/exchange-house-flower:latest
+    environment:
+      - ENV=production
+      - WORKERS=4
+      - HEARTBEAT_CHECK_URL=${HEARTBEAT_CHECK_URL}
+      - REFRESH_COMPLETED_URL=${REFRESH_COMPLETED_URL}
+      - OPEN_EXCHANGE_RATES_APP_ID=${OPEN_EXCHANGE_RATES_APP_ID}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-exchange_house_production}
+      - ADMIN_EMAIL=${ADMIN_EMAIL}
+      - SMTP_SERVER=${SMTP_SERVER}
+      - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USERNAME=${SMTP_USERNAME}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    volumes:
+      - ${LOG_FILE_PATH:-/mnt/cache/appdata/exchange-house-flower/logs}:/app/logs
+    ports:
+      - "3180:8080"
+    networks:
+      - exchange-house-network
+      - external_proxy_net
+    depends_on:
+      worker:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    restart: always
 
   postgres:
     container_name: exchange-house-postgres
@@ -61,3 +178,16 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 30s
+      retries: 50
+    restart: always
+    networks:
+      - exchange-house-network

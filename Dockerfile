@@ -41,4 +41,20 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 RUN chmod +x ./entrypoint.sh
 
-CMD ["./entrypoint.sh"]
+# FastAPI application service
+FROM base AS api
+EXPOSE 8000
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Celery worker service
+FROM base AS worker
+CMD ["celery", "-A", "app.celery_app", "worker", "--loglevel=info"]
+
+# Celery beat service (scheduler)
+FROM base AS beat
+CMD ["celery", "-A", "app.celery_app", "beat", "--loglevel=info"]
+
+# Flower monitoring service
+FROM base AS flower
+EXPOSE 5555
+CMD ["celery", "-A", "app.celery_app", "flower", "--port=5555", "--loglevel=info"]
