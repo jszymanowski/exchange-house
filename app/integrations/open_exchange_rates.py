@@ -19,6 +19,10 @@ class RequestError(OpenExchangeRatesError):
     pass
 
 
+class RequestLimitError(OpenExchangeRatesError):
+    pass
+
+
 class NotFoundError(OpenExchangeRatesError):
     pass
 
@@ -71,14 +75,17 @@ class OpenExchangeRatesClient:
             params = {"app_id": self.api_key}
             response = await client.get(request_url, headers=self.headers, params=params)
 
-            if response.status_code == 403:
-                error_data = response.json()
-                raise AuthenticationError(error_data["description"])
-            elif response.status_code == 400:
+            if response.status_code == 400:
                 error_data = response.json()
                 raise RequestError(f"{error_data['message']}: {error_data['description']}")
+            elif response.status_code in (401, 403):
+                error_data = response.json()
+                raise AuthenticationError(error_data["description"])
             elif response.status_code in (404, 405):
                 raise NotFoundError(f"/api/{path} not found: {response.text}")
+            elif response.status_code == 429:
+                error_data = response.json()
+                raise RequestLimitError(error_data["description"])
 
             response.raise_for_status()
             return cast(dict[str, Any], response.json())
