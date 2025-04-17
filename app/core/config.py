@@ -32,14 +32,6 @@ class Settings(BaseSettings):
     def logging_level(self) -> str:
         return os.getenv("LOGGING_LEVEL", "INFO").upper()
 
-    @property
-    def heartbeat_check_url(self) -> str | None:
-        return os.getenv("HEARTBEAT_CHECK_URL")
-
-    @property
-    def refresh_completed_url(self) -> str | None:
-        return os.getenv("REFRESH_COMPLETED_URL")
-
     @cached_property
     def open_exchange_rates_app_id(self) -> str | None:
         if self.is_test:
@@ -134,6 +126,10 @@ class HealthcheckSettings(BaseSettings):
     @property
     def heartbeat_check_url(self) -> str | None:
         return os.getenv("HEARTBEAT_CHECK_URL")
+
+    @property
+    def refresh_completed_url(self) -> str | None:
+        return os.getenv("REFRESH_COMPLETED_URL")
 
 
 healthcheck_settings = HealthcheckSettings()

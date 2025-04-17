@@ -3,13 +3,12 @@ import asyncio
 from tortoise import Tortoise
 
 from app.celery_app import celery_app
-from app.core.config import settings
 from app.core.database import TORTOISE_ORM
 from app.core.dependencies import get_exchange_rate_service
 from app.core.logger import logger
-from app.integrations.healthchecks import get_healthchecks_client
-from app.services.exchange_rate_refresh import ExchangeRateRefresh
+from app.services.exchange_rate_refresh import build_exchange_rate_refresh
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
+from app.services.healthcheck_service import NoURLSetError, healthcheck_service
 from app.tasks.notifications import send_exchange_rate_refresh_email
 from app.tasks.task_result import TaskResult, failure_result, success_result, warning_result
 
@@ -28,7 +27,7 @@ class CheckInException(Exception):
 
 async def _exchange_rate_refresh() -> TaskResult:
     async def _update_exchange_rates(exchange_rate_service: ExchangeRateServiceInterface) -> None:
-        exchange_rate_refresh = ExchangeRateRefresh(exchange_rate_service=exchange_rate_service)
+        exchange_rate_refresh = build_exchange_rate_refresh(exchange_rate_service=exchange_rate_service)
         try:
             await exchange_rate_refresh.save()
         except Exception as e:
@@ -41,12 +40,10 @@ async def _exchange_rate_refresh() -> TaskResult:
             raise SendEmailException(e) from e
 
     async def _check_in() -> None:
-        if settings.refresh_completed_url is None:
-            raise CheckInException("No check-in URL set")
-
         try:
-            healthchecks_client = get_healthchecks_client()
-            await healthchecks_client.ping(settings.refresh_completed_url)
+            healthcheck_service.ping_refresh_completed()  # TODO: make this async
+        except NoURLSetError as e:
+            raise CheckInException("No check-in URL set") from e
         except Exception as e:
             raise CheckInException(e) from e
 

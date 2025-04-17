@@ -1,5 +1,6 @@
 from unittest.mock import MagicMock, patch
 
+from app.services.healthcheck_service import NoURLSetError
 from app.tasks.heartbeat_task import heartbeat_task
 
 
@@ -11,9 +12,9 @@ async def test_heartbeat_task_success(mock_healthcheck_service: MagicMock):
     mock_healthcheck_service.ping_heartbeat.assert_called_once()
 
 
-@patch("app.tasks.heartbeat_task.settings")
-async def test_heartbeat_task_skipped(mock_settings: MagicMock):
-    mock_settings.heartbeat_check_url = None
+@patch("app.tasks.heartbeat_task.healthcheck_service")
+async def test_heartbeat_task_skipped(mock_healthcheck_service: MagicMock):
+    mock_healthcheck_service.ping_heartbeat.side_effect = NoURLSetError
 
     result = heartbeat_task()
     assert result == {"message": "Heartbeat completed, but no check-in URL set", "status": "SKIPPED"}
