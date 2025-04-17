@@ -11,32 +11,61 @@ from app.integrations.healthchecks import get_healthchecks_client
 from app.services.exchange_rate_refresh import ExchangeRateRefresh
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 from app.tasks.notifications import send_exchange_rate_refresh_email
+from app.tasks.task_result import TaskResult, failure_result, success_result, warning_result
 
 
-async def _exchange_rate_refresh() -> str | None:
+class RefreshException(Exception):
+    pass
+
+
+class SendEmailException(Exception):
+    pass
+
+
+class CheckInException(Exception):
+    pass
+
+
+async def _exchange_rate_refresh() -> TaskResult:
     async def _update_exchange_rates(exchange_rate_service: ExchangeRateServiceInterface) -> None:
         exchange_rate_refresh = ExchangeRateRefresh(exchange_rate_service=exchange_rate_service)
-        await exchange_rate_refresh.save()
-        await send_exchange_rate_refresh_email(exchange_rate_service=exchange_rate_service)
+        try:
+            await exchange_rate_refresh.save()
+        except Exception as e:
+            raise RefreshException(e) from e
+
+    async def _send_email(exchange_rate_service: ExchangeRateServiceInterface) -> None:
+        try:
+            await send_exchange_rate_refresh_email(exchange_rate_service=exchange_rate_service)
+        except Exception as e:
+            raise SendEmailException(e) from e
 
     async def _check_in() -> None:
+        if settings.refresh_completed_url is None:
+            logger.warning("Skipping healthcheck, as no check-in URL set")
+            raise CheckInException("No check-in URL set")
+
         try:
             healthchecks_client = get_healthchecks_client()
-            if settings.refresh_completed_url:
-                await healthchecks_client.ping(settings.refresh_completed_url)
-            else:
-                logger.warning("Skipping healthcheck, as no check-in URL set")
+            await healthchecks_client.ping(settings.refresh_completed_url)
         except Exception as e:
-            logger.error(f"Healthcheck failed: {str(e)}")
-            return
+            raise CheckInException(e) from e
 
     await Tortoise.init(config=TORTOISE_ORM)
     try:
-        logger.info("Exchange rate refresh task started")
         exchange_rate_service = await get_exchange_rate_service()
         await _update_exchange_rates(exchange_rate_service=exchange_rate_service)
+        await _send_email(exchange_rate_service=exchange_rate_service)
         await _check_in()
-        return "Success"
+        return success_result()
+    except RefreshException as e:
+        return failure_result(message=str(e))
+    except SendEmailException as e:
+        return warning_result(message=str(e))
+    except CheckInException as e:
+        return warning_result(message=str(e))
+    except Exception as e:
+        return failure_result(message=str(e))
     finally:
         await Tortoise.close_connections()
 

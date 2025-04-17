@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
+# Start Redis server for local development
+# Used as broker/backend for Celery tasks in the Exchange House application
+# Companion to bin/dev_worker script
+
 set -e
 set -x
 
-docker run --rm --name some-redis -p 6379:6379 redis:latest
+docker run --rm --name exchange-house-redis -p 6379:6379 redis:7.2
