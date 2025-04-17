@@ -14,23 +14,26 @@ from app.tasks.notifications import send_exchange_rate_refresh_email
 
 
 @celery_app.task(name="app.tasks.exchange_rate_refresh")
-def exchange_rate_refresh():
+def exchange_rate_refresh() -> None:
     """Regular synchronous Celery task that manages the async code inside."""
 
-    async def _update_exchange_rates(exchange_rate_service: ExchangeRateServiceInterface):
+    async def _update_exchange_rates(exchange_rate_service: ExchangeRateServiceInterface) -> None:
         exchange_rate_refresh = ExchangeRateRefresh(exchange_rate_service=exchange_rate_service)
         await exchange_rate_refresh.save()
         await send_exchange_rate_refresh_email(exchange_rate_service=exchange_rate_service)
 
-    async def _check_in():
+    async def _check_in() -> None:
         try:
             healthchecks_client = get_healthchecks_client()
-            await healthchecks_client.ping(settings.refresh_completed_url)
+            if settings.refresh_completed_url:
+                await healthchecks_client.ping(settings.refresh_completed_url)
+            else:
+                logger.warning("Skipping healthcheck, as no check-in URL set")
         except Exception as e:
             logger.error(f"Healthcheck failed: {str(e)}")
             return
 
-    async def _async_task():
+    async def _async_task() -> None:
         await Tortoise.init(config=TORTOISE_ORM)
         try:
             exchange_rate_service = await get_exchange_rate_service()

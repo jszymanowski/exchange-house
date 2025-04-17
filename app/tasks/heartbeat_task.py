@@ -4,8 +4,8 @@ from app.core.logger import logger
 from app.services.healthcheck_service import healthcheck_service
 
 
-@celery_app.task(bind=True, name="app.tasks.heartbeat_task")
-def heartbeat_task(self) -> None:  # type: ignore[type-arg]
+@celery_app.task(name="app.tasks.heartbeat_task")
+def heartbeat_task() -> None:
     if not settings.heartbeat_check_url:
         logger.warning("Heartbeat completed, but no check-in URL set")
         return

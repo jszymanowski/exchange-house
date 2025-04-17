@@ -21,7 +21,7 @@ celery_app = Celery(
 )
 
 celery_app.conf.update(
-    # task_cls="BaseTask",
+    task_cls="BaseTask",
     task_track_started=True,  # Task will report 'started' state when started
     task_time_limit=10 * 60,  # 10 minutes time limit
     task_soft_time_limit=5 * 60,  # 5 minutes soft time limit
