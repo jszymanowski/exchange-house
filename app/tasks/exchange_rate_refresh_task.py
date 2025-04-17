@@ -13,10 +13,7 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 from app.tasks.notifications import send_exchange_rate_refresh_email
 
 
-@celery_app.task(name="app.tasks.exchange_rate_refresh")
-def exchange_rate_refresh() -> None:
-    """Regular synchronous Celery task that manages the async code inside."""
-
+async def _exchange_rate_refresh() -> str | None:
     async def _update_exchange_rates(exchange_rate_service: ExchangeRateServiceInterface) -> None:
         exchange_rate_refresh = ExchangeRateRefresh(exchange_rate_service=exchange_rate_service)
         await exchange_rate_refresh.save()
@@ -33,16 +30,17 @@ def exchange_rate_refresh() -> None:
             logger.error(f"Healthcheck failed: {str(e)}")
             return
 
-    async def _async_task() -> None:
-        await Tortoise.init(config=TORTOISE_ORM)
-        try:
-            exchange_rate_service = await get_exchange_rate_service()
-            await _update_exchange_rates(exchange_rate_service=exchange_rate_service)
-            await _check_in()
-        finally:
-            await Tortoise.close_connections()
+    await Tortoise.init(config=TORTOISE_ORM)
+    try:
+        logger.info("Exchange rate refresh task started")
+        exchange_rate_service = await get_exchange_rate_service()
+        await _update_exchange_rates(exchange_rate_service=exchange_rate_service)
+        await _check_in()
+        return "Success"
+    finally:
+        await Tortoise.close_connections()
 
-    # Run the async code from our synchronous task
-    result = asyncio.run(_async_task())
-    logger.info(f"Exchange rate refresh completed with result: {result}")
-    return result
+
+@celery_app.task(name="app.tasks.exchange_rate_refresh")
+def exchange_rate_refresh() -> str | None:
+    return asyncio.run(_exchange_rate_refresh())
