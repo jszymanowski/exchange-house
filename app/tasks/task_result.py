@@ -2,7 +2,7 @@ from typing import Literal, TypedDict
 
 
 class TaskResult(TypedDict):
-    status: Literal["SUCCESS", "WARNING", "FAILURE"]
+    status: Literal["SUCCESS", "WARNING", "FAILURE", "SKIPPED"]
     message: str | None
 
 
@@ -18,4 +18,9 @@ def warning_result(message: str) -> TaskResult:
 
 def failure_result(message: str) -> TaskResult:
     result: TaskResult = {"status": "FAILURE", "message": message}
+    return result
+
+
+def skipped_result(message: str) -> TaskResult:
+    result: TaskResult = {"status": "SKIPPED", "message": message}
     return result
