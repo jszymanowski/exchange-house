@@ -65,6 +65,7 @@ class OpenExchangeRatesClient:
             AuthenticationError: If authentication fails.
             RequestError: If the request is invalid.
             NotFoundError: If the resource is not found.
+            RequestLimitError: If the API rate limit has been exceeded.
         """
         response = await self.get(f"historical/{date.strftime('%Y-%m-%d')}.json")
         return HistoricalRatesResponse.model_validate(response)
