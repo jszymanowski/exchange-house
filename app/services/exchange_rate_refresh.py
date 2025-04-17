@@ -84,3 +84,7 @@ class ExchangeRateRefresh:
         # start_date and end_date are already included in frequency_dates
         all_dates = set(frequency_dates)
         return sorted(all_dates - set(existing_dates))
+
+
+def build_exchange_rate_refresh(exchange_rate_service: ExchangeRateServiceInterface) -> ExchangeRateRefresh:
+    return ExchangeRateRefresh(exchange_rate_service=exchange_rate_service)

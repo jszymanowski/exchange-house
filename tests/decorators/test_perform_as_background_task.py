@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytest
 from fastapi import BackgroundTasks
 
-from app.decorators.perform_in_background import perform_in_background
+from app.decorators.perform_as_background_task import perform_as_background_task
 
 
 @pytest.mark.asyncio
@@ -14,7 +14,7 @@ async def test_function_with_background_tasks():
     test_function = MagicMock()
     background_tasks = BackgroundTasks()
 
-    @perform_in_background
+    @perform_as_background_task
     def decorated_function(arg1, arg2, kwarg1=None):
         test_function(arg1, arg2, kwarg1=kwarg1)
 
@@ -37,7 +37,7 @@ async def test_function_without_background_tasks():
     """Test decorator without BackgroundTasks (scheduled job scenario)"""
     test_function = MagicMock()
 
-    @perform_in_background
+    @perform_as_background_task
     def decorated_function(arg1, arg2, kwarg1=None):
         test_function(arg1, arg2, kwarg1=kwarg1)
 
@@ -65,7 +65,7 @@ async def test_thread_execution():
     main_thread_id = get_thread_id()
     current_thread_ids.append(main_thread_id)
 
-    @perform_in_background
+    @perform_as_background_task
     def thread_function():
         # Get the thread ID inside the function
         thread_id = get_thread_id()
@@ -88,7 +88,7 @@ async def test_thread_execution():
 async def test_function_result():
     """Test that the decorator always returns None regardless of function return value"""
 
-    @perform_in_background
+    @perform_as_background_task
     def function_with_return():
         return "some result"
 
@@ -107,7 +107,7 @@ async def test_exception_handling():
     """Test that exceptions in the background function don't propagate"""
     error_raised = False
 
-    @perform_in_background
+    @perform_as_background_task
     def function_with_exception():
         nonlocal error_raised
         error_raised = True
@@ -127,7 +127,7 @@ async def test_with_fastapi_route():
     """Test integration with FastAPI routes"""
     test_function = MagicMock()
 
-    @perform_in_background
+    @perform_as_background_task
     def task_function(arg1):
         test_function(arg1)
 

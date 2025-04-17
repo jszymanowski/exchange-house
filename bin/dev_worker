@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+# For development, use the following command to start the worker + beat scheduler:
+celery -A app.celery_app worker -B -l info

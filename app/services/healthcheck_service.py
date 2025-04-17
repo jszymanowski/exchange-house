@@ -4,14 +4,20 @@ from app.core.config import healthcheck_settings
 from app.core.logger import logger
 
 
+class NoURLSetError(Exception):
+    pass
+
+
 class HealthcheckService:
     def ping_heartbeat(self) -> None:
         self._ping(healthcheck_settings.heartbeat_check_url)
 
+    def ping_refresh_completed(self) -> None:
+        self._ping(healthcheck_settings.refresh_completed_url)
+
     def _ping(self, url: str | None = None, timeout: float = 10.0) -> None:
         if url is None:
-            logger.warning("No URL provided for healthcheck, skipping")
-            return
+            raise NoURLSetError
 
         with httpx.Client() as client:
             try:

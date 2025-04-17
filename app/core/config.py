@@ -32,28 +32,12 @@ class Settings(BaseSettings):
     def logging_level(self) -> str:
         return os.getenv("LOGGING_LEVEL", "INFO").upper()
 
-    @property
-    def heartbeat_check_url(self) -> str | None:
-        return os.getenv("HEARTBEAT_CHECK_URL")
-
-    @property
-    def refresh_completed_url(self) -> str | None:
-        return os.getenv("REFRESH_COMPLETED_URL")
-
     @cached_property
     def open_exchange_rates_app_id(self) -> str | None:
         if self.is_test:
             return "FAKE_OER_APP_ID"
 
         return os.getenv("OPEN_EXCHANGE_RATES_APP_ID")
-
-    @property
-    def exchange_rates_refresh_hour(self) -> str:
-        return os.getenv("EXCHANGE_RATES_REFRESH_HOUR", "13")
-
-    @property
-    def exchange_rates_refresh_minute(self) -> str:
-        return os.getenv("EXCHANGE_RATES_REFRESH_MINUTE", "00")
 
     @cached_property
     def DATABASE_URL(self) -> str:
@@ -126,6 +110,14 @@ class CelerySettings(BaseSettings):
     def heartbeat_interval(self) -> str:
         return os.getenv("HEARTBEAT_INTERVAL", "*/5")
 
+    @property
+    def exchange_rates_refresh_hour(self) -> str:
+        return os.getenv("EXCHANGE_RATES_REFRESH_HOUR", "13")
+
+    @property
+    def exchange_rates_refresh_minute(self) -> str:
+        return os.getenv("EXCHANGE_RATES_REFRESH_MINUTE", "00")
+
 
 celery_settings = CelerySettings()
 
@@ -134,6 +126,10 @@ class HealthcheckSettings(BaseSettings):
     @property
     def heartbeat_check_url(self) -> str | None:
         return os.getenv("HEARTBEAT_CHECK_URL")
+
+    @property
+    def refresh_completed_url(self) -> str | None:
+        return os.getenv("REFRESH_COMPLETED_URL")
 
 
 healthcheck_settings = HealthcheckSettings()

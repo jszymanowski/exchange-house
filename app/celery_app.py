@@ -49,8 +49,13 @@ class BaseTask(Task):  # type: ignore[type-arg]
 
 celery_app.conf.beat_schedule = {
     "heartbeat": {
-        "task": "heartbeat_task",
+        "task": "app.tasks.heartbeat_task",
         "schedule": crontab(minute=celery_settings.heartbeat_interval),
-        "args": ("Heartbeat",),
+    },
+    "exchange_rate_refresh": {
+        "task": "app.tasks.exchange_rate_refresh",
+        "schedule": crontab(
+            hour=celery_settings.exchange_rates_refresh_hour, minute=celery_settings.exchange_rates_refresh_minute
+        ),
     },
 }

@@ -5,7 +5,7 @@ from pydantic import BaseModel, EmailStr
 
 from app.core.config import EmailSettings, email_settings, settings
 from app.core.logger import logger
-from app.decorators.perform_in_background import perform_in_background
+from app.decorators.perform_as_background_task import perform_as_background_task
 
 
 class EmailService(BaseModel):
@@ -42,6 +42,6 @@ class EmailService(BaseModel):
 
         return
 
-    @perform_in_background
+    @perform_as_background_task
     def send_async(self) -> None:
         self.send()

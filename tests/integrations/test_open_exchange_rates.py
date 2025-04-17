@@ -1,4 +1,5 @@
 import json
+import re
 from datetime import date
 from importlib import resources
 
@@ -12,6 +13,7 @@ from app.integrations.open_exchange_rates import (
     NotFoundError,
     OpenExchangeRatesClient,
     RequestError,
+    RequestLimitError,
 )
 
 
@@ -58,7 +60,38 @@ class TestOpenExchangeRatesApi:
         assert response == response_data
         assert len(httpx_mock.get_requests()) == 1
 
-    async def test_get_authentication_error(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
+    async def test_get_400_error(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
+        error_response = {"error": True, "status": 400, "message": "not_available", "description": "That's not right."}
+        httpx_mock.add_response(
+            method="GET",
+            url="https://openexchangerates.org/api/some_path?app_id=FAKE_OER_APP_ID",
+            json=error_response,
+            status_code=400,
+        )
+
+        with pytest.raises(RequestError, match="not_available: That's not right."):
+            await api_client.get("some_path")
+        assert len(httpx_mock.get_requests()) == 1
+
+    async def test_get_401_error(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
+        error_response = {
+            "error": True,
+            "status": 401,
+            "message": "invalid_app_id",
+            "description": "Invalid App ID provided. Oopsie.",
+        }
+        httpx_mock.add_response(
+            method="GET",
+            url="https://openexchangerates.org/api/some_path?app_id=FAKE_OER_APP_ID",
+            json=error_response,
+            status_code=401,
+        )
+
+        with pytest.raises(AuthenticationError, match="Invalid App ID provided. Oopsie."):
+            await api_client.get("some_path")
+        assert len(httpx_mock.get_requests()) == 1
+
+    async def test_get_403_error(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
         error_response = {
             "error": True,
             "status": 403,
@@ -76,20 +109,7 @@ class TestOpenExchangeRatesApi:
             await api_client.get("some_path")
         assert len(httpx_mock.get_requests()) == 1
 
-    async def test_get_bad_request_error(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
-        error_response = {"error": True, "status": 400, "message": "not_available", "description": "That's not right."}
-        httpx_mock.add_response(
-            method="GET",
-            url="https://openexchangerates.org/api/some_path?app_id=FAKE_OER_APP_ID",
-            json=error_response,
-            status_code=400,
-        )
-
-        with pytest.raises(RequestError, match="not_available: That's not right."):
-            await api_client.get("some_path")
-        assert len(httpx_mock.get_requests()) == 1
-
-    async def test_get_not_found_error(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
+    async def test_get_405_error(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
         httpx_mock.add_response(
             method="GET",
             url="https://openexchangerates.org/api/some_path?app_id=FAKE_OER_APP_ID",
@@ -98,6 +118,27 @@ class TestOpenExchangeRatesApi:
         )
 
         with pytest.raises(NotFoundError, match="/api/some_path not found: Method Not Allowed"):
+            await api_client.get("some_path")
+        assert len(httpx_mock.get_requests()) == 1
+
+    async def test_get_429_error(self, api_client: OpenExchangeRatesClient, httpx_mock: HTTPXMock) -> None:
+        error_response = {
+            "error": True,
+            "status": 429,
+            "message": "too_many_requests",
+            "description": "Access restricted until 2075-12-25 (reason: too_many_requests). If there has been a mistake, please contact support@openexchangerates.org.",
+        }
+        httpx_mock.add_response(
+            method="GET",
+            url="https://openexchangerates.org/api/some_path?app_id=FAKE_OER_APP_ID",
+            json=error_response,
+            status_code=429,
+        )
+
+        with pytest.raises(
+            RequestLimitError,
+            match=re.escape("Access restricted until 2075-12-25 (reason: too_many_requests)"),
+        ):
             await api_client.get("some_path")
         assert len(httpx_mock.get_requests()) == 1
 

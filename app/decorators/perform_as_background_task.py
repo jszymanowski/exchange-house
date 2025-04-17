@@ -10,7 +10,7 @@ from fastapi import BackgroundTasks
 _thread_pool = ThreadPoolExecutor()
 
 
-def perform_in_background(func: Callable[..., Any]) -> Callable[..., Any]:
+def perform_as_background_task(func: Callable[..., Any]) -> Callable[..., Any]:
     """
     Decorator to make a function run in the background.
     Works both in FastAPI routes and scheduled tasks.
