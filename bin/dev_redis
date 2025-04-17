@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+docker run --rm --name some-redis -p 6379:6379 redis:latest

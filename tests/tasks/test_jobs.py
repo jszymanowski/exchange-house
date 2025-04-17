@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
-from app.tasks.jobs import latest_exchange_rates_task
+from app.tasks.exchange_rate_refresh_task import latest_exchange_rates_task
 from tests.support.database_helper import DatabaseTestHelper
 
 

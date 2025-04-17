@@ -9,7 +9,7 @@ from app.core.config import settings
 from app.core.dependencies import get_exchange_rate_service
 from app.core.logger import logger
 from app.core.scheduler import job_listener
-from app.tasks.jobs import latest_exchange_rates_task
+from app.tasks.exchange_rate_refresh_task import latest_exchange_rates_task
 
 R = TypeVar("R")
 
