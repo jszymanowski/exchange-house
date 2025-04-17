@@ -6,7 +6,7 @@ class TaskResult(TypedDict):
     message: str | None
 
 
-def success_result(message: str = None) -> TaskResult:
+def success_result(message: str | None = None) -> TaskResult:
     result: TaskResult = {"status": "SUCCESS", "message": message}
     return result
 

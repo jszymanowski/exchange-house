@@ -73,5 +73,5 @@ async def _exchange_rate_refresh() -> TaskResult:
 
 
 @celery_app.task(name="app.tasks.exchange_rate_refresh")
-def exchange_rate_refresh() -> str | None:
+def exchange_rate_refresh() -> TaskResult:
     return asyncio.run(_exchange_rate_refresh())
