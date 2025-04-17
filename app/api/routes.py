@@ -11,5 +11,3 @@ router.include_router(available_dates_router)
 router.include_router(currency_pair_router)
 router.include_router(latest_exchange_rate_router)
 router.include_router(historical_exchange_rates_router)
-
-admin_router = APIRouter(prefix="/api/admin/v1")

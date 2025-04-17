@@ -2,35 +2,12 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from app.models import ExchangeRate
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 from app.tasks.exchange_rate_refresh_task import _exchange_rate_refresh
-from tests.support.database_helper import DatabaseTestHelper
-
-
-@pytest.mark.skip(reason="remove")
-@pytest.mark.asyncio
-async def test_exchange_rate_refresh_task_integration():
-    """Test the task through Celery's API."""
-    # Mock any external services
-    with patch("app.tasks.exchange_rate_refresh_task.get_exchange_rate_service") as mock_service:
-        mock_service.return_value.get_latest_rates.return_value = {"USD": 1.0, "EUR": 0.85, "GBP": 0.75}
-
-        # Call the task through Celery
-        result = await _exchange_rate_refresh()
-
-        # In eager mode, the result is available immediately
-        assert result == "Success"
-
-        # Verify database operations
-        rates = await ExchangeRate.all()
-        assert len(rates) > 0
 
 
 @pytest.mark.asyncio
-async def test_latest_exchange_rates_task_success(
-    test_database: DatabaseTestHelper, test_exchange_rate_service: ExchangeRateServiceInterface
-):
+async def test_latest_exchange_rates_task_success(test_exchange_rate_service: ExchangeRateServiceInterface):
     with (
         patch("app.tasks.exchange_rate_refresh_task.ExchangeRateRefresh") as mock_exchange_rate_refresh_class,
         patch("app.tasks.exchange_rate_refresh_task.send_exchange_rate_refresh_email") as mock_send_email,
