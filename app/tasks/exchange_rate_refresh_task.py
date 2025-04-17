@@ -42,7 +42,6 @@ async def _exchange_rate_refresh() -> TaskResult:
 
     async def _check_in() -> None:
         if settings.refresh_completed_url is None:
-            logger.warning("Skipping healthcheck, as no check-in URL set")
             raise CheckInException("No check-in URL set")
 
         try:
@@ -59,13 +58,16 @@ async def _exchange_rate_refresh() -> TaskResult:
         await _check_in()
         return success_result()
     except RefreshException as e:
-        return failure_result(message=str(e))
+        logger.error(f"Refresh failed: {str(e)}")
+        return failure_result(message=f"Refresh failed: {str(e)}")
     except SendEmailException as e:
-        return warning_result(message=str(e))
+        logger.warning(f"Send email failed: {str(e)}")
+        return warning_result(message=f"Send email failed: {str(e)}")
     except CheckInException as e:
-        return warning_result(message=str(e))
+        logger.warning(f"Healthcheck failed: {str(e)}")
+        return warning_result(message=f"Healthcheck failed: {str(e)}")
     except Exception as e:
-        return failure_result(message=str(e))
+        return failure_result(message=f"Unexpected error: {str(e)}")
     finally:
         await Tortoise.close_connections()
 
