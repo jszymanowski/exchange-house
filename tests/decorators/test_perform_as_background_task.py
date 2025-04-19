@@ -89,7 +89,7 @@ async def test_function_result() -> None:
     """Test that the decorator always returns None regardless of function return value"""
 
     @perform_as_background_task
-    def function_with_return() -> None:
+    def function_with_return() -> str:
         return "some result"
 
     # With background tasks

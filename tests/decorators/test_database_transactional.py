@@ -14,7 +14,7 @@ async def create_test_object(
     base_currency_code: Currency, should_fail: bool = False, db_connection: Connection | None = None
 ) -> ExchangeRate:
     # Test function that uses the transactional decorator
-    obj = build_exchange_rate(base_currency_code=base_currency_code, quote_currency_code="USD")
+    obj = build_exchange_rate(base_currency_code=base_currency_code, quote_currency_code=Currency("USD"))
     await obj.save(using_db=db_connection)
 
     if should_fail:
@@ -51,7 +51,7 @@ async def test_nested_transactions(test_database: DatabaseTestHelper) -> None:
     @database_transactional
     async def parent_function(db_connection: Connection | None = None) -> tuple[ExchangeRate, ExchangeRate]:
         # Create object in parent transaction
-        parent_obj = build_exchange_rate(base_currency_code="EUR")
+        parent_obj = build_exchange_rate(base_currency_code=Currency("EUR"))
         await parent_obj.save(using_db=db_connection)
 
         # Call child function with the same db_connection
@@ -72,7 +72,7 @@ async def test_nested_transaction_rollback(test_database: DatabaseTestHelper) ->
     @database_transactional
     async def parent_with_rollback(db_connection: Connection | None = None) -> None:
         # Create object in parent transaction
-        parent_obj = build_exchange_rate(base_currency_code="EUR")
+        parent_obj = build_exchange_rate(base_currency_code=Currency("EUR"))
         await parent_obj.save(using_db=db_connection)
 
         # Call child function with the same db_connection

@@ -244,7 +244,7 @@ async def test_api_v1_historical_exchange_rates_with_order_asc(
 @pytest.mark.asyncio
 @patch("app.api.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_order_desc(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:

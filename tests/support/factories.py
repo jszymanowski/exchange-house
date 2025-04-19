@@ -1,7 +1,7 @@
 import uuid
 from datetime import date, datetime
 from decimal import Decimal
-from typing import TypedDict
+from typing import TypedDict, Unpack
 
 from app.models import Currency, ExchangeRate
 
@@ -17,11 +17,11 @@ class ExchangeRateParams(TypedDict, total=False):
     updated_at: datetime | None
 
 
-def build_exchange_rate(**kwargs: ExchangeRateParams | dict) -> ExchangeRate:
+def build_exchange_rate(**kwargs: Unpack[ExchangeRateParams]) -> ExchangeRate:
     defaults = {
         "as_of": date.today(),
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
+        "base_currency_code": Currency("USD"),
+        "quote_currency_code": Currency("EUR"),
         "rate": Decimal("0.85000000"),
         "data_source": "test",
     }
@@ -30,11 +30,11 @@ def build_exchange_rate(**kwargs: ExchangeRateParams | dict) -> ExchangeRate:
     return ExchangeRate(**attributes)
 
 
-def build_exchange_rate_pair(**kwargs: ExchangeRateParams | dict) -> tuple[ExchangeRate, ExchangeRate]:
+def build_exchange_rate_pair(**kwargs: Unpack[ExchangeRateParams]) -> tuple[ExchangeRate, ExchangeRate]:
     defaults = {
         "as_of": date.today(),
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
+        "base_currency_code": Currency("USD"),
+        "quote_currency_code": Currency("EUR"),
         "rate": Decimal("0.85000000"),
         "data_source": "test",
     }

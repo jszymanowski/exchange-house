@@ -9,3 +9,7 @@ class DatabaseTestHelper:
     @staticmethod
     async def clear_table(model_class: Model) -> None:
         await model_class.all().delete()
+
+
+def get_database_test_helper() -> DatabaseTestHelper:
+    return DatabaseTestHelper()
