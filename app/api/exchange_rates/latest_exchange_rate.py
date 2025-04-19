@@ -17,19 +17,17 @@ def get_default_desired_date() -> AvailableDate:
 
 
 class LatestExchangeRateQueryParams(BaseModel):
-    base_currency_code: Currency
-    quote_currency_code: Currency
-    desired_date: AvailableDate | None = Field(default_factory=get_default_desired_date)
+    desired_date: AvailableDate = Field(default_factory=get_default_desired_date)
 
 
-@router.get("/latest_exchange_rate")
+@router.get("/{base_currency_code}/{quote_currency_code}/latest")
 async def latest_exchange_rate(
+    base_currency_code: Currency,
+    quote_currency_code: Currency,
     query_params: Annotated[LatestExchangeRateQueryParams, Query()],
     exchange_rate_service: ExchangeRateServiceInterface = exchange_rate_service_dependency,
 ) -> ExchangeRateResponse:
-    base_currency_code = query_params.base_currency_code
-    quote_currency_code = query_params.quote_currency_code
-    desired_date = query_params.desired_date or date.today()
+    desired_date = query_params.desired_date
 
     result = await exchange_rate_service.get_latest_rate(base_currency_code, quote_currency_code, desired_date)
 
