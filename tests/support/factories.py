@@ -38,8 +38,8 @@ def build_exchange_rate_pair(**kwargs: Unpack[ExchangeRateParams]) -> tuple[Exch
         "rate": Decimal("0.85000000"),
         "data_source": "test",
     }
-    attributes = defaults | kwargs
-    inverse_attributes = attributes | {
+    attributes: ExchangeRateParams = defaults | kwargs
+    inverse_attributes: ExchangeRateParams = attributes | {
         "base_currency_code": attributes["quote_currency_code"],
         "quote_currency_code": attributes["base_currency_code"],
         "rate": Decimal("1.00000000") / attributes["rate"],
