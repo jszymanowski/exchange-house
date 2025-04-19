@@ -3,7 +3,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from app.tasks.heartbeat_task import NoURLSetError, _heartbeat_task
+from app.services.healthchecks_service import NoURLSetError
+from app.tasks.heartbeat_task import _heartbeat_task
 
 
 @pytest.fixture
@@ -15,7 +16,7 @@ def mock_healthchecks_service() -> Generator[AsyncMock]:
 
 
 @pytest.mark.asyncio
-async def test_heartbeat_task_success(mock_healthchecks_service: AsyncMock):
+async def test_heartbeat_task_success(mock_healthchecks_service: AsyncMock) -> None:
     mock_healthchecks_service.ping_heartbeat.return_value = None
 
     result = await _heartbeat_task()
@@ -25,7 +26,7 @@ async def test_heartbeat_task_success(mock_healthchecks_service: AsyncMock):
 
 
 @pytest.mark.asyncio
-async def test_heartbeat_task_skipped(mock_healthchecks_service: AsyncMock):
+async def test_heartbeat_task_skipped(mock_healthchecks_service: AsyncMock) -> None:
     mock_healthchecks_service.ping_heartbeat.side_effect = NoURLSetError
 
     result = await _heartbeat_task()
@@ -35,7 +36,7 @@ async def test_heartbeat_task_skipped(mock_healthchecks_service: AsyncMock):
 
 
 @pytest.mark.asyncio
-async def test_heartbeat_task_failure(mock_healthchecks_service: AsyncMock):
+async def test_heartbeat_task_failure(mock_healthchecks_service: AsyncMock) -> None:
     mock_healthchecks_service.ping_heartbeat.side_effect = Exception("Test error")
 
     result = await _heartbeat_task()

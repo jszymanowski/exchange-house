@@ -9,7 +9,7 @@ from app.tasks.exchange_rate_refresh_task import _exchange_rate_refresh
 
 
 @pytest.fixture
-def mock_exchange_rate_refresh():
+def mock_exchange_rate_refresh() -> Generator[AsyncMock]:
     with (
         patch("app.services.exchange_rate_refresh.ExchangeRateRefresh") as mock_exchange_rate_refresh_class,
     ):
@@ -19,7 +19,7 @@ def mock_exchange_rate_refresh():
 
 
 @pytest.fixture
-def mock_get_exchange_rate_service():
+def mock_get_exchange_rate_service() -> Generator[AsyncMock]:
     with (
         patch("app.tasks.exchange_rate_refresh_task.get_exchange_rate_service") as mock_get_exchange_rate_service,
     ):
@@ -35,7 +35,7 @@ def mock_healthchecks_service() -> Generator[AsyncMock]:
 
 
 @pytest.fixture
-def mock_send_exchange_rate_refresh_email():
+def mock_send_exchange_rate_refresh_email() -> Generator[AsyncMock]:
     with (
         patch(
             "app.tasks.exchange_rate_refresh_task.send_exchange_rate_refresh_email"
@@ -45,7 +45,7 @@ def mock_send_exchange_rate_refresh_email():
 
 
 @pytest.fixture
-def mock_logger():
+def mock_logger() -> Generator[AsyncMock]:
     with (
         patch("app.tasks.exchange_rate_refresh_task.logger") as mock_logger,
     ):
@@ -59,7 +59,7 @@ async def test_latest_exchange_rates_task_success(
     mock_healthchecks_service: AsyncMock,
     mock_send_exchange_rate_refresh_email: AsyncMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
-):
+) -> None:
     mock_healthchecks_service.ping_refresh_completed.return_value = None
     mock_get_exchange_rate_service.return_value = test_exchange_rate_service
 
@@ -76,7 +76,7 @@ async def test_exchange_rate_refresh_task_handles_refresh_error(
     mock_exchange_rate_refresh: AsyncMock,
     mock_get_exchange_rate_service: AsyncMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
-):
+) -> None:
     mock_exchange_rate_refresh.save.side_effect = Exception("Test error")
 
     result = await _exchange_rate_refresh()
@@ -93,7 +93,7 @@ async def test_latest_exchange_rates_task_no_healthcheck_url(
     mock_send_exchange_rate_refresh_email: AsyncMock,
     mock_logger: AsyncMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
-):
+) -> None:
     mock_healthchecks_service.ping_refresh_completed.side_effect = NoURLSetError
 
     result = await _exchange_rate_refresh()
@@ -134,7 +134,7 @@ async def test_latest_exchange_rates_task_healthcheck_failure(
     mock_send_exchange_rate_refresh_email: AsyncMock,
     mock_logger: AsyncMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
-):
+) -> None:
     mock_healthchecks_service.ping_refresh_completed.side_effect = Exception("Healthcheck error")
 
     result = await _exchange_rate_refresh()
