@@ -140,7 +140,7 @@ async def test_api_v1_historical_exchange_rates_with_start_date_after_end_date(
             "end_date": "2023-03-15",
         },
     )
-    assert response.status_code == 400
+    assert response.status_code == 422
     assert response.json() == {
         "detail": "start_date must be before or equal to end_date",
     }
@@ -277,10 +277,20 @@ async def test_api_v1_historical_exchange_rates_with_start_date_after_today(
     mock_date.today.return_value = fixed_date
 
     response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"start_date": "2024-04-02"})
-    assert response.status_code == 400
+    assert response.status_code == 422
     assert response.json() == {
         "detail": "start_date must be before or equal to today; start_date must be before or equal to end_date",
     }
+
+
+@pytest.mark.asyncio
+async def test_api_v1_historical_exchange_rates_without_usd(
+    async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
+) -> None:
+    response = await async_client.get("/api/v1/exchange_rates/JPY/EUR/historical")
+    assert response.status_code == 422
+    assert response.json() == {"detail": "At least one currency must be USD"}
 
 
 @pytest.mark.asyncio
@@ -321,10 +331,7 @@ async def test_api_v1_historical_exchange_rates_invalid_quote_currency(
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    response = await async_client.get(
-        "/api/v1/exchange_rates/USD/XYZ/historical",
-        params={"base_currency_code": "USD", "quote_currency_code": "XYZ"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/XYZ/historical")
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]

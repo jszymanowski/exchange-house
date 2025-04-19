@@ -29,9 +29,18 @@ async def latest_exchange_rate(
 ) -> ExchangeRateResponse:
     desired_date = query_params.desired_date
 
-    result = await exchange_rate_service.get_latest_rate(base_currency_code, quote_currency_code, desired_date)
+    validation_errors = []
 
-    # TODO: validate at least one of base_currency_code or quote_currency_code is USD
+    if base_currency_code != Currency("USD") and quote_currency_code != Currency("USD"):
+        validation_errors.append("At least one currency must be USD")
+
+    if validation_errors:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail="; ".join(validation_errors),
+        )
+
+    result = await exchange_rate_service.get_latest_rate(base_currency_code, quote_currency_code, desired_date)
 
     if result is None:
         raise HTTPException(

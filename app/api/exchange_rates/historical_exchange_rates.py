@@ -50,6 +50,9 @@ async def historical_exchange_rates(
     today = date.today()
     validation_errors = []
 
+    if base_currency_code != Currency("USD") and quote_currency_code != Currency("USD"):
+        validation_errors.append("At least one currency must be USD")
+
     if start_date > today:
         validation_errors.append("start_date must be before or equal to today")
 
@@ -61,7 +64,7 @@ async def historical_exchange_rates(
 
     if validation_errors:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="; ".join(validation_errors),
         )
 

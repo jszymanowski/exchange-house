@@ -85,3 +85,13 @@ async def test_api_v1_latest_exchange_rate_invalid_quote_currency(
         response_detail[0]["msg"] == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, "
         "testing and precious metals codes are not allowed."
     )
+
+
+@pytest.mark.asyncio
+async def test_api_v1_latest_exchange_rates_without_usd(
+    async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
+) -> None:
+    response = await async_client.get("/api/v1/exchange_rates/JPY/EUR/latest")
+    assert response.status_code == 422
+    assert response.json() == {"detail": "At least one currency must be USD"}
