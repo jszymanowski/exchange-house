@@ -28,8 +28,6 @@ DEFAULT_LIMIT = 1_000
 
 
 class HistoricalExchangeRatesQueryParams(BaseModel):
-    base_currency_code: Currency
-    quote_currency_code: Currency
     start_date: AvailableDate = Field(default_factory=get_default_start_date)
     end_date: AvailableDate = Field(default_factory=get_default_end_date)
     limit: int = Field(default=DEFAULT_LIMIT, ge=1, le=MAX_RECORDS_PER_REQUEST)
@@ -37,20 +35,23 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
 
 
 # TODO: Add pagination
-@router.get("/historical_exchange_rates")
+@router.get("/{base_currency_code}/{quote_currency_code}/historical")
 async def historical_exchange_rates(
+    base_currency_code: Currency,
+    quote_currency_code: Currency,
     query_params: Annotated[HistoricalExchangeRatesQueryParams, Query()],
     exchange_rate_service: ExchangeRateServiceInterface = exchange_rate_service_dependency,
 ) -> HistoricalExchangeRateResponse:
     start_date = query_params.start_date
     end_date = query_params.end_date
-    base_currency_code = query_params.base_currency_code
-    quote_currency_code = query_params.quote_currency_code
     limit = query_params.limit
     order = query_params.order
 
     today = date.today()
     validation_errors = []
+
+    if base_currency_code != Currency("USD") and quote_currency_code != Currency("USD"):
+        validation_errors.append("At least one currency must be USD")
 
     if start_date > today:
         validation_errors.append("start_date must be before or equal to today")
@@ -63,7 +64,7 @@ async def historical_exchange_rates(
 
     if validation_errors:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail="; ".join(validation_errors),
         )
 

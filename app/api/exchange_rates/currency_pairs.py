@@ -8,7 +8,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/currency_pairs",
+    "/available_currency_pairs",
     summary="Get available currency pairs",
     description="Returns a list of all supported currency pairs for exchange rate conversions.",
 )

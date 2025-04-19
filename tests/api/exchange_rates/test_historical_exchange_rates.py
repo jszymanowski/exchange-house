@@ -8,7 +8,7 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -17,10 +17,7 @@ async def test_api_v1_historical_exchange_rates(
     fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical")
     assert response.status_code == 200
 
     response_json = response.json()
@@ -41,7 +38,7 @@ async def test_api_v1_historical_exchange_rates(
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_start_date(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -50,14 +47,7 @@ async def test_api_v1_historical_exchange_rates_with_start_date(
     fixed_date = date(2024, 3, 16)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
-            "start_date": "2024-01-02",
-        },
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"start_date": "2024-01-02"})
     assert response.status_code == 200
 
     response_json = response.json()
@@ -78,7 +68,7 @@ async def test_api_v1_historical_exchange_rates_with_start_date(
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_end_date(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -87,14 +77,7 @@ async def test_api_v1_historical_exchange_rates_with_end_date(
     fixed_date = date(2024, 3, 16)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
-            "end_date": "2024-01-05",
-        },
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"end_date": "2024-01-05"})
     assert response.status_code == 200
 
     response_json = response.json()
@@ -120,10 +103,8 @@ async def test_api_v1_historical_exchange_rates_with_start_and_end_date(
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
+        "/api/v1/exchange_rates/USD/EUR/historical",
         params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
             "start_date": "2023-12-31",
             "end_date": "2024-10-11",
         },
@@ -153,22 +134,20 @@ async def test_api_v1_historical_exchange_rates_with_start_date_after_end_date(
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
+        "/api/v1/exchange_rates/USD/EUR/historical",
         params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
             "start_date": "2024-12-31",
             "end_date": "2023-03-15",
         },
     )
-    assert response.status_code == 400
+    assert response.status_code == 422
     assert response.json() == {
         "detail": "start_date must be before or equal to end_date",
     }
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_limit(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -177,14 +156,7 @@ async def test_api_v1_historical_exchange_rates_with_limit(
     fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
-            "limit": 2,
-        },
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": 2})
     assert response.status_code == 200
 
     response_json = response.json()
@@ -205,7 +177,7 @@ async def test_api_v1_historical_exchange_rates_with_limit(
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_order_asc(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -214,14 +186,7 @@ async def test_api_v1_historical_exchange_rates_with_order_asc(
     fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
-            "order": "asc",
-        },
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"order": "asc"})
     assert response.status_code == 200
 
     response_json = response.json()
@@ -242,7 +207,7 @@ async def test_api_v1_historical_exchange_rates_with_order_asc(
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_order_desc(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -251,10 +216,7 @@ async def test_api_v1_historical_exchange_rates_with_order_desc(
     fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical")
     assert response.status_code == 200
 
     response_json = response.json()
@@ -275,7 +237,7 @@ async def test_api_v1_historical_exchange_rates_with_order_desc(
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_limit_and_order_asc(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -284,15 +246,7 @@ async def test_api_v1_historical_exchange_rates_with_limit_and_order_asc(
     fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
-            "limit": 2,
-            "order": "asc",
-        },
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": 2, "order": "asc"})
     assert response.status_code == 200
 
     response_json = response.json()
@@ -313,7 +267,7 @@ async def test_api_v1_historical_exchange_rates_with_limit_and_order_asc(
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_start_date_after_today(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -322,22 +276,25 @@ async def test_api_v1_historical_exchange_rates_with_start_date_after_today(
     fixed_date = date(2024, 4, 1)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
-            "start_date": "2024-04-02",
-        },
-    )
-    assert response.status_code == 400
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"start_date": "2024-04-02"})
+    assert response.status_code == 422
     assert response.json() == {
         "detail": "start_date must be before or equal to today; start_date must be before or equal to end_date",
     }
 
 
 @pytest.mark.asyncio
-@patch("app.api.historical_exchange_rates.date")
+async def test_api_v1_historical_exchange_rates_without_usd(
+    async_client: AsyncClient,
+    with_test_exchange_rate_service: ExchangeRateServiceInterface,
+) -> None:
+    response = await async_client.get("/api/v1/exchange_rates/JPY/EUR/historical")
+    assert response.status_code == 422
+    assert response.json() == {"detail": "At least one currency must be USD"}
+
+
+@pytest.mark.asyncio
+@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_end_date_after_today(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -346,14 +303,7 @@ async def test_api_v1_historical_exchange_rates_with_end_date_after_today(
     fixed_date = date(2024, 4, 1)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
-            "end_date": "2030-04-01",
-        },
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"end_date": "2030-04-01"})
     assert response.status_code == 422
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
@@ -365,10 +315,7 @@ async def test_api_v1_historical_exchange_rates_invalid_base_currency(
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "XYZ", "quote_currency_code": "USD"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/XYZ/USD/historical")
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
@@ -384,10 +331,7 @@ async def test_api_v1_historical_exchange_rates_invalid_quote_currency(
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "XYZ"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/XYZ/historical")
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
@@ -404,40 +348,28 @@ async def test_api_v1_historical_exchange_rates_with_invalid_limit(
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR", "limit": "-1"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "-1"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
     assert response_detail[0]["msg"] == "Input should be greater than or equal to 1"
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR", "limit": "0"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "0"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
     assert response_detail[0]["msg"] == "Input should be greater than or equal to 1"
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR", "limit": "999999999"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "999999999"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
     assert response_detail[0]["msg"] == "Input should be less than or equal to 10000"
 
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR", "limit": "3.14159"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "3.14159"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
@@ -445,8 +377,7 @@ async def test_api_v1_historical_exchange_rates_with_invalid_limit(
     assert response_detail[0]["msg"] == "Input should be a valid integer, unable to parse string as an integer"
 
     response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR", "limit": "INFINITYANDBEYOND"},
+        "/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "INFINITYANDBEYOND"}
     )
     assert response.status_code == 422
 
@@ -460,10 +391,7 @@ async def test_api_v1_historical_exchange_rates_with_invalid_order(
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    response = await async_client.get(
-        "/api/v1/historical_exchange_rates",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR", "order": "random"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"order": "random"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
