@@ -175,7 +175,8 @@ class ExchangeRateService(ExchangeRateServiceInterface):
             await inverse_rate.save(using_db=db_connection)
         except Exception as e:
             raise ValueError(
-                f"Failed to create exchange rate for {base_currency_code} to {quote_currency_code} on {as_of} with error {e}"
+                f"Failed to create exchange rate for {base_currency_code} to "
+                f"{quote_currency_code} on {as_of} with error {e}"
             ) from e
 
         return [forward_rate, inverse_rate]
