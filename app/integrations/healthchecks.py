@@ -1,4 +1,5 @@
 import httpx
+from httpx import Response
 
 
 class HealthchecksClient:
@@ -9,7 +10,7 @@ class HealthchecksClient:
         """Validate that the URL begins with the required healthchecks prefix."""
         return url.startswith(self.REQUIRED_PREFIX)
 
-    async def ping(self, url: str) -> None:
+    async def ping(self, url: str) -> Response:
         if not self.validate_url(url):
             raise ValueError(f"Invalid healthcheck URL: {url}. Must start with {self.REQUIRED_PREFIX}")
 
@@ -23,6 +24,9 @@ class HealthchecksClient:
                     raise ValueError(f"Forbidden access to healthcheck URL: {url}")
                 elif response.status_code >= 400:
                     raise ValueError(f"Healthcheck failed with status code: {response.status_code}")
+                else:
+                    return response
+
         except httpx.HTTPError as e:
             raise ValueError(f"Heartbeat check-in failed: {str(e)}") from e
 

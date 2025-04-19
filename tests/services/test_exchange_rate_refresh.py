@@ -9,7 +9,7 @@ from pytest_httpx import HTTPXMock
 from app.models.exchange_rate import ExchangeRate
 from app.services.exchange_rate_refresh import ExchangeRateRefresh
 from app.services.exchange_rate_service import ExchangeRateService
-from tests.support.database_helper import DatabaseTestHelper
+from tests.support.database_test_helper import DatabaseTestHelper
 
 
 @pytest.mark.asyncio

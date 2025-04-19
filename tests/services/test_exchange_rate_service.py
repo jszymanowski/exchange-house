@@ -7,7 +7,7 @@ import pytest
 from app.models.currency_pair import CurrencyPair
 from app.models.exchange_rate import ExchangeRate
 from app.services.exchange_rate_service import ExchangeRateService
-from tests.support.database_helper import DatabaseTestHelper
+from tests.support.database_test_helper import DatabaseTestHelper
 from tests.support.decimal import quantize_decimal
 from tests.support.factories import build_exchange_rate_pair
 

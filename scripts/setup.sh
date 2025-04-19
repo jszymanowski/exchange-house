@@ -6,7 +6,7 @@ if [ "$1" == "--debug" ]; then
   set -x
 fi
 
-POSTGRES_DB=${POSTGRES_DB:-"exchange_house_production"}
+POSTGRES_DB=${POSTGRES_DB:-"exchange_house_development"}
 POSTGRES_USER=${POSTGRES_USER:-"postgres"}
 POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-"postgres"}
 

@@ -36,7 +36,6 @@ exclude = [".venv", "alembic"]
 ignore_missing_imports = true
 python_version = "3.13"
 
-
 [tool.ruff]
 line-length = 120
 exclude = ["alembic"]
@@ -44,7 +43,6 @@ target-version = "py313"
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "C4", "UP"]
-ignore = ["E501", "W191"]
 
 [tool.aerich]
 tortoise_orm = "app.core.database.TORTOISE_ORM"

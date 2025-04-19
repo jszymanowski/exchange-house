@@ -4,7 +4,7 @@ from tortoise.exceptions import OperationalError
 # Import your models and the transactional decorator
 from app.decorators import database_transactional
 from app.models import Currency, ExchangeRate
-from tests.support.database_helper import DatabaseTestHelper
+from tests.support.database_test_helper import DatabaseTestHelper
 from tests.support.factories import build_exchange_rate
 
 

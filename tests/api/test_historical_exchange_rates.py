@@ -374,8 +374,8 @@ async def test_api_v1_historical_exchange_rates_invalid_base_currency(
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
     assert (
-        response_detail[0]["msg"]
-        == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, testing and precious metals codes are not allowed."
+        response_detail[0]["msg"] == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, "
+        "testing and precious metals codes are not allowed."
     )
 
 
@@ -394,7 +394,8 @@ async def test_api_v1_historical_exchange_rates_invalid_quote_currency(
     assert len(response_detail) == 1
     assert (
         response_detail[0]["msg"]
-        == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, testing and precious metals codes are not allowed."
+        == "Invalid currency code. See https://en.wikipedia.org/wiki/ISO_4217 . Bonds, testing "
+        "and precious metals codes are not allowed."
     )
 
 
