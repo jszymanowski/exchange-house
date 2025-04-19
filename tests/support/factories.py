@@ -18,20 +18,20 @@ class ExchangeRateParams(TypedDict, total=False):
 
 
 def build_exchange_rate(**kwargs: Unpack[ExchangeRateParams]) -> ExchangeRate:
-    defaults = {
+    defaults: ExchangeRateParams = {
         "as_of": date.today(),
         "base_currency_code": Currency("USD"),
         "quote_currency_code": Currency("EUR"),
         "rate": Decimal("0.85000000"),
         "data_source": "test",
     }
-    attributes = defaults | kwargs
+    attributes: ExchangeRateParams = defaults | kwargs
 
     return ExchangeRate(**attributes)
 
 
 def build_exchange_rate_pair(**kwargs: Unpack[ExchangeRateParams]) -> tuple[ExchangeRate, ExchangeRate]:
-    defaults = {
+    defaults: ExchangeRateParams = {
         "as_of": date.today(),
         "base_currency_code": Currency("USD"),
         "quote_currency_code": Currency("EUR"),
