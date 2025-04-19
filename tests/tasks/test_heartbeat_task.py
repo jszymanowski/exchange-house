@@ -3,7 +3,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from app.tasks.heartbeat_task import NoURLSetError, _heartbeat_task
+from app.services.healthchecks_service import NoURLSetError
+from app.tasks.heartbeat_task import _heartbeat_task
 
 
 @pytest.fixture
