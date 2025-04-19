@@ -3,6 +3,4 @@
 set -e
 set -x
 
-mypy app
-ruff check --fix app
-ruff format app
+bash ./scripts/lint.sh --apply-fixes "$@"

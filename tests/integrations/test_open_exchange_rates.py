@@ -126,7 +126,8 @@ class TestOpenExchangeRatesApi:
             "error": True,
             "status": 429,
             "message": "too_many_requests",
-            "description": "Access restricted until 2075-12-25 (reason: too_many_requests). If there has been a mistake, please contact support@openexchangerates.org.",
+            "description": "Access restricted until 2075-12-25 (reason: too_many_requests). "
+            "If there has been a mistake, please contact support@openexchangerates.org.",
         }
         httpx_mock.add_response(
             method="GET",

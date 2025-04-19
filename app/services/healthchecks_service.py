@@ -7,6 +7,10 @@ class NoURLSetError(Exception):
     pass
 
 
+class HealthchecksServiceError(Exception):
+    pass
+
+
 class HealthchecksService:
     def __init__(self, client: HealthchecksClient | None = None):
         self.client = client or get_healthchecks_client()
@@ -22,12 +26,12 @@ class HealthchecksService:
             raise NoURLSetError
 
         try:
-            response = await self.client.ping(url)
-            response.raise_for_status()
+            await self.client.ping(url)
             logger.info(f"Successfully pinged {url}")
         except Exception as e:
-            logger.error(f"Failed to ping {url}: {str(e)}")
-            raise
+            message = f"Failed to ping {url}: {str(e)}"
+            logger.error(message)
+            raise HealthchecksServiceError(message) from e
 
 
 get_healthchecks_service = HealthchecksService()

@@ -111,7 +111,7 @@ async def test_latest_exchange_rates_task_email_failure(
     mock_send_exchange_rate_refresh_email: AsyncMock,
     mock_logger: AsyncMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
-):
+) -> None:
     mock_send_exchange_rate_refresh_email.side_effect = Exception("Email sending error")
 
     result = await _exchange_rate_refresh()

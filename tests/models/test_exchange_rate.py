@@ -4,7 +4,7 @@ from decimal import Decimal
 import pytest
 
 from app.models.exchange_rate import ExchangeRate
-from tests.support.database_helper import DatabaseTestHelper
+from tests.support.database_test_helper import DatabaseTestHelper
 
 
 @pytest.mark.asyncio
