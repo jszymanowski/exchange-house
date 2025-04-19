@@ -8,7 +8,7 @@ class NoURLSetError(Exception):
     pass
 
 
-class HealthcheckService:
+class HealthchecksService:
     def ping_heartbeat(self) -> None:
         self._ping(healthcheck_settings.heartbeat_check_url)
 
@@ -29,4 +29,4 @@ class HealthcheckService:
                 raise
 
 
-healthcheck_service = HealthcheckService()
+healthchecks_service = HealthchecksService()

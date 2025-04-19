@@ -8,7 +8,7 @@ from app.core.dependencies import get_exchange_rate_service
 from app.core.logger import logger
 from app.services.exchange_rate_refresh import build_exchange_rate_refresh
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
-from app.services.healthcheck_service import NoURLSetError, healthcheck_service
+from app.services.healthchecks_service import NoURLSetError, healthchecks_service
 from app.tasks.notifications import send_exchange_rate_refresh_email
 from app.tasks.task_result import TaskResult, failure_result, success_result, warning_result
 
@@ -41,7 +41,7 @@ async def _exchange_rate_refresh() -> TaskResult:
 
     async def _check_in() -> None:
         try:
-            healthcheck_service.ping_refresh_completed()  # TODO: make this async
+            healthchecks_service.ping_refresh_completed()  # TODO: make this async
         except NoURLSetError as e:
             raise CheckInException("No check-in URL set") from e
         except Exception as e:

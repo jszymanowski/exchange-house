@@ -1,13 +1,13 @@
 from app.celery_app import celery_app
 from app.core.logger import logger
-from app.services.healthcheck_service import NoURLSetError, healthcheck_service
+from app.services.healthchecks_service import NoURLSetError, healthchecks_service
 from app.tasks.task_result import TaskResult, failure_result, skipped_result, success_result
 
 
 @celery_app.task(name="app.tasks.heartbeat_task")
 def heartbeat_task() -> TaskResult:
     try:
-        healthcheck_service.ping_heartbeat()  # TODO: make this async
+        healthchecks_service.ping_heartbeat()  # TODO: make this async
         logger.info("Heartbeat completed: check-in complete")
         return success_result()
     except NoURLSetError:
