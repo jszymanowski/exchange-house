@@ -3,4 +3,4 @@
 set -e
 set -x
 
-bash ./scripts/lint.sh --apply-fixes "$@"
+uv run bash ./scripts/lint.sh --apply-fixes "$@"
