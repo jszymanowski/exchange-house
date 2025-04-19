@@ -31,6 +31,8 @@ async def latest_exchange_rate(
 
     result = await exchange_rate_service.get_latest_rate(base_currency_code, quote_currency_code, desired_date)
 
+    # TODO: validate at least one of base_currency_code or quote_currency_code is USD
+
     if result is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

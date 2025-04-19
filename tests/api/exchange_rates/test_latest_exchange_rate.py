@@ -9,7 +9,7 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 
 @pytest.mark.asyncio
-@patch("app.api.latest_exchange_rate.date")
+@patch("app.api.exchange_rates.latest_exchange_rate.date")
 async def test_api_v1_latest_exchange_rate(
     mock_date,
     async_client: AsyncClient,
@@ -18,10 +18,7 @@ async def test_api_v1_latest_exchange_rate(
     fixed_date = date(2025, 4, 1)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/latest_exchange_rate",
-        params={"base_currency_code": "USD", "quote_currency_code": "EUR"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/latest")
     assert response.status_code == 200
 
     response_data = response.json()
@@ -35,7 +32,7 @@ async def test_api_v1_latest_exchange_rate(
 
 
 @pytest.mark.asyncio
-@patch("app.api.latest_exchange_rate.date")
+@patch("app.api.exchange_rates.latest_exchange_rate.date")
 async def test_api_v1_latest_exchange_rate_with_desired_date(
     mock_date,
     async_client: AsyncClient,
@@ -44,14 +41,7 @@ async def test_api_v1_latest_exchange_rate_with_desired_date(
     fixed_date = date(2025, 4, 1)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get(
-        "/api/v1/latest_exchange_rate",
-        params={
-            "base_currency_code": "USD",
-            "quote_currency_code": "EUR",
-            "desired_date": "2024-01-02",
-        },
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/latest", params={"desired_date": "2024-01-02"})
     assert response.status_code == 200
 
     response_data = response.json()
@@ -69,10 +59,7 @@ async def test_api_v1_latest_exchange_rate_invalid_base_currency(
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    response = await async_client.get(
-        "/api/v1/latest_exchange_rate",
-        params={"base_currency_code": "XYZ", "quote_currency_code": "USD"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/XYZ/USD/latest")
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
@@ -89,10 +76,7 @@ async def test_api_v1_latest_exchange_rate_invalid_quote_currency(
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    response = await async_client.get(
-        "/api/v1/latest_exchange_rate",
-        params={"base_currency_code": "USD", "quote_currency_code": "XYZ"},
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/XYZ/latest")
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
