@@ -126,8 +126,6 @@ async def test_latest_exchange_rates_task_email_failure(
     assert "Send email failed: Email sending error" in args[0]
 
 
-@pytest.mark.skip(reason="idk wtf is going on here")
-@patch("app.tasks.exchange_rate_refresh_task.healthchecks_service")
 @pytest.mark.asyncio
 async def test_latest_exchange_rates_task_healthcheck_failure(
     mock_exchange_rate_refresh: AsyncMock,
@@ -137,7 +135,6 @@ async def test_latest_exchange_rates_task_healthcheck_failure(
     mock_logger: AsyncMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
 ):
-    mock_healthchecks_service.ping_refresh_completed.side_effect = Exception("Healthcheck error")
     mock_healthchecks_service.ping_refresh_completed.side_effect = Exception("Healthcheck error")
 
     result = await _exchange_rate_refresh()
