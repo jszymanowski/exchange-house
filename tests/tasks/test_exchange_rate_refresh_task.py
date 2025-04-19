@@ -1,3 +1,4 @@
+from collections.abc import Generator
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -26,11 +27,11 @@ def mock_get_exchange_rate_service():
 
 
 @pytest.fixture
-def mock_healthchecks_service():
+def mock_healthchecks_service() -> Generator[AsyncMock]:
     with (
-        patch("app.tasks.exchange_rate_refresh_task.healthchecks_service") as mock_healthchecks_service,
+        patch("app.tasks.exchange_rate_refresh_task.get_healthchecks_service", new_callable=AsyncMock) as mock,
     ):
-        yield mock_healthchecks_service
+        yield mock
 
 
 @pytest.fixture

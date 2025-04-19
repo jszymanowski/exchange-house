@@ -11,18 +11,18 @@ class HealthchecksService:
     def __init__(self, client: HealthchecksClient | None = None):
         self.client = client or get_healthchecks_client()
 
-    def ping_heartbeat(self) -> None:
-        self._ping(healthcheck_settings.heartbeat_check_url)
+    async def ping_heartbeat(self) -> None:
+        await self._ping(healthcheck_settings.heartbeat_check_url)
 
-    def ping_refresh_completed(self) -> None:
-        self._ping(healthcheck_settings.refresh_completed_url)
+    async def ping_refresh_completed(self) -> None:
+        await self._ping(healthcheck_settings.refresh_completed_url)
 
-    def _ping(self, url: str | None = None, timeout: float = 10.0) -> None:
+    async def _ping(self, url: str | None = None) -> None:
         if url is None:
             raise NoURLSetError
 
         try:
-            response = self.client.ping(url, timeout=timeout)
+            response = await self.client.ping(url)
             response.raise_for_status()
             logger.info(f"Successfully pinged {url}")
         except Exception as e:
@@ -30,4 +30,4 @@ class HealthchecksService:
             raise
 
 
-healthchecks_service = HealthchecksService()
+get_healthchecks_service = HealthchecksService()
