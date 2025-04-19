@@ -1,7 +1,6 @@
 import httpx
 
 
-# TODO: is this in use?
 class HealthchecksClient:
     TIMEOUT_SECONDS = 10.0
     REQUIRED_PREFIX = "http://healthchecks.home/ping"
