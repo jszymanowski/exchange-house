@@ -1,4 +1,5 @@
 import pytest
+from tortoise.connection import Connection
 from tortoise.exceptions import OperationalError
 
 # Import your models and the transactional decorator
@@ -9,7 +10,9 @@ from tests.support.factories import build_exchange_rate
 
 
 @database_transactional
-async def create_test_object(base_currency_code: Currency, should_fail=False, db_connection=None):
+async def create_test_object(
+    base_currency_code: Currency, should_fail: bool = False, db_connection: Connection | None = None
+) -> ExchangeRate:
     # Test function that uses the transactional decorator
     obj = build_exchange_rate(base_currency_code=base_currency_code, quote_currency_code="USD")
     await obj.save(using_db=db_connection)
@@ -46,7 +49,7 @@ async def test_transactional_rollback(test_database: DatabaseTestHelper) -> None
 async def test_nested_transactions(test_database: DatabaseTestHelper) -> None:
     # Test nested transactions (parent transaction controls commit/rollback)
     @database_transactional
-    async def parent_function(db_connection=None):
+    async def parent_function(db_connection: Connection | None = None) -> tuple[ExchangeRate, ExchangeRate]:
         # Create object in parent transaction
         parent_obj = build_exchange_rate(base_currency_code="EUR")
         await parent_obj.save(using_db=db_connection)
@@ -67,7 +70,7 @@ async def test_nested_transactions(test_database: DatabaseTestHelper) -> None:
 async def test_nested_transaction_rollback(test_database: DatabaseTestHelper) -> None:
     # Test rollback of parent transaction affects child transactions
     @database_transactional
-    async def parent_with_rollback(db_connection=None):
+    async def parent_with_rollback(db_connection: Connection | None = None) -> None:
         # Create object in parent transaction
         parent_obj = build_exchange_rate(base_currency_code="EUR")
         await parent_obj.save(using_db=db_connection)

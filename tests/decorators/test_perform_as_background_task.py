@@ -9,13 +9,13 @@ from app.decorators.perform_as_background_task import perform_as_background_task
 
 
 @pytest.mark.asyncio
-async def test_function_with_background_tasks():
+async def test_function_with_background_tasks() -> None:
     """Test decorator with BackgroundTasks injected"""
     test_function = MagicMock()
     background_tasks = BackgroundTasks()
 
     @perform_as_background_task
-    def decorated_function(arg1, arg2, kwarg1=None):
+    def decorated_function(arg1: str, arg2: str, kwarg1: str | None = None) -> None:
         test_function(arg1, arg2, kwarg1=kwarg1)
 
     # Call with background_tasks
@@ -33,12 +33,12 @@ async def test_function_with_background_tasks():
 
 
 @pytest.mark.asyncio
-async def test_function_without_background_tasks():
+async def test_function_without_background_tasks() -> None:
     """Test decorator without BackgroundTasks (scheduled job scenario)"""
     test_function = MagicMock()
 
     @perform_as_background_task
-    def decorated_function(arg1, arg2, kwarg1=None):
+    def decorated_function(arg1: str, arg2: str, kwarg1: str | None = None) -> None:
         test_function(arg1, arg2, kwarg1=kwarg1)
 
     # Call without background_tasks
@@ -52,11 +52,11 @@ async def test_function_without_background_tasks():
 
 
 @pytest.mark.asyncio
-async def test_thread_execution():
+async def test_thread_execution() -> None:
     """Test that function actually runs in a separate thread"""
     current_thread_ids = []
 
-    def get_thread_id():
+    def get_thread_id() -> int:
         import threading
 
         return threading.get_ident()
@@ -66,7 +66,7 @@ async def test_thread_execution():
     current_thread_ids.append(main_thread_id)
 
     @perform_as_background_task
-    def thread_function():
+    def thread_function() -> None:
         # Get the thread ID inside the function
         thread_id = get_thread_id()
         current_thread_ids.append(thread_id)
@@ -85,11 +85,11 @@ async def test_thread_execution():
 
 
 @pytest.mark.asyncio
-async def test_function_result():
+async def test_function_result() -> None:
     """Test that the decorator always returns None regardless of function return value"""
 
     @perform_as_background_task
-    def function_with_return():
+    def function_with_return() -> None:
         return "some result"
 
     # With background tasks
@@ -103,12 +103,12 @@ async def test_function_result():
 
 
 @pytest.mark.asyncio
-async def test_exception_handling():
+async def test_exception_handling() -> None:
     """Test that exceptions in the background function don't propagate"""
     error_raised = False
 
     @perform_as_background_task
-    def function_with_exception():
+    def function_with_exception() -> None:
         nonlocal error_raised
         error_raised = True
         raise ValueError("Test exception")
@@ -123,19 +123,19 @@ async def test_exception_handling():
 
 
 @pytest.mark.asyncio
-async def test_with_fastapi_route():
+async def test_with_fastapi_route() -> None:
     """Test integration with FastAPI routes"""
     test_function = MagicMock()
 
     @perform_as_background_task
-    def task_function(arg1):
+    def task_function(arg1: str) -> None:
         test_function(arg1)
 
     # Simulate FastAPI dependency injection
     background_tasks = BackgroundTasks()
 
     # This mimics a FastAPI route that injects BackgroundTasks
-    async def route_handler(background_tasks: BackgroundTasks):
+    async def route_handler(background_tasks: BackgroundTasks = background_tasks) -> dict[str, str]:
         task_function("test_value", background_tasks=background_tasks)
         return {"status": "scheduled"}
 

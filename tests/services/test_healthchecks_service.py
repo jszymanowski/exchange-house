@@ -15,13 +15,13 @@ def mock_healthchecks_client() -> AsyncMock:
 
 
 @pytest.mark.asyncio
-async def test_ping_heartbeat_success(mock_healthchecks_client: AsyncMock):
+async def test_ping_heartbeat_success(mock_healthchecks_client: AsyncMock) -> None:
     await HealthchecksService(client=mock_healthchecks_client).ping_heartbeat()
     mock_healthchecks_client.ping.assert_called_once_with(healthcheck_settings.heartbeat_check_url)
 
 
 @pytest.mark.asyncio
-async def test_ping_heartbeat_failure(mock_healthchecks_client: AsyncMock):
+async def test_ping_heartbeat_failure(mock_healthchecks_client: AsyncMock) -> None:
     mock_healthchecks_client.ping.side_effect = Exception("Test error")
 
     with pytest.raises(HealthchecksServiceError):
@@ -29,13 +29,13 @@ async def test_ping_heartbeat_failure(mock_healthchecks_client: AsyncMock):
 
 
 @pytest.mark.asyncio
-async def test_ping_refresh_completed_success(mock_healthchecks_client: AsyncMock):
+async def test_ping_refresh_completed_success(mock_healthchecks_client: AsyncMock) -> None:
     await HealthchecksService(client=mock_healthchecks_client).ping_refresh_completed()
     mock_healthchecks_client.ping.assert_called_once_with(healthcheck_settings.refresh_completed_url)
 
 
 @pytest.mark.asyncio
-async def test_ping_refresh_completed_failure(mock_healthchecks_client: AsyncMock):
+async def test_ping_refresh_completed_failure(mock_healthchecks_client: AsyncMock) -> None:
     mock_healthchecks_client.ping.side_effect = Exception("Test error")
 
     with pytest.raises(HealthchecksServiceError):

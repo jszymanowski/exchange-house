@@ -6,6 +6,7 @@ from importlib import resources
 import pytest
 from pytest_httpx import HTTPXMock
 
+from app.models import Currency
 from app.models.exchange_rate import ExchangeRate
 from app.services.exchange_rate_refresh import ExchangeRateRefresh
 from app.services.exchange_rate_service import ExchangeRateService
@@ -40,9 +41,9 @@ async def test_exchange_rate_refresh(httpx_mock: HTTPXMock, test_database: Datab
     subject = ExchangeRateRefresh(start_date=start_date, end_date=end_date, exchange_rate_service=exchange_rate_service)
     await subject.save()
 
-    forward_rate = await exchange_rate_service.get_latest_rate("GBP", "USD", date(2025, 1, 31))
-    inverse_rate = await exchange_rate_service.get_latest_rate("USD", "GBP", date(2025, 1, 31))
-    unsupported_rate = await exchange_rate_service.get_latest_rate("BTC", "USD", date(2025, 1, 31))
+    forward_rate = await exchange_rate_service.get_latest_rate(Currency("GBP"), Currency("USD"), date(2025, 1, 31))
+    inverse_rate = await exchange_rate_service.get_latest_rate(Currency("USD"), Currency("GBP"), date(2025, 1, 31))
+    unsupported_rate = await exchange_rate_service.get_latest_rate(Currency("BTC"), Currency("USD"), date(2025, 1, 31))
 
     assert forward_rate is not None
     assert inverse_rate is not None

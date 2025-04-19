@@ -13,14 +13,14 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
 
     async def get_currency_pairs(self) -> list[CurrencyPair]:
         return [
-            CurrencyPair(base_currency_code="EUR", quote_currency_code="USD"),
-            CurrencyPair(base_currency_code="GBP", quote_currency_code="USD"),
-            CurrencyPair(base_currency_code="JPY", quote_currency_code="USD"),
-            CurrencyPair(base_currency_code="SGD", quote_currency_code="USD"),
-            CurrencyPair(base_currency_code="USD", quote_currency_code="EUR"),
-            CurrencyPair(base_currency_code="USD", quote_currency_code="GBP"),
-            CurrencyPair(base_currency_code="USD", quote_currency_code="JPY"),
-            CurrencyPair(base_currency_code="USD", quote_currency_code="SGD"),
+            CurrencyPair(base_currency_code=Currency("EUR"), quote_currency_code=Currency("USD")),
+            CurrencyPair(base_currency_code=Currency("GBP"), quote_currency_code=Currency("USD")),
+            CurrencyPair(base_currency_code=Currency("JPY"), quote_currency_code=Currency("USD")),
+            CurrencyPair(base_currency_code=Currency("SGD"), quote_currency_code=Currency("USD")),
+            CurrencyPair(base_currency_code=Currency("USD"), quote_currency_code=Currency("EUR")),
+            CurrencyPair(base_currency_code=Currency("USD"), quote_currency_code=Currency("GBP")),
+            CurrencyPair(base_currency_code=Currency("USD"), quote_currency_code=Currency("JPY")),
+            CurrencyPair(base_currency_code=Currency("USD"), quote_currency_code=Currency("SGD")),
         ]
 
     async def get_latest_rate(
@@ -36,14 +36,14 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
                 rate=Decimal("1.00000000"),
                 as_of=as_of,
             )
-        elif base_currency_code == "USD" and quote_currency_code == "EUR":
+        elif base_currency_code == Currency("USD") and quote_currency_code == Currency("EUR"):
             return build_exchange_rate(
                 base_currency_code=base_currency_code,
                 quote_currency_code=quote_currency_code,
                 rate=Decimal("1.02000000"),
                 as_of=as_of,
             )
-        elif base_currency_code == "USD" and quote_currency_code == "GBP":
+        elif base_currency_code == Currency("USD") and quote_currency_code == Currency("GBP"):
             return build_exchange_rate(
                 base_currency_code=base_currency_code,
                 quote_currency_code=quote_currency_code,

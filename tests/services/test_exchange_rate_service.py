@@ -4,6 +4,7 @@ from typing import Literal
 
 import pytest
 
+from app.models import Currency
 from app.models.currency_pair import CurrencyPair
 from app.models.exchange_rate import ExchangeRate
 from app.services.exchange_rate_service import ExchangeRateService
@@ -16,23 +17,41 @@ from tests.support.factories import build_exchange_rate_pair
 async def exchange_rates(test_database: DatabaseTestHelper) -> list[ExchangeRate]:
     exchange_rates = [
         *build_exchange_rate_pair(
-            base_currency_code="USD", quote_currency_code="EUR", as_of=date(2023, 1, 1), rate=Decimal("0.85")
+            base_currency_code=Currency("USD"),
+            quote_currency_code=Currency("EUR"),
+            as_of=date(2023, 1, 1),
+            rate=Decimal("0.85"),
         ),
         *build_exchange_rate_pair(
-            base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 1), rate=Decimal("100")
+            base_currency_code=Currency("USD"),
+            quote_currency_code=Currency("JPY"),
+            as_of=date(2023, 1, 1),
+            rate=Decimal("100"),
         ),
         *build_exchange_rate_pair(
-            base_currency_code="USD", quote_currency_code="EUR", as_of=date(2023, 1, 20), rate=Decimal("0.87")
+            base_currency_code=Currency("USD"),
+            quote_currency_code=Currency("EUR"),
+            as_of=date(2023, 1, 20),
+            rate=Decimal("0.87"),
         ),
         *build_exchange_rate_pair(
-            base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 20), rate=Decimal("102")
+            base_currency_code=Currency("USD"),
+            quote_currency_code=Currency("JPY"),
+            as_of=date(2023, 1, 20),
+            rate=Decimal("102"),
         ),
         *build_exchange_rate_pair(
-            base_currency_code="USD", quote_currency_code="JPY", as_of=date(2023, 1, 15), rate=Decimal("101")
+            base_currency_code=Currency("USD"),
+            quote_currency_code=Currency("JPY"),
+            as_of=date(2023, 1, 15),
+            rate=Decimal("101"),
         ),
         # Invalid currencies
         *build_exchange_rate_pair(
-            base_currency_code="BTC", quote_currency_code="USD", as_of=date(2023, 1, 15), rate=Decimal("0.00002")
+            base_currency_code=Currency("BTC"),
+            quote_currency_code=Currency("USD"),
+            as_of=date(2023, 1, 15),
+            rate=Decimal("0.00002"),
         ),
     ]
     await ExchangeRate.bulk_create(exchange_rates)
@@ -57,17 +76,17 @@ async def test_get_currency_pairs() -> None:
     results = await service.get_currency_pairs()
 
     assert results == [
-        CurrencyPair(base_currency_code="EUR", quote_currency_code="USD"),
-        CurrencyPair(base_currency_code="JPY", quote_currency_code="USD"),
-        CurrencyPair(base_currency_code="USD", quote_currency_code="EUR"),
-        CurrencyPair(base_currency_code="USD", quote_currency_code="JPY"),
+        CurrencyPair(base_currency_code=Currency("EUR"), quote_currency_code=Currency("USD")),
+        CurrencyPair(base_currency_code=Currency("JPY"), quote_currency_code=Currency("USD")),
+        CurrencyPair(base_currency_code=Currency("USD"), quote_currency_code=Currency("EUR")),
+        CurrencyPair(base_currency_code=Currency("USD"), quote_currency_code=Currency("JPY")),
     ]
 
 
 @pytest.mark.asyncio
 async def test_get_latest_rate_success() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "EUR"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("EUR")
     expected_rate = Decimal("0.87")
 
     service = ExchangeRateService()
@@ -82,8 +101,8 @@ async def test_get_latest_rate_success() -> None:
 
 @pytest.mark.asyncio
 async def test_get_latest_rate_success_with_as_of() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "EUR"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("EUR")
     as_of = date(2023, 1, 1)
     expected_rate = Decimal("0.85")
 
@@ -99,8 +118,8 @@ async def test_get_latest_rate_success_with_as_of() -> None:
 
 @pytest.mark.asyncio
 async def test_get_latest_rate_success_same_currency() -> None:
-    base_currency_code = "EUR"
-    quote_currency_code = "EUR"
+    base_currency_code = Currency("EUR")
+    quote_currency_code = Currency("EUR")
     as_of = date(2023, 1, 1)
     expected_rate = Decimal("1")
 
@@ -116,8 +135,8 @@ async def test_get_latest_rate_success_same_currency() -> None:
 
 @pytest.mark.asyncio
 async def test_get_latest_rate_not_found() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "XYZ"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("XYZ")
     as_of = date(2023, 1, 1)
 
     service = ExchangeRateService()
@@ -128,8 +147,8 @@ async def test_get_latest_rate_not_found() -> None:
 
 @pytest.mark.asyncio
 async def test_get_historical_rates_success() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "EUR"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("EUR")
     start_date = date(2023, 1, 1)
 
     service = ExchangeRateService()
@@ -147,8 +166,8 @@ async def test_get_historical_rates_success() -> None:
 
 @pytest.mark.asyncio
 async def test_get_historical_rates_not_found() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "XYZ"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("XYZ")
     start_date = date(2023, 1, 1)
 
     service = ExchangeRateService()
@@ -161,8 +180,8 @@ async def test_get_historical_rates_not_found() -> None:
 
 @pytest.mark.asyncio
 async def test_get_historical_rates_with_limit() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "EUR"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("EUR")
     start_date = date(2023, 1, 1)
     limit = 1
 
@@ -181,8 +200,8 @@ async def test_get_historical_rates_with_limit() -> None:
 
 @pytest.mark.asyncio
 async def test_get_historical_rates_with_sort_order_desc() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "EUR"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("EUR")
     start_date = date(2023, 1, 1)
     sort_order: Literal["desc", "asc"] = "desc"
 
@@ -200,8 +219,8 @@ async def test_get_historical_rates_with_sort_order_desc() -> None:
 
 @pytest.mark.asyncio
 async def test_create_rate_success() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "EUR"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("EUR")
     as_of = date(2023, 1, 30)
     rate = Decimal("0.90")
     source = "test"
@@ -227,8 +246,8 @@ async def test_create_rate_success() -> None:
 
 @pytest.mark.asyncio
 async def test_create_rate_failure() -> None:
-    base_currency_code = "USD"
-    quote_currency_code = "EUR"
+    base_currency_code = Currency("USD")
+    quote_currency_code = Currency("EUR")
     as_of = date(2023, 1, 1)
     rate = Decimal("0.85")
     source = "test"
