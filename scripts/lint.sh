@@ -4,7 +4,6 @@ set -e
 set -x
 
 
-# Check for --apply-fixes flag
 APPLY_FIXES=false
 for arg in "$@"; do
   if [ "$arg" == "--apply-fixes" ]; then
@@ -12,7 +11,7 @@ for arg in "$@"; do
   fi
 done
 
-mypy app # TODO: add tests
+mypy app tests
 
 if [ "$APPLY_FIXES" = true ]; then
   ruff check --fix app tests

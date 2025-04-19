@@ -11,7 +11,7 @@ from app.core.dependencies import get_exchange_rate_service
 from app.core.logger import setup_logging
 from app.main import app
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
-from tests.support.database_test_helper import DatabaseTestHelper
+from tests.support.database_test_helper import DatabaseTestHelper, get_database_test_helper
 from tests.support.mock_exchange_rate_service import MockExchangeRateService
 
 setup_logging()
@@ -35,7 +35,7 @@ async def test_database() -> AsyncGenerator[DatabaseTestHelper]:
         _create_db=True,
     ):
         # db connected
-        yield DatabaseTestHelper
+        yield get_database_test_helper()
         # app teardown
     # db connections closed
     await Tortoise._drop_databases()

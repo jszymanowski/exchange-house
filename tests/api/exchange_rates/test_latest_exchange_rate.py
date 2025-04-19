@@ -1,5 +1,5 @@
 from datetime import date
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from httpx import AsyncClient
@@ -11,7 +11,7 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.latest_exchange_rate.date")
 async def test_api_v1_latest_exchange_rate(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -34,7 +34,7 @@ async def test_api_v1_latest_exchange_rate(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.latest_exchange_rate.date")
 async def test_api_v1_latest_exchange_rate_with_desired_date(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:

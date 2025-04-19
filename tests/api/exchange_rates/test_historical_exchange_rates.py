@@ -1,5 +1,5 @@
 from datetime import date
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 from httpx import AsyncClient
@@ -10,7 +10,7 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -40,7 +40,7 @@ async def test_api_v1_historical_exchange_rates(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_start_date(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -70,7 +70,7 @@ async def test_api_v1_historical_exchange_rates_with_start_date(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_end_date(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -149,7 +149,7 @@ async def test_api_v1_historical_exchange_rates_with_start_date_after_end_date(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_limit(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -179,7 +179,7 @@ async def test_api_v1_historical_exchange_rates_with_limit(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_order_asc(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -209,7 +209,7 @@ async def test_api_v1_historical_exchange_rates_with_order_asc(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_order_desc(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -239,7 +239,7 @@ async def test_api_v1_historical_exchange_rates_with_order_desc(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_limit_and_order_asc(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -269,7 +269,7 @@ async def test_api_v1_historical_exchange_rates_with_limit_and_order_asc(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_start_date_after_today(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
@@ -286,7 +286,7 @@ async def test_api_v1_historical_exchange_rates_with_start_date_after_today(
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_end_date_after_today(
-    mock_date,
+    mock_date: MagicMock,
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
