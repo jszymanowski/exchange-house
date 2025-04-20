@@ -34,7 +34,7 @@ build_docker_container() {
 
   printf "\nBuilding container\n"
   if [ -f .env ]; then
-    docker run -d --env-file .env -p "$host_port":"$container_port" --name "$container_name" "$image_name"
+    docker run -d --env-file .env --network=host -p "$host_port":"$container_port" --name "$container_name" "$image_name"
   else
     echo "Warning: .env file not found. Running container without environment variables."
     docker run -d -p "$host_port":"$container_port" --name "$container_name" "$image_name"
