@@ -14,9 +14,6 @@ async def available_dates(
     """
     Retrieve a list of available dates for exchange rate data.
 
-    """
-    Retrieve a list of available dates for exchange rate data.
-
     Returns:
         DateListResponse: Object containing a list of dates for which exchange rate data is available
     """
