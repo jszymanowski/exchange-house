@@ -1,5 +1,3 @@
 {
-  "extends": [
-    "github>jszymanowski/renovate-config:fastapi-react#v0.10.0"
-  ]
+  "extends": ["github>jszymanowski/renovate-config:fastapi-react#v0.11.0"]
 }

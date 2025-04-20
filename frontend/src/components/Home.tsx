@@ -1,18 +1,22 @@
-import { useEffect, useState } from "react";
 import { Heading, Text } from "@jszymanowski/breeze-primitives";
+import { useQuery } from "@tanstack/react-query";
 
-import { getAvailableCurrencyPairs } from "@/services/api";
-import { CurrencyPair } from "@/types";
+import ErrorOverlay from "@/components/ErrorOverlay";
+import PageLoader from "@/components/PageLoader";
+import { getAvailableCurrencyPairs } from "@/services/exchangeRateService";
 import { API_URL } from "@/config";
 
 export default function Home() {
-  const [currencyPairs, setCurrencyPairs] = useState<CurrencyPair[]>([]);
+  const { isPending, isError, error, data } = useQuery({
+    queryKey: ["currency-pairs"],
+    queryFn: getAvailableCurrencyPairs,
+  });
 
-  useEffect(() => {
-    getAvailableCurrencyPairs().then((response) => {
-      setCurrencyPairs(response.data);
-    });
-  }, []);
+  if (isPending || (!isError && !data))
+    return <PageLoader message="Loading exchange rates" />;
+  if (isError) return <ErrorOverlay message={error?.message} />;
+
+  const { data: currencyPairs } = data;
 
   return (
     <div>
