@@ -9,7 +9,11 @@ interface Props extends BoxProps {
 
 export default function Container({ children, className, ...props }: Props) {
   return (
-    <Box width="full" className={cn("max-w-6xl p-12 pt-0 align-left", className)} {...props}>
+    <Box
+      width="full"
+      className={cn("max-w-6xl p-12 pt-0 align-left", className)}
+      {...props}
+    >
       {children}
     </Box>
   );

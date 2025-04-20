@@ -6,9 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "biome check .",
-    "lint:ci": "biome ci .",
-    "lint:fix": "biome check --write --unsafe .",
+    "format": "prettier --write .",
+    "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
     "test:debug": "vitest --run --inspect-brk --no-file-parallelism"
@@ -18,6 +17,7 @@
     "@jszymanowski/breeze-primitives": "0.9.0",
     "@jszymanowski/proper-date.js": "0.6.1",
     "@tailwindcss/vite": "4.1.2",
+    "axios": "1.8.4",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "react": "19.1.0",
@@ -26,11 +26,18 @@
     "tailwindcss": "4.1.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.22.0",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
     "@vitejs/plugin-react": "4.3.4",
+    "eslint": "^9.22.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.19",
+    "globals": "^16.0.0",
     "jsdom": "26.0.0",
+    "prettier": "^3.5.3",
     "typescript": "5.7.3",
+    "typescript-eslint": "^8.26.1",
     "vite": "6.3.2",
     "vitest": "3.1.1"
   },
