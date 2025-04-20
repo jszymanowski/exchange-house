@@ -37,7 +37,7 @@ function toCamelCaseKeys<T>(obj: T): CamelCaseKeys<T> {
 
 const axiosInstance = axios.create({
   baseURL: `${API_URL}/api/v1/`,
-  timeout: import.meta.env.VITE_API_TIMEOUT ? parseInt(import.meta.env.VITE_API_TIMEOUT) : 10_000,
+  timeout: import.meta.env.VITE_API_TIMEOUT ? Number.parseInt(import.meta.env.VITE_API_TIMEOUT) : 10_000,
   headers: {
     "Content-Type": "application/json",
   },
