@@ -9,6 +9,8 @@ on:
 
 jobs:
   test-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     concurrency:
       group: ${{ github.workflow }}-${{ github.head_ref }}
       cancel-in-progress: true
@@ -23,8 +25,6 @@ jobs:
             run_command: pnpm test
           - task: build
             run_command: pnpm build
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
 
     defaults:
       run:
