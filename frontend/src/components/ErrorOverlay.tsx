@@ -1,8 +1,6 @@
-
 import { CircleX } from "lucide-react";
 
 import { Flex, Heading } from "@jszymanowski/breeze-primitives";
-
 
 interface Props {
   message?: string;

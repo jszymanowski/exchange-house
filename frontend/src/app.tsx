@@ -1,12 +1,9 @@
-import {
-  QueryClient,
-  QueryClientProvider,
-} from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import Home from "@/components/Home";
 import Layout from "@/components/Layout";
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient();
 
 export function App() {
   return (

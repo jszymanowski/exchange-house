@@ -24,10 +24,12 @@ export const handlers = [
       ["NZD", "USD"],
     ];
 
-    const data = pairs.map((pair) => createCurrencyPair({
-      baseCurrencyCode: pair[0],
-      quoteCurrencyCode: pair[1],
-    }));
+    const data = pairs.map((pair) =>
+      createCurrencyPair({
+        baseCurrencyCode: pair[0],
+        quoteCurrencyCode: pair[1],
+      }),
+    );
 
     return HttpResponse.json({
       data,

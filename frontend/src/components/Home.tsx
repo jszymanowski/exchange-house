@@ -1,17 +1,19 @@
 import { Heading, Text } from "@jszymanowski/breeze-primitives";
-import {
-  useQuery,
-} from '@tanstack/react-query'
+import { useQuery } from "@tanstack/react-query";
 
-import ErrorOverlay from "@/components/ErrorOverlay"
-import PageLoader from "@/components/PageLoader"
-import { getAvailableCurrencyPairs } from "@/services/api";
+import ErrorOverlay from "@/components/ErrorOverlay";
+import PageLoader from "@/components/PageLoader";
+import { getAvailableCurrencyPairs } from "@/integrations/exchangeHouseClient";
 import { API_URL } from "@/config";
 
 export default function Home() {
-  const { isPending, isError, error, data } = useQuery({ queryKey: ['currency-pairs'], queryFn: getAvailableCurrencyPairs })
+  const { isPending, isError, error, data } = useQuery({
+    queryKey: ["currency-pairs"],
+    queryFn: getAvailableCurrencyPairs,
+  });
 
-  if (isPending || (!isError && !data)) return <PageLoader message="Loading exchange rates" />;
+  if (isPending || (!isError && !data))
+    return <PageLoader message="Loading exchange rates" />;
   if (isError) return <ErrorOverlay message={error?.message} />;
 
   const { data: currencyPairs } = data;
