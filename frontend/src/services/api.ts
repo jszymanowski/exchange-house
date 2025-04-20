@@ -26,7 +26,6 @@ function toCamelCaseKeys<T>(obj: T): CamelCaseKeys<T> {
     return Object.keys(obj).reduce(
       (acc, key) => {
         const camelKey = toCamelCase(key);
-        // biome-ignore lint/suspicious/noExplicitAny: any is needed to support dynamic keys
         (acc as any)[camelKey] = toCamelCaseKeys((obj as any)[key]);
         return acc;
       },
