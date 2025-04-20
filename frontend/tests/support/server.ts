@@ -15,14 +15,13 @@ export const handlers = [
       ["USD", "CAD"],
       ["USD", "AUD"],
       ["USD", "NZD"],
-      ["USD", "CNY"],
       ["EUR", "USD"],
-      ["EUR", "GBP"],
-      ["EUR", "JPY"],
-      ["EUR", "CHF"],
-      ["EUR", "CAD"],
-      ["EUR", "AUD"],
-      ["EUR", "NZD"],
+      ["GBP", "USD"],
+      ["JPY", "USD"],
+      ["CHF", "USD"],
+      ["CAD", "USD"],
+      ["AUD", "USD"],
+      ["NZD", "USD"],
     ];
 
     const data = pairs.map((pair) => createCurrencyPair({

@@ -64,9 +64,13 @@ const handleError = (error: unknown): string => {
   return "An unexpected error occurred";
 };
 
-export const getAvailableCurrencyPairs = async (): Promise<CurrencyPair[]> => {
+interface CurrencyPairResponse {
+  data: CurrencyPair[];
+}
+
+export const getAvailableCurrencyPairs = async (): Promise<CurrencyPairResponse> => {
   try {
-    const response = await axiosInstance.get<CurrencyPair[]>(
+    const response = await axiosInstance.get<CurrencyPairResponse>(
       "exchange_rates/available_currency_pairs",
     );
     return response.data;
