@@ -62,6 +62,7 @@ export const handlers = [
         date <= mockYesterday;
         date = date.add(1, "day")
       ) {
+        // Calculate mock rate that gradually increases from ~1.001 based on days from start date
         const rate = 1.001 + date.difference(startDate) / 100 / 2;
         data.push({
           date: date.toString(),

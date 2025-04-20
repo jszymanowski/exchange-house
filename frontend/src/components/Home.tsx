@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import ErrorOverlay from "@/components/ErrorOverlay";
 import PageLoader from "@/components/PageLoader";
-import { getAvailableCurrencyPairs } from "@/integrations/exchangeHouseClient";
+import { getAvailableCurrencyPairs } from "@/services/exchangeRateService";
 import { API_URL } from "@/config";
 
 export default function Home() {

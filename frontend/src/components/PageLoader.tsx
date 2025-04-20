@@ -11,7 +11,7 @@ export default function PageLoader({ message }: Props) {
     <Flex align="center" justify="center" className="h-full w-full">
       <Flex direction="col" justify="center">
         <Flex align="center" justify="center" gapX="4" className="my-6">
-          <CircleDollarSign size="128" className="text-info animate-bounce" />
+          <CircleDollarSign size={128} className="text-info animate-bounce" />
         </Flex>
         <Flex direction="col" justify="center" className="max-w-[500px]">
           {message ? (
