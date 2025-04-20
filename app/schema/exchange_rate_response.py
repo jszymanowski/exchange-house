@@ -38,3 +38,7 @@ class HistoricalExchangeRateResponse(BaseModel):
     base_currency_code: Currency
     quote_currency_code: Currency
     data: list[ExchangeRateData]
+    total: int
+    page: int
+    size: int
+    pages: int

@@ -23,18 +23,19 @@ def get_default_end_date() -> AvailableDate:
     return cast(AvailableDate, date.today())
 
 
-MAX_RECORDS_PER_REQUEST = 10_000  # TODO: lower this with pagination
-DEFAULT_LIMIT = 1_000
+DEFAULT_PAGE = 1
+DEFAULT_SIZE = 1_000
+MAX_RECORDS_PER_REQUEST = DEFAULT_SIZE
 
 
 class HistoricalExchangeRatesQueryParams(BaseModel):
     start_date: AvailableDate = Field(default_factory=get_default_start_date)
     end_date: AvailableDate = Field(default_factory=get_default_end_date)
-    limit: int = Field(default=DEFAULT_LIMIT, ge=1, le=MAX_RECORDS_PER_REQUEST)
+    page: int = Field(default=DEFAULT_PAGE, ge=1)
+    size: int = Field(default=DEFAULT_SIZE, ge=1, le=MAX_RECORDS_PER_REQUEST)
     order: Literal["asc", "desc"] = Field(default="desc")
 
 
-# TODO: Add pagination
 @router.get("/{base_currency_code}/{quote_currency_code}/historical")
 async def historical_exchange_rates(
     base_currency_code: Currency,
@@ -44,8 +45,11 @@ async def historical_exchange_rates(
 ) -> HistoricalExchangeRateResponse:
     start_date = query_params.start_date
     end_date = query_params.end_date
-    limit = query_params.limit
+    size = query_params.size
+    page = query_params.page
     order = query_params.order
+
+    offset = (page - 1) * size
 
     today = date.today()
     validation_errors = []
@@ -68,12 +72,13 @@ async def historical_exchange_rates(
             detail="; ".join(validation_errors),
         )
 
-    exchange_rates = await exchange_rate_service.get_historical_rates(
+    exchange_rates, total = await exchange_rate_service.get_historical_rates(
         base_currency_code=base_currency_code,
         quote_currency_code=quote_currency_code,
         start_date=start_date,
         end_date=end_date,
-        limit=limit,
+        limit=size,
+        offset=offset,
         sort_order=order,
     )
 
@@ -83,4 +88,8 @@ async def historical_exchange_rates(
         base_currency_code=base_currency_code,
         quote_currency_code=quote_currency_code,
         data=exchange_rate_data,
+        total=total,
+        page=page,
+        size=size,
+        pages=(total + size - 1) // size,
     )

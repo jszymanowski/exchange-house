@@ -38,8 +38,9 @@ class ExchangeRateServiceInterface:
         start_date: date | None = None,
         end_date: date | None = None,
         limit: int | None = None,
+        offset: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
-    ) -> list[ExchangeRate]:
+    ) -> tuple[list[ExchangeRate], int]:
         raise RuntimeError("Must be implemented")
 
     async def bulk_create_rates(self, params_set: list[CreateRateParams]) -> None:
@@ -107,8 +108,9 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         start_date: date | None = None,
         end_date: date | None = None,
         limit: int | None = None,
+        offset: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
-    ) -> list[ExchangeRate]:
+    ) -> tuple[list[ExchangeRate], int]:
         if end_date is None:
             end_date = date.today()
 
@@ -118,22 +120,30 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         if start_date > end_date:
             raise ValueError("start_date must be before or equal to today")
 
-        query = ExchangeRate.filter(
+        query_unlimited = ExchangeRate.filter(
             base_currency_code=base_currency_code,
             quote_currency_code=quote_currency_code,
             as_of__lte=end_date,
             as_of__gte=start_date,
         )
 
+        query = query_unlimited
+
         if limit is not None:
             query = query.limit(limit)
+
+        if offset is not None:
+            query = query.offset(offset)
 
         if sort_order == "desc":
             query = query.order_by("-as_of")
         else:
             query = query.order_by("as_of")
 
-        return await query.all()
+        data = await query.all()
+        total = await query_unlimited.count()
+
+        return data, total
 
     @database_transactional
     async def bulk_create_rates(

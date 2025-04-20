@@ -18,7 +18,7 @@ async def send_exchange_rate_refresh_email(
         logger.warning("No admin email found")
         return
 
-    exchange_rates = await exchange_rate_service.get_historical_rates(
+    exchange_rates, _total = await exchange_rate_service.get_historical_rates(
         base_currency_code=base_currency,
         quote_currency_code=quote_currency,
         limit=2,

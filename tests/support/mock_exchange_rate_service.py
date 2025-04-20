@@ -60,8 +60,9 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
         start_date: date | None = None,
         end_date: date | None = None,
         limit: int | None = None,
+        offset: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
-    ) -> list[ExchangeRate]:
+    ) -> tuple[list[ExchangeRate], int]:
         rates = [
             build_exchange_rate(
                 as_of=date(2024, 1, 1),
@@ -112,6 +113,7 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
                 rate=Decimal("0.92000000"),
             ),
         ]
+        total = len(rates)
 
         if start_date is not None:
             rates = [rate for rate in rates if rate.as_of >= start_date]
@@ -119,10 +121,13 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
         if end_date is not None:
             rates = [rate for rate in rates if rate.as_of <= end_date]
 
+        if offset is not None:
+            rates = rates[offset:]
+
         if limit is not None:
             rates = rates[:limit]
 
         if sort_order == "desc":
             rates.reverse()
 
-        return rates
+        return rates, total

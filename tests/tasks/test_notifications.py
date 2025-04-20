@@ -28,7 +28,7 @@ async def test_send_exchange_rate_refresh_email_success() -> None:
         rate=Decimal("0.72"),
     )
 
-    mock_exchange_rate_service.get_historical_rates.return_value = [latest_rate, previous_rate]
+    mock_exchange_rate_service.get_historical_rates.return_value = [latest_rate, previous_rate], 2
 
     with (
         patch("app.tasks.notifications.email_settings") as mock_email_settings,
@@ -88,7 +88,7 @@ async def test_send_exchange_rate_refresh_email_not_enough_rates() -> None:
         quote_currency_code=Currency("USD"),
         rate=Decimal("0.75"),
     )
-    mock_exchange_rate_service.get_historical_rates.return_value = [latest_rate]
+    mock_exchange_rate_service.get_historical_rates.return_value = [latest_rate], 1
 
     with (
         patch("app.tasks.notifications.email_settings") as mock_email_settings,
@@ -108,7 +108,7 @@ async def test_send_exchange_rate_refresh_email_not_enough_rates() -> None:
 async def test_send_exchange_rate_refresh_email_empty_rates() -> None:
     mock_exchange_rate_service = AsyncMock(spec=ExchangeRateServiceInterface)
 
-    mock_exchange_rate_service.get_historical_rates.return_value = []
+    mock_exchange_rate_service.get_historical_rates.return_value = [], 0
 
     with (
         patch("app.tasks.notifications.email_settings") as mock_email_settings,

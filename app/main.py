@@ -2,6 +2,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse
 from tortoise.contrib.fastapi import tortoise_exception_handlers
 
 from app.api.routes import router as api_router
@@ -38,3 +39,8 @@ app = FastAPI(
 )
 
 app.include_router(api_router)
+
+
+@app.get("/", include_in_schema=False)
+async def root() -> RedirectResponse:
+    return RedirectResponse(url="/redoc")
