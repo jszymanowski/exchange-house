@@ -26,6 +26,7 @@ function toCamelCaseKeys<T>(obj: T): CamelCaseKeys<T> {
     return Object.keys(obj).reduce(
       (acc, key) => {
         const camelKey = toCamelCase(key);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (acc as any)[camelKey] = toCamelCaseKeys((obj as any)[key]);
         return acc;
       },
