@@ -53,6 +53,8 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run coverage report
+        env:
+          VITE_API_URL: http://exchangehouse.test
         run: pnpm test:coverage
 
       - name: Upload coverage reports to Codecov
