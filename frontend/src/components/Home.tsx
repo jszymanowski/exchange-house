@@ -9,7 +9,9 @@ export default function Home() {
   const [currencyPairs, setCurrencyPairs] = useState<CurrencyPair[]>([]);
 
   useEffect(() => {
-    getAvailableCurrencyPairs().then(setCurrencyPairs);
+    getAvailableCurrencyPairs().then((response) => {
+      setCurrencyPairs(response.data);
+    });
   }, []);
 
   return (
