@@ -14,8 +14,11 @@ async def available_dates(
     """
     Retrieve a list of available dates for exchange rate data.
 
+    """
+    Retrieve a list of available dates for exchange rate data.
+
     Returns:
-        list[str]: List of ISO 8601-formatted dates (YYYY-MM-DD) for which exchange rate data is available
+        DateListResponse: Object containing a list of dates for which exchange rate data is available
     """
     dates = await exchange_rate_service.get_available_dates()
     return DateListResponse(data=dates)
