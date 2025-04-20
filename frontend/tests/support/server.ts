@@ -1,5 +1,5 @@
 import { setupServer } from "msw/node";
-import ProperDate, { getYesterday } from "@jszymanowski/proper-date.js";
+import ProperDate from "@jszymanowski/proper-date.js";
 
 import { http, HttpResponse } from "msw";
 import { API_URL } from "@/config";
@@ -47,26 +47,35 @@ export const handlers = [
     });
   }),
 
-  http.get(`${ API_URL }/api/v1/exchange_rates/EUR/USD/historical`, ({ request }: { request: Request }) => {
-    const url = new URL(request.url);
-    const startDate = new ProperDate(url.searchParams.get("start_date") || "2010-01-01");
-    const mockYesterday = new ProperDate("2025-04-10");
+  http.get(
+    `${API_URL}/api/v1/exchange_rates/EUR/USD/historical`,
+    ({ request }: { request: Request }) => {
+      const url = new URL(request.url);
+      const startDate = new ProperDate(
+        url.searchParams.get("start_date") || "2010-01-01",
+      );
+      const mockYesterday = new ProperDate("2025-04-10");
 
-    const data = [];
-    for (let date = startDate; date <= mockYesterday; date = date.add(1, 'day')) {
-      const rate = 1.001 + (date.difference(startDate) / 100 / 2);
-      data.push({
-        date: date.toString(),
-        rate: rate.toString(),
+      const data = [];
+      for (
+        let date = startDate;
+        date <= mockYesterday;
+        date = date.add(1, "day")
+      ) {
+        const rate = 1.001 + date.difference(startDate) / 100 / 2;
+        data.push({
+          date: date.toString(),
+          rate: rate.toString(),
+        });
+      }
+
+      return HttpResponse.json({
+        baseCurrencyCode: "EUR",
+        quoteCurrencyCode: "USD",
+        data,
       });
-    }
-
-    return HttpResponse.json({
-      baseCurrencyCode: "EUR",
-      quoteCurrencyCode: "USD",
-      data,
-    });
-  }),
+    },
+  ),
 ];
 
 export const server = setupServer(...handlers);

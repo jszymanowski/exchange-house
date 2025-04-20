@@ -57,14 +57,15 @@ export const getHistoricalExchangeRates = async (
   startDate: ProperDate | null,
 ): Promise<HistoricalExchangeRateResponse> => {
   try {
-    const response = await exchangeHouseClient.get<HistoricalExchangeRateResponse>(
-      `exchange_rates/${baseCurrencyCode}/${quoteCurrencyCode}/historical`,
-      {
-        params: {
-          start_date: startDate?.toString(),
+    const response =
+      await exchangeHouseClient.get<HistoricalExchangeRateResponse>(
+        `exchange_rates/${baseCurrencyCode}/${quoteCurrencyCode}/historical`,
+        {
+          params: {
+            start_date: startDate?.toString(),
+          },
         },
-      },
-    );
+      );
     const data = response.data.data.map((item) => ({
       date: new ProperDate(item.date),
       rate: Big(item.rate),

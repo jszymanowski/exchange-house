@@ -8,8 +8,6 @@ import {
   getLatestExchangeRate,
 } from "@/services/exchangeRateService";
 
-
-
 describe("ExchangeRateService", () => {
   describe("#getAvailableCurrencyPairs", () => {
     test("retrieves the available currency pairs", async () => {
@@ -54,7 +52,11 @@ describe("ExchangeRateService", () => {
     });
 
     test("retrieves the historical exchange rates", async () => {
-      const result = await getHistoricalExchangeRates("EUR", "USD", new ProperDate("2024-12-25"));
+      const result = await getHistoricalExchangeRates(
+        "EUR",
+        "USD",
+        new ProperDate("2024-12-25"),
+      );
 
       expect(result.baseCurrencyCode).toBe("EUR");
       expect(result.quoteCurrencyCode).toBe("USD");
