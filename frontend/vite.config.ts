@@ -1,9 +1,12 @@
-import { defineConfig } from 'vite'
-import react from "@vitejs/plugin-react";
+/// <reference types="vitest" />
+
 import path from "node:path";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { defineConfig, type ViteUserConfig } from "vitest/config";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -11,4 +14,9 @@ export default defineConfig({
       "@tests": path.resolve(__dirname, "./tests"),
     },
   },
-});
+  test: {
+    globals: true,
+    environment: "jsdom",
+    setupFiles: "./vitest.setup.ts",
+  },
+} as ViteUserConfig);
