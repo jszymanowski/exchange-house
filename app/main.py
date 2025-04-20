@@ -1,3 +1,4 @@
+import os
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
@@ -40,5 +41,12 @@ app = FastAPI(
 
 app.include_router(api_router)
 
+FRONTEND_DIR = "app/frontend/build"
+if os.path.isdir(FRONTEND_DIR):
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="static")
+else:
+    from fastapi.responses import RedirectResponse
 
-app.mount("/", StaticFiles(directory="app/frontend/build", html=True), name="static")
+    @app.get("/")
+    async def redirect_to_docs():
+        return RedirectResponse(url="/docs")

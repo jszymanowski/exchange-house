@@ -4,8 +4,8 @@ FROM node:22-slim@sha256:bac8ff0b5302b06924a5e288fb4ceecef9c8bb0bb92515985d2efdc
 
 WORKDIR /frontend
 
-RUN corepack enable
-RUN corepack prepare pnpm@10.8.1 --activate
+RUN corepack enable && \
+  corepack prepare pnpm@10.8.1 --activate
 
 COPY frontend/package.json frontend/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
