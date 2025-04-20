@@ -48,5 +48,5 @@ else:
     from fastapi.responses import RedirectResponse
 
     @app.get("/")
-    async def redirect_to_docs():
+    async def redirect_to_docs() -> RedirectResponse:
         return RedirectResponse(url="/docs")

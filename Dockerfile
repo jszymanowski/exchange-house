@@ -45,6 +45,8 @@ RUN --mount=type=cache,target=/root/.cache/uv \
   --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
   uv sync --frozen --no-install-project
 
+ENV PYTHONPATH=/app
+
 COPY ./pyproject.toml ./uv.lock ./scripts/entrypoint.sh /app/
 COPY ./migrations /app/migrations
 
