@@ -1,8 +1,9 @@
+import os
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from tortoise.contrib.fastapi import tortoise_exception_handlers
 
 from app.api.routes import router as api_router
@@ -40,7 +41,12 @@ app = FastAPI(
 
 app.include_router(api_router)
 
+FRONTEND_DIR = "app/frontend/build"
+if os.path.isdir(FRONTEND_DIR):
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="static")
+else:
+    from fastapi.responses import RedirectResponse
 
-@app.get("/", include_in_schema=False)
-async def root() -> RedirectResponse:
-    return RedirectResponse(url="/redoc")
+    @app.get("/")
+    async def redirect_to_docs() -> RedirectResponse:
+        return RedirectResponse(url="/docs")
