@@ -11,7 +11,7 @@ export default function Container({ children, className, ...props }: Props) {
   return (
     <Box
       width="full"
-      className={cn("max-w-6xl p-12 pt-0 align-left", className)}
+      className={cn("align-left max-w-6xl p-12 pt-0", className)}
       {...props}
     >
       {children}

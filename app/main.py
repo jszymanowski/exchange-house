@@ -3,6 +3,7 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from tortoise.contrib.fastapi import tortoise_exception_handlers
 
@@ -37,6 +38,14 @@ app = FastAPI(
     version=settings.PROJECT_VERSION,
     lifespan=lifespan,
     exception_handlers=tortoise_exception_handlers(),
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["GET"],
+    allow_headers=["*"],
 )
 
 app.include_router(api_router)
