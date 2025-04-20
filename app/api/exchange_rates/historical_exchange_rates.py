@@ -31,6 +31,7 @@ class HistoricalExchangeRatesQueryParams(BaseModel):
     start_date: AvailableDate = Field(default_factory=get_default_start_date)
     end_date: AvailableDate = Field(default_factory=get_default_end_date)
     limit: int = Field(default=DEFAULT_LIMIT, ge=1, le=MAX_RECORDS_PER_REQUEST)
+    offset: int = Field(default=0, ge=0)
     order: Literal["asc", "desc"] = Field(default="desc")
 
 
@@ -45,6 +46,7 @@ async def historical_exchange_rates(
     start_date = query_params.start_date
     end_date = query_params.end_date
     limit = query_params.limit
+    offset = query_params.offset
     order = query_params.order
 
     today = date.today()
@@ -74,6 +76,7 @@ async def historical_exchange_rates(
         start_date=start_date,
         end_date=end_date,
         limit=limit,
+        offset=offset,
         sort_order=order,
     )
 

@@ -60,6 +60,7 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
         start_date: date | None = None,
         end_date: date | None = None,
         limit: int | None = None,
+        offset: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
         rates = [
@@ -118,6 +119,9 @@ class MockExchangeRateService(ExchangeRateServiceInterface):
 
         if end_date is not None:
             rates = [rate for rate in rates if rate.as_of <= end_date]
+
+        if offset is not None:
+            rates = rates[offset:]
 
         if limit is not None:
             rates = rates[:limit]

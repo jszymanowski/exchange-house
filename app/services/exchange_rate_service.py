@@ -38,6 +38,7 @@ class ExchangeRateServiceInterface:
         start_date: date | None = None,
         end_date: date | None = None,
         limit: int | None = None,
+        offset: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
         raise RuntimeError("Must be implemented")
@@ -107,6 +108,7 @@ class ExchangeRateService(ExchangeRateServiceInterface):
         start_date: date | None = None,
         end_date: date | None = None,
         limit: int | None = None,
+        offset: int | None = None,
         sort_order: Literal["asc", "desc"] = "asc",
     ) -> list[ExchangeRate]:
         if end_date is None:
@@ -127,6 +129,9 @@ class ExchangeRateService(ExchangeRateServiceInterface):
 
         if limit is not None:
             query = query.limit(limit)
+
+        if offset is not None:
+            query = query.offset(offset)
 
         if sort_order == "desc":
             query = query.order_by("-as_of")
