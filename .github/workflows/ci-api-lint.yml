@@ -1,4 +1,4 @@
-name: CI (lint)
+name: CI (API lint)
 
 on:
   pull_request:

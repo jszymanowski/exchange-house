@@ -1,3 +1,10 @@
+import Home from "@/components/Home";
+import Layout from "@/components/Layout";
+
 export function App() {
-  return <div>Hello there.</div>;
+  return (
+    <Layout>
+      <Home />
+    </Layout>
+  );
 }
