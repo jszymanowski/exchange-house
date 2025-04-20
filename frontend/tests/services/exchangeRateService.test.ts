@@ -1,11 +1,14 @@
 import Big from "big.js";
 import ProperDate from "@jszymanowski/proper-date.js";
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, vi } from "vitest";
 
 import {
   getAvailableCurrencyPairs,
+  getHistoricalExchangeRates,
   getLatestExchangeRate,
 } from "@/services/exchangeRateService";
+
+
 
 describe("ExchangeRateService", () => {
   describe("#getAvailableCurrencyPairs", () => {
@@ -37,6 +40,35 @@ describe("ExchangeRateService", () => {
           date: new ProperDate("2025-12-25"),
           rate: Big(1.11),
         },
+      });
+    });
+  });
+
+  describe("#getHistoricalExchangeRates", () => {
+    vi.mock("@jszymanowski/proper-date.js", async () => {
+      const actual = await vi.importActual("@jszymanowski/proper-date.js");
+      return {
+        ...actual,
+        getYesterday: vi.fn(() => new ProperDate("2025-04-10")),
+      };
+    });
+
+    test("retrieves the historical exchange rates", async () => {
+      const result = await getHistoricalExchangeRates("EUR", "USD", new ProperDate("2024-12-25"));
+
+      expect(result.baseCurrencyCode).toBe("EUR");
+      expect(result.quoteCurrencyCode).toBe("USD");
+
+      expect(result.data.length).toBe(107);
+
+      expect(result.data[0]).toEqual({
+        date: new ProperDate("2024-12-25"),
+        rate: Big(1.001),
+      });
+
+      expect(result.data[106]).toEqual({
+        date: new ProperDate("2025-04-10"),
+        rate: Big(1.531),
       });
     });
   });
