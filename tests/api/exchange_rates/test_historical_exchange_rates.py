@@ -9,8 +9,8 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 
 def assert_historical_exchange_rates_response(
     response: Response,
-    first_data: dict,
-    last_data: dict,
+    first_data: dict[str, str],
+    last_data: dict[str, str],
     total: int = 8,
     data_size: int = 5,
     size: int = 1000,

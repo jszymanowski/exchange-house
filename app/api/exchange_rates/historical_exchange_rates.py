@@ -47,8 +47,9 @@ async def historical_exchange_rates(
     end_date = query_params.end_date
     size = query_params.size
     page = query_params.page
-    offset = (query_params.page - 1) * size
     order = query_params.order
+
+    offset = (page - 1) * size
 
     today = date.today()
     validation_errors = []
