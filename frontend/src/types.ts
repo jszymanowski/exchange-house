@@ -1,9 +1,12 @@
+import type Big from "big.js";
+import type ProperDate from "@jszymanowski/proper-date.js";
+
 export type CurrencyPair = {
   baseCurrencyCode: string;
   quoteCurrencyCode: string;
 };
 
 export type ExchangeRate = {
-  date: string;
-  rate: number;
+  date: ProperDate;
+  rate: Big;
 };

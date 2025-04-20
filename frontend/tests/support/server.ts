@@ -35,6 +35,17 @@ export const handlers = [
       data,
     });
   }),
+
+  http.get(`${API_URL}/api/v1/exchange_rates/EUR/USD/latest`, () => {
+    return HttpResponse.json({
+      baseCurrencyCode: "EUR",
+      quoteCurrencyCode: "USD",
+      data: {
+        date: "2025-12-25",
+        rate: "1.11",
+      },
+    });
+  }),
 ];
 
 export const server = setupServer(...handlers);
