@@ -89,3 +89,11 @@
 
   --font-display: var(--font-serif);
 }
+
+body {
+  height: 100vh;
+}
+
+#root {
+  height: 100%;
+}
