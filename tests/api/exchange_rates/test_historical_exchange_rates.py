@@ -23,6 +23,10 @@ async def test_api_v1_historical_exchange_rates(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 1
+    assert response_json["size"] == 5
+    assert response_json["pages"] == 1
 
     data = response_json["data"]
     assert len(data) == 5
@@ -53,6 +57,10 @@ async def test_api_v1_historical_exchange_rates_with_start_date(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 1
+    assert response_json["size"] == 5
+    assert response_json["pages"] == 1
 
     data = response_json["data"]
     assert len(data) == 3
@@ -83,6 +91,10 @@ async def test_api_v1_historical_exchange_rates_with_end_date(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 1
+    assert response_json["size"] == 5
+    assert response_json["pages"] == 1
 
     data = response_json["data"]
     assert len(data) == 4
@@ -114,6 +126,10 @@ async def test_api_v1_historical_exchange_rates_with_start_and_end_date(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 1
+    assert response_json["size"] == 5
+    assert response_json["pages"] == 1
 
     data = response_json["data"]
     assert len(data) == 6
@@ -162,6 +178,10 @@ async def test_api_v1_historical_exchange_rates_with_limit(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 1
+    assert response_json["size"] == 2
+    assert response_json["pages"] == 3
 
     data = response_json["data"]
     assert len(data) == 2
@@ -192,6 +212,10 @@ async def test_api_v1_historical_exchange_rates_with_offset_and_limit(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 2
+    assert response_json["size"] == 2
+    assert response_json["pages"] == 3
 
     data = response_json["data"]
     assert len(data) == 2
@@ -222,6 +246,10 @@ async def test_api_v1_historical_exchange_rates_with_order_asc(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 1
+    assert response_json["size"] == 5
+    assert response_json["pages"] == 1
 
     data = response_json["data"]
     assert len(data) == 5
@@ -252,6 +280,10 @@ async def test_api_v1_historical_exchange_rates_with_order_desc(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 1
+    assert response_json["size"] == 5
+    assert response_json["pages"] == 1
 
     data = response_json["data"]
     assert len(data) == 5
@@ -282,6 +314,10 @@ async def test_api_v1_historical_exchange_rates_with_limit_and_order_asc(
     response_json = response.json()
     assert response_json["base_currency_code"] == "USD"
     assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["total"] == 5
+    assert response_json["page"] == 1
+    assert response_json["size"] == 2
+    assert response_json["pages"] == 3
 
     data = response_json["data"]
     assert len(data) == 2

@@ -45,13 +45,10 @@ async def historical_exchange_rates(
 ) -> HistoricalExchangeRateResponse:
     start_date = query_params.start_date
     end_date = query_params.end_date
-    limit = query_params.size
-    offset = (query_params.page - 1) * limit
+    size = query_params.size
+    page = query_params.page
+    offset = (query_params.page - 1) * size
     order = query_params.order
-
-    print(f"query_params: {query_params}")
-    print(f"DEFAULT_SIZE: {DEFAULT_SIZE}")
-    print(f"offset: {offset}")
 
     today = date.today()
     validation_errors = []
@@ -79,10 +76,12 @@ async def historical_exchange_rates(
         quote_currency_code=quote_currency_code,
         start_date=start_date,
         end_date=end_date,
-        limit=limit,
+        limit=size,
         offset=offset,
         sort_order=order,
     )
+
+    total = len(exchange_rates)  # TODO: get from exchange_rate_service
 
     exchange_rate_data = [ExchangeRateData.from_model(exchange_rate) for exchange_rate in exchange_rates]
 
@@ -90,4 +89,8 @@ async def historical_exchange_rates(
         base_currency_code=base_currency_code,
         quote_currency_code=quote_currency_code,
         data=exchange_rate_data,
+        total=total,
+        page=page,
+        size=size,
+        pages=(total + size - 1) // size,
     )
