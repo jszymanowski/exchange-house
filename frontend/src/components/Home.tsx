@@ -17,10 +17,14 @@ export default function Home() {
   return (
     <div>
       <Heading level="1">Exchange House</Heading>
-      <a href={`${API_URL}/docs`}><Text>Docs</Text></a>
+      <a href={`${API_URL}/docs`} target="_blank" rel="noopener noreferrer">
+        <Text>Docs</Text>
+      </a>
       <ul>
         {currencyPairs.map((currencyPair) => (
-          <li key={`${currencyPair.baseCurrencyCode}-${currencyPair.quoteCurrencyCode}`}>
+          <li
+            key={`${currencyPair.baseCurrencyCode}-${currencyPair.quoteCurrencyCode}`}
+          >
             {currencyPair.baseCurrencyCode}
             {currencyPair.quoteCurrencyCode}
           </li>

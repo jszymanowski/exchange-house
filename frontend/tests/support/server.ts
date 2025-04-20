@@ -6,7 +6,7 @@ import { API_URL } from "@/config";
 import { createCurrencyPair } from "./fixtures";
 
 export const handlers = [
-  http.get(`${ API_URL }/api/v1/exchange_rates/available_currency_pairs`, () => {
+  http.get(`${API_URL}/api/v1/exchange_rates/available_currency_pairs`, () => {
     const pairs = [
       ["USD", "EUR"],
       ["USD", "GBP"],

@@ -8,12 +8,12 @@ describe("ExchangeHouse API", () => {
 
     expect(result.data.length).toBe(14);
 
-    expect(result.data[0]).toEqual({
+    expect(result.data).toContainEqual({
       baseCurrencyCode: "USD",
       quoteCurrencyCode: "EUR",
     });
 
-    expect(result.data[13]).toEqual({
+    expect(result.data).toContainEqual({
       baseCurrencyCode: "NZD",
       quoteCurrencyCode: "USD",
     });

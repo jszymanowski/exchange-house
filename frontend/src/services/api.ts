@@ -26,8 +26,7 @@ function toCamelCaseKeys<T>(obj: T): CamelCaseKeys<T> {
     return Object.keys(obj).reduce(
       (acc, key) => {
         const camelKey = toCamelCase(key);
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (acc as any)[camelKey] = toCamelCaseKeys((obj as any)[key]);
+        (acc as Record<string, unknown>)[camelKey] = toCamelCaseKeys((obj as Record<string, unknown>)[key]);
         return acc;
       },
       {} as CamelCaseKeys<T>,
@@ -38,21 +37,23 @@ function toCamelCaseKeys<T>(obj: T): CamelCaseKeys<T> {
 
 const axiosInstance = axios.create({
   baseURL: `${API_URL}/api/v1/`,
-  timeout: 15_000,
+  timeout: import.meta.env.VITE_API_TIMEOUT ? parseInt(import.meta.env.VITE_API_TIMEOUT) : 10_000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
-// Add response interceptor
 axiosInstance.interceptors.response.use(
   (response) => {
     response.data = toCamelCaseKeys(response.data);
     return response;
   },
   (error) => {
-    // Handle errors globally
-    return Promise.reject(error.response?.data || error.message);
+  const sanitizedError = {
+    message: error.response?.data?.message || error.message || "An unexpected error occurred",
+    status: error.response?.status || 500
+  };
+  return Promise.reject(sanitizedError);
   },
 );
 
