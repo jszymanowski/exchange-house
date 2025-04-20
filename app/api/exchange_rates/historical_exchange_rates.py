@@ -71,7 +71,7 @@ async def historical_exchange_rates(
             detail="; ".join(validation_errors),
         )
 
-    exchange_rates = await exchange_rate_service.get_historical_rates(
+    exchange_rates, total = await exchange_rate_service.get_historical_rates(
         base_currency_code=base_currency_code,
         quote_currency_code=quote_currency_code,
         start_date=start_date,
@@ -80,8 +80,6 @@ async def historical_exchange_rates(
         offset=offset,
         sort_order=order,
     )
-
-    total = len(exchange_rates)  # TODO: get from exchange_rate_service
 
     exchange_rate_data = [ExchangeRateData.from_model(exchange_rate) for exchange_rate in exchange_rates]
 
