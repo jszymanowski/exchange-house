@@ -23,19 +23,19 @@ def get_default_end_date() -> AvailableDate:
     return cast(AvailableDate, date.today())
 
 
-MAX_RECORDS_PER_REQUEST = 10_000  # TODO: lower this with pagination
-DEFAULT_LIMIT = 1_000
+DEFAULT_PAGE = 1
+DEFAULT_SIZE = 1_000
+MAX_RECORDS_PER_REQUEST = DEFAULT_SIZE
 
 
 class HistoricalExchangeRatesQueryParams(BaseModel):
     start_date: AvailableDate = Field(default_factory=get_default_start_date)
     end_date: AvailableDate = Field(default_factory=get_default_end_date)
-    limit: int = Field(default=DEFAULT_LIMIT, ge=1, le=MAX_RECORDS_PER_REQUEST)
-    offset: int = Field(default=0, ge=0)
+    page: int = Field(default=DEFAULT_PAGE, ge=1)
+    size: int = Field(default=DEFAULT_SIZE, ge=1, le=MAX_RECORDS_PER_REQUEST)
     order: Literal["asc", "desc"] = Field(default="desc")
 
 
-# TODO: Add pagination
 @router.get("/{base_currency_code}/{quote_currency_code}/historical")
 async def historical_exchange_rates(
     base_currency_code: Currency,
@@ -45,9 +45,13 @@ async def historical_exchange_rates(
 ) -> HistoricalExchangeRateResponse:
     start_date = query_params.start_date
     end_date = query_params.end_date
-    limit = query_params.limit
-    offset = query_params.offset
+    limit = query_params.size
+    offset = (query_params.page - 1) * limit
     order = query_params.order
+
+    print(f"query_params: {query_params}")
+    print(f"DEFAULT_SIZE: {DEFAULT_SIZE}")
+    print(f"offset: {offset}")
 
     today = date.today()
     validation_errors = []

@@ -156,7 +156,7 @@ async def test_api_v1_historical_exchange_rates_with_limit(
     fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": 2})
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"size": 2})
     assert response.status_code == 200
 
     response_json = response.json()
@@ -178,36 +178,6 @@ async def test_api_v1_historical_exchange_rates_with_limit(
 
 @pytest.mark.asyncio
 @patch("app.api.exchange_rates.historical_exchange_rates.date")
-async def test_api_v1_historical_exchange_rates_with_offset(
-    mock_date: MagicMock,
-    async_client: AsyncClient,
-    with_test_exchange_rate_service: ExchangeRateServiceInterface,
-) -> None:
-    fixed_date = date(2024, 4, 5)
-    mock_date.today.return_value = fixed_date
-
-    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"offset": 2})
-    assert response.status_code == 200
-
-    response_json = response.json()
-    assert response_json["base_currency_code"] == "USD"
-    assert response_json["quote_currency_code"] == "EUR"
-
-    data = response_json["data"]
-    assert len(data) == 3
-
-    assert data[0] == {
-        "rate": "1.12",
-        "date": "2024-04-02",
-    }
-    assert data[-1] == {
-        "rate": "1.04",
-        "date": "2024-01-03",
-    }
-
-
-@pytest.mark.asyncio
-@patch("app.api.exchange_rates.historical_exchange_rates.date")
 async def test_api_v1_historical_exchange_rates_with_offset_and_limit(
     mock_date: MagicMock,
     async_client: AsyncClient,
@@ -216,7 +186,7 @@ async def test_api_v1_historical_exchange_rates_with_offset_and_limit(
     fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"offset": 2, "limit": 2})
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"page": 2, "size": 2})
     assert response.status_code == 200
 
     response_json = response.json()
@@ -306,7 +276,7 @@ async def test_api_v1_historical_exchange_rates_with_limit_and_order_asc(
     fixed_date = date(2024, 4, 5)
     mock_date.today.return_value = fixed_date
 
-    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": 2, "order": "asc"})
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"size": 2, "order": "asc"})
     assert response.status_code == 200
 
     response_json = response.json()
@@ -408,37 +378,35 @@ async def test_api_v1_historical_exchange_rates_with_invalid_limit(
     async_client: AsyncClient,
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
-    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "-1"})
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"size": "-1"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
     assert response_detail[0]["msg"] == "Input should be greater than or equal to 1"
 
-    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "0"})
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"size": "0"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
     assert response_detail[0]["msg"] == "Input should be greater than or equal to 1"
 
-    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "999999999"})
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"size": "999999999"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
-    assert response_detail[0]["msg"] == "Input should be less than or equal to 10000"
+    assert response_detail[0]["msg"] == "Input should be less than or equal to 1000"
 
-    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "3.14159"})
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"size": "3.14159"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
     assert len(response_detail) == 1
     assert response_detail[0]["msg"] == "Input should be a valid integer, unable to parse string as an integer"
 
-    response = await async_client.get(
-        "/api/v1/exchange_rates/USD/EUR/historical", params={"limit": "INFINITYANDBEYOND"}
-    )
+    response = await async_client.get("/api/v1/exchange_rates/USD/EUR/historical", params={"size": "INFINITYANDBEYOND"})
     assert response.status_code == 422
 
     response_detail = response.json()["detail"]
