@@ -6,22 +6,6 @@ from pydantic import BaseModel, Field
 from app.models import Currency, ExchangeRate
 
 
-class ExchangeRateResponse(BaseModel):
-    rate: Decimal = Field(gt=0)
-    date: date
-    base_currency_code: Currency
-    quote_currency_code: Currency
-
-    @classmethod
-    def from_model(cls, model: ExchangeRate) -> "ExchangeRateResponse":
-        return cls(
-            rate=model.rate,
-            date=model.as_of,
-            base_currency_code=Currency(model.base_currency_code),
-            quote_currency_code=Currency(model.quote_currency_code),
-        )
-
-
 class ExchangeRateData(BaseModel):
     rate: Decimal = Field(gt=0)
     date: date
@@ -31,6 +15,21 @@ class ExchangeRateData(BaseModel):
         return cls(
             rate=model.rate,
             date=model.as_of,
+        )
+
+
+class ExchangeRateResponse(BaseModel):
+    base_currency_code: Currency
+    quote_currency_code: Currency
+    data: ExchangeRateData
+
+    @classmethod
+    def from_model(cls, model: ExchangeRate) -> "ExchangeRateResponse":
+        data = ExchangeRateData.from_model(model)
+        return cls(
+            base_currency_code=Currency(model.base_currency_code),
+            quote_currency_code=Currency(model.quote_currency_code),
+            data=data,
         )
 
 

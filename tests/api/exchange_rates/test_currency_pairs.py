@@ -10,7 +10,7 @@ async def test_api_v1_currency_pairs(
     with_test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     response = await async_client.get("/api/v1/exchange_rates/available_currency_pairs")
-    response_data = response.json()
+    response_data = response.json()["data"]
 
     assert response.status_code == 200
     assert len(response_data) == 8

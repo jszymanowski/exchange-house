@@ -11,7 +11,7 @@ async def test_api_v1_available_dates(
 ) -> None:
     response = await async_client.get("/api/v1/exchange_rates/available_dates")
     assert response.status_code == 200
-    assert response.json() == [
+    assert response.json()["data"] == [
         "2025-04-01",
         "2025-04-02",
         "2025-04-03",

@@ -21,13 +21,13 @@ async def test_api_v1_latest_exchange_rate(
     response = await async_client.get("/api/v1/exchange_rates/USD/EUR/latest")
     assert response.status_code == 200
 
-    response_data = response.json()
-    assert ExchangeRateResponse(**response_data)
-    assert response_data == {
+    response_json = response.json()
+    assert ExchangeRateResponse(**response_json)
+    assert response_json["base_currency_code"] == "USD"
+    assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["data"] == {
         "rate": "1.02",
         "date": "2025-04-01",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
 
 
@@ -44,13 +44,13 @@ async def test_api_v1_latest_exchange_rate_with_desired_date(
     response = await async_client.get("/api/v1/exchange_rates/USD/EUR/latest", params={"desired_date": "2024-01-02"})
     assert response.status_code == 200
 
-    response_data = response.json()
-    assert ExchangeRateResponse(**response_data)
-    assert response_data == {
+    response_json = response.json()
+    assert ExchangeRateResponse(**response_json)
+    assert response_json["base_currency_code"] == "USD"
+    assert response_json["quote_currency_code"] == "EUR"
+    assert response_json["data"] == {
         "rate": "1.02",
         "date": "2024-01-02",
-        "base_currency_code": "USD",
-        "quote_currency_code": "EUR",
     }
 
 
