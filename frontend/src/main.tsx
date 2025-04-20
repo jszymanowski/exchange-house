@@ -1,9 +1,11 @@
-import { render } from 'preact'
-import './index.css'
-import { App } from './app.tsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 
-const container = document.getElementById('app');
-if (!container) {
-  throw new Error('Root element "#app" not found');
-}
-render(<App />, container);
+import "@/index.css";
+import { App } from "@/app";
+
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
