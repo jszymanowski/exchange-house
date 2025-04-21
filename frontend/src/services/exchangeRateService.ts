@@ -51,7 +51,8 @@ interface HistoricalExchangeRateResponse extends CurrencyPair {
   data: ExchangeRate[];
 }
 
-interface PaginatedHistoricalExchangeRateResponse extends HistoricalExchangeRateResponse {
+interface PaginatedHistoricalExchangeRateResponse
+  extends HistoricalExchangeRateResponse {
   page: number;
   pages: number;
   total: number;

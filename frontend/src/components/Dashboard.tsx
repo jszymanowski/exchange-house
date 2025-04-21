@@ -218,7 +218,7 @@ export default function Dashboard({
   const getExchangeRate = (date: ProperDate): ExchangeRate | undefined => {
     const dataPoint = timeSeries.find((rate) => rate.date.equals(date));
     if (!dataPoint) {
-      // console.error(`Rate not found forDashboard ${date.formatted}`);
+      console.error(`Rate not found forDashboard ${date.formatted}`);
     }
     return (
       dataPoint && {
