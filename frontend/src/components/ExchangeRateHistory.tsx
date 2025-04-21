@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import type ProperDate from "@jszymanowski/proper-date.js";
 
-import LineChart from "@/components/charts/LineChart";
+import LineChart from "@/components/LineChart";
 import ErrorOverlay from "@/components/ErrorOverlay";
 
 import { Box } from "@jszymanowski/breeze-primitives";
