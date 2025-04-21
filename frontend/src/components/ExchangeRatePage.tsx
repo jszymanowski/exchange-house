@@ -20,9 +20,11 @@ import CurrencyPairSelection from "@/components/CurrencyPairSelection";
 
 import type { CurrencyCode, ExchangeRate } from "@/types";
 import { CURRENCIES } from "@/currencies";
-import color from "@/color";
-import { useAppData } from "@/context/useAppData";
-import { GET_EXCHANGE_RATES } from "@/api/graphql/queries";
+import color from "@/styles/color";
+import {
+  getAvailableCurrencyPairs,
+  getHistoricalExchangeRates,
+} from "@/services/exchangeRateService";
 
 interface InitialProps {
   defaultFromIsoCode: CurrencyCode;
@@ -32,13 +34,13 @@ interface InitialProps {
 interface SingleRateCardProps {
   fromIsoCode: CurrencyCode;
   toIsoCode: CurrencyCode;
-  rate: ExchangeRate;
+  exchangeRate: ExchangeRate;
 }
 
 const SingleRateCard = ({
   fromIsoCode,
   toIsoCode,
-  rate,
+  exchangeRate,
 }: SingleRateCardProps) => {
   return (
     <Card className="max-w py-0">
@@ -48,11 +50,11 @@ const SingleRateCard = ({
             {fromIsoCode}/{toIsoCode}
           </Text>
           <Heading level="1" family="sans" variant="info" numeric>
-            {rate.value.toFixed(4)}
+            {exchangeRate.rate.toFixed(4)}
           </Heading>
           <Text size="xs" variant="muted" family="sans">
             {CURRENCIES[fromIsoCode].symbol}1 ≈ {CURRENCIES[toIsoCode].symbol}
-            {rate.value.toFixed(4)}
+            {exchangeRate.rate.toFixed(4)}
           </Text>
         </Flex>
       </CardContent>
@@ -63,8 +65,8 @@ const SingleRateCard = ({
 interface ChangeCardProps {
   fromIsoCode: CurrencyCode;
   toIsoCode: CurrencyCode;
-  currentRate: ExchangeRate;
-  previousRate: ExchangeRate | undefined;
+  currentExchangeRate: ExchangeRate;
+  previousExchangeRate: ExchangeRate | undefined;
 }
 
 const getBackgroundColorShade = (
@@ -86,13 +88,13 @@ const getBackgroundColorShade = (
 
 const ChangeCard = ({
   fromIsoCode,
-  currentRate,
-  previousRate,
+  currentExchangeRate,
+  previousExchangeRate,
 }: ChangeCardProps) => {
-  if (!previousRate) return <>missing previous date</>;
+  if (!previousExchangeRate) return <>missing previous date</>;
 
-  const { value: currentValue, date: currentDate } = currentRate;
-  const { value: previousValue, date: previousDate } = previousRate;
+  const { rate: currentValue, date: currentDate } = currentExchangeRate;
+  const { rate: previousValue, date: previousDate } = previousExchangeRate;
 
   const numDaysDifference = currentDate.difference(previousDate, {
     period: "days",
@@ -170,35 +172,65 @@ export default function ExchangeRatePage({
   defaultFromIsoCode,
   defaultToIsoCode,
 }: InitialProps) {
-  const { appData } = useAppData();
+  const {
+    isPending: isPendingCurrencyPairs,
+    isError: isErrorCurrencyPairs,
+    error: errorCurrencyPairs,
+    data: dataCurrencyPairs,
+  } = useQuery({
+    queryKey: ["currency-pairs"],
+    queryFn: getAvailableCurrencyPairs,
+  });
 
   const [fromIsoCode, setFromIsoCode] =
     useState<CurrencyCode>(defaultFromIsoCode);
   const [toIsoCode, setToIsoCode] = useState<CurrencyCode>(defaultToIsoCode);
 
-  const { loading, error, data } = useQuery<{
-    exchangeRates: ExchangeRate[];
-  }>(GET_EXCHANGE_RATES(fromIsoCode, toIsoCode));
-  const timeSeries = data?.exchangeRates;
+  const {
+    isPending: isPendingHistoricalExchangeRates,
+    isError: isErrorHistoricalExchangeRates,
+    error: errorHistoricalExchangeRates,
+    data: dataHistoricalExchangeRates,
+  } = useQuery({
+    queryKey: ["historical-exchange-rates", fromIsoCode, toIsoCode],
+    queryFn: () => getHistoricalExchangeRates(fromIsoCode, toIsoCode),
+  });
 
-  if (loading || !appData || !timeSeries) {
+  if (isPendingCurrencyPairs || isPendingHistoricalExchangeRates) {
     return <PageLoader message="Loading exchange rates" />;
   }
-  if (error) return <ErrorOverlay message={error.message} />;
+  if (isErrorCurrencyPairs)
+    return <ErrorOverlay message={errorCurrencyPairs.message} />;
+  if (isErrorHistoricalExchangeRates)
+    return <ErrorOverlay message={errorHistoricalExchangeRates.message} />;
 
-  const lastRate = timeSeries[timeSeries.length - 1];
+  const timeSeries = dataHistoricalExchangeRates.data.map((d) => ({
+    date: d.date,
+    value: Number(d.rate),
+  }));
 
-  const getRate = (date: ProperDate) => {
-    const rate = timeSeries.find((rate) => rate.date.equals(date));
-    if (!rate) {
-      console.error(`Rate not found for ${date.formatted}`);
-    }
-    return rate;
+  const lastDataPoint = timeSeries[timeSeries.length - 1];
+  const lastExchangeRate = lastDataPoint && {
+    ...lastDataPoint,
+    rate: Big(lastDataPoint.value),
   };
 
-  const inverseRate: ExchangeRate = lastRate && {
-    ...lastRate,
-    value: Big(1).div(lastRate?.value),
+  const getExchangeRate = (date: ProperDate): ExchangeRate | undefined => {
+    const dataPoint = timeSeries.find((rate) => rate.date.equals(date));
+    if (!dataPoint) {
+      console.error(`Rate not found for ${date.formatted}`);
+    }
+    return (
+      dataPoint && {
+        ...dataPoint,
+        rate: Big(dataPoint.value),
+      }
+    );
+  };
+
+  const inverseExchangeRate: ExchangeRate = lastExchangeRate && {
+    ...lastExchangeRate,
+    rate: Big(1).div(lastExchangeRate?.value),
   };
 
   const onCurrencyPairChange = (
@@ -214,23 +246,23 @@ export default function ExchangeRatePage({
       <>
         <div className="mb-16">
           <CurrencyPairSelection
-            currencyPairs={appData.currencyPairs}
+            currencyPairs={dataCurrencyPairs.data}
             initialValues={{ fromIsoCode, toIsoCode }}
             handleSubmit={onCurrencyPairChange}
           />
         </div>
-        {lastRate && (
+        {lastExchangeRate && (
           <>
             <Grid gap="4" className="md:grid-cols-2">
               <SingleRateCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                rate={lastRate}
+                exchangeRate={lastExchangeRate}
               />
               <SingleRateCard
                 fromIsoCode={toIsoCode}
                 toIsoCode={fromIsoCode}
-                rate={inverseRate}
+                exchangeRate={inverseExchangeRate}
               />
             </Grid>
             <Separator className="my-8" />
@@ -238,33 +270,41 @@ export default function ExchangeRatePage({
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                currentRate={lastRate}
-                previousRate={getRate(lastRate.date.subtract(7, "days"))}
+                currentExchangeRate={lastExchangeRate}
+                previousExchangeRate={getExchangeRate(
+                  lastExchangeRate.date.subtract(7, "days"),
+                )}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                currentRate={lastRate}
-                previousRate={getRate(lastRate.date.subtract(14, "days"))}
+                currentExchangeRate={lastExchangeRate}
+                previousExchangeRate={getExchangeRate(
+                  lastExchangeRate.date.subtract(14, "days"),
+                )}
               />
               <div className="col-span-2 md:row-span-2">
                 <ExchangeRateHistory
                   fromIsoCode={fromIsoCode}
                   toIsoCode={toIsoCode}
-                  startDate={lastRate.date.subtract(3, "months")}
+                  startDate={lastExchangeRate.date.subtract(3, "months")}
                 />
               </div>
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                currentRate={lastRate}
-                previousRate={getRate(lastRate.date.subtract(1, "month"))}
+                currentExchangeRate={lastExchangeRate}
+                previousExchangeRate={getExchangeRate(
+                  lastExchangeRate.date.subtract(1, "month"),
+                )}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                currentRate={lastRate}
-                previousRate={getRate(lastRate.date.subtract(3, "months"))}
+                currentExchangeRate={lastExchangeRate}
+                previousExchangeRate={getExchangeRate(
+                  lastExchangeRate.date.subtract(3, "months"),
+                )}
               />
             </Grid>
             <Separator className="my-8" />
@@ -273,32 +313,40 @@ export default function ExchangeRatePage({
                 <ExchangeRateHistory
                   fromIsoCode={fromIsoCode}
                   toIsoCode={toIsoCode}
-                  startDate={lastRate.date.subtract(5, "years")}
+                  startDate={lastExchangeRate.date.subtract(5, "years")}
                 />
               </div>
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                currentRate={lastRate}
-                previousRate={getRate(lastRate.date.subtract(6, "months"))}
+                currentExchangeRate={lastExchangeRate}
+                previousExchangeRate={getExchangeRate(
+                  lastExchangeRate.date.subtract(6, "months"),
+                )}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                currentRate={lastRate}
-                previousRate={getRate(lastRate.date.subtract(12, "months"))}
+                currentExchangeRate={lastExchangeRate}
+                previousExchangeRate={getExchangeRate(
+                  lastExchangeRate.date.subtract(12, "months"),
+                )}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                currentRate={lastRate}
-                previousRate={getRate(lastRate.date.subtract(2, "years"))}
+                currentExchangeRate={lastExchangeRate}
+                previousExchangeRate={getExchangeRate(
+                  lastExchangeRate.date.subtract(2, "years"),
+                )}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                currentRate={lastRate}
-                previousRate={getRate(lastRate.date.subtract(5, "years"))}
+                currentExchangeRate={lastExchangeRate}
+                previousExchangeRate={getExchangeRate(
+                  lastExchangeRate.date.subtract(5, "years"),
+                )}
               />
             </Grid>
           </>

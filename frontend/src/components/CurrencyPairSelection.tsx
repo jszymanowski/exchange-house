@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
 
 import { Button, SelectPicker } from "@jszymanowski/breeze-forms";
-import type { CurrencyCode } from "@/types";
+import type { CurrencyPair, CurrencyCode } from "@/types";
 import { CURRENCIES } from "@/currencies";
 
 import { Flex, Text } from "@jszymanowski/breeze-primitives";
@@ -39,7 +39,7 @@ interface SelectOption {
 }
 
 interface Props {
-  currencyPairs: { fromIsoCode: CurrencyCode; toIsoCode: CurrencyCode }[];
+  currencyPairs: CurrencyPair[];
   initialValues?: {
     fromIsoCode: CurrencyCode | null;
     toIsoCode: CurrencyCode | null;
@@ -52,7 +52,7 @@ interface Props {
 
 const buildQuoteCurrencyOptions = (
   baseCurrency: CurrencyCode | null,
-  currencyPairs: { fromIsoCode: CurrencyCode; toIsoCode: CurrencyCode }[],
+  currencyPairs: CurrencyPair[],
 ) => {
   if (!baseCurrency) {
     return [];
@@ -60,8 +60,8 @@ const buildQuoteCurrencyOptions = (
 
   const quoteCurrencies = cleanCurrencyList(
     currencyPairs
-      .filter((pair) => pair.fromIsoCode === baseCurrency)
-      .map((pair) => pair.toIsoCode),
+      .filter((pair) => pair.baseCurrencyCode === baseCurrency)
+      .map((pair) => pair.quoteCurrencyCode),
   );
 
   const options = buildCurrencyOptions(quoteCurrencies);
@@ -83,7 +83,7 @@ export default function CurrencyPairSelection({
   >(buildQuoteCurrencyOptions(initialValues.fromIsoCode, currencyPairs));
 
   const baseCurrencies = cleanCurrencyList(
-    currencyPairs.map((pair) => pair.fromIsoCode),
+    currencyPairs.map((pair) => pair.baseCurrencyCode),
   );
 
   const baseCurrencyOptions = buildCurrencyOptions(baseCurrencies);
