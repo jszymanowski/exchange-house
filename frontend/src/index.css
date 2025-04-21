@@ -2,8 +2,8 @@
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
-
 @source "../node_modules/@jszymanowski/breeze-primitives/dist";
+@source "../node_modules/@jszymanowski/breeze-forms/dist";
 
 @layer base {
   :root {
