@@ -29,33 +29,6 @@ importers:
       '@tanstack/react-query':
         specifier: 5.74.4
         version: 5.74.4(react@19.1.0)
-      '@visx/axis':
-        specifier: 3.13.0-alpha.0
-        version: 3.13.0-alpha.0(react@19.1.0)
-      '@visx/curve':
-        specifier: 3.12.0
-        version: 3.12.0
-      '@visx/event':
-        specifier: 3.12.0
-        version: 3.12.0
-      '@visx/gradient':
-        specifier: 3.13.0-alpha.0
-        version: 3.13.0-alpha.0(react@19.1.0)
-      '@visx/responsive':
-        specifier: 3.13.0-alpha.0
-        version: 3.13.0-alpha.0(react@19.1.0)
-      '@visx/scale':
-        specifier: 3.12.0
-        version: 3.12.0
-      '@visx/shape':
-        specifier: 3.13.0-alpha.0
-        version: 3.13.0-alpha.0(react@19.1.0)
-      '@visx/tooltip':
-        specifier: 3.13.1-alpha.0
-        version: 3.13.1-alpha.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@visx/vendor':
-        specifier: 3.12.0
-        version: 3.12.0
       axios:
         specifier: 1.8.4
         version: 1.8.4
