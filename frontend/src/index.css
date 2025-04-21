@@ -1,6 +1,9 @@
 @import "tailwindcss";
+@plugin "tailwindcss-animate";
 
+@custom-variant dark (&:is(.dark *));
 @source "../node_modules/@jszymanowski/breeze-primitives/dist";
+@source "../node_modules/@jszymanowski/breeze-forms/dist";
 
 @layer base {
   :root {
@@ -27,6 +30,11 @@
 
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.129 0.042 264.695);
+
+    --radius: 0.625rem;
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
   }
 
   .dark {
@@ -44,6 +52,10 @@
 
     --card: oklch(0.129 0.042 264.695);
     --card-foreground: oklch(0.984 0.003 247.858);
+
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 15%);
+    --ring: oklch(0.556 0 0);
   }
 }
 
@@ -88,6 +100,14 @@
     "Liberation Mono", "Courier New", monospace;
 
   --font-display: var(--font-serif);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 }
 
 body {
@@ -96,4 +116,17 @@ body {
 
 #root {
   height: 100%;
+}
+
+button:not([disabled]) {
+  cursor: pointer;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
