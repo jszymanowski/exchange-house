@@ -51,29 +51,63 @@ interface HistoricalExchangeRateResponse extends CurrencyPair {
   data: ExchangeRate[];
 }
 
+interface PaginatedHistoricalExchangeRateResponse extends HistoricalExchangeRateResponse {
+  page: number;
+  pages: number;
+  total: number;
+  size: number;
+}
+
 export const getHistoricalExchangeRates = async (
   baseCurrencyCode: string,
   quoteCurrencyCode: string,
   startDate?: ProperDate,
 ): Promise<HistoricalExchangeRateResponse> => {
+  const page = 1;
+  const allData: ExchangeRate[] = [];
+  const response = await _getHistoricalExchangeRates(
+    baseCurrencyCode,
+    quoteCurrencyCode,
+    startDate,
+    page,
+  );
+  allData.push(...response.data);
+  return {
+    baseCurrencyCode: response.baseCurrencyCode,
+    quoteCurrencyCode: response.quoteCurrencyCode,
+    data: allData,
+  };
+};
+
+const _getHistoricalExchangeRates = async (
+  baseCurrencyCode: string,
+  quoteCurrencyCode: string,
+  startDate?: ProperDate,
+  page: number = 1,
+): Promise<PaginatedHistoricalExchangeRateResponse> => {
   try {
-    const response =
-      await exchangeHouseClient.get<HistoricalExchangeRateResponse>(
+    const { data: responseData } =
+      await exchangeHouseClient.get<PaginatedHistoricalExchangeRateResponse>(
         `exchange_rates/${baseCurrencyCode}/${quoteCurrencyCode}/historical`,
         {
           params: {
             start_date: startDate?.toString(),
+            page,
           },
         },
       );
-    const data = response.data.data.map((item) => ({
+    const data = responseData.data.map((item) => ({
       date: new ProperDate(item.date),
       rate: Big(item.rate),
     }));
     return {
-      baseCurrencyCode: response.data.baseCurrencyCode,
-      quoteCurrencyCode: response.data.quoteCurrencyCode,
+      baseCurrencyCode: responseData.baseCurrencyCode,
+      quoteCurrencyCode: responseData.quoteCurrencyCode,
       data,
+      page: responseData.page,
+      pages: responseData.pages,
+      total: responseData.total,
+      size: responseData.size,
     };
   } catch (error) {
     throw new Error(handleError(error));
