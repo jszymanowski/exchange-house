@@ -53,7 +53,7 @@
     --card: oklch(0.129 0.042 264.695);
     --card-foreground: oklch(0.984 0.003 247.858);
 
-  --border: oklch(1 0 0 / 10%);
+    --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
   }
