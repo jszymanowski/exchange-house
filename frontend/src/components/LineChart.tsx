@@ -129,8 +129,14 @@ export default function LineChart({
     });
   };
 
-  const getXPlot = (d: DataPoint) => xScale(getX(d)) || 0;
-  const getYPlot = (d: DataPoint) => yScale(getY(d)) || 0;
+  const getXPlot = useMemo(
+    () => (d: DataPoint) => xScale(getX(d)) || 0,
+    [xScale],
+  );
+  const getYPlot = useMemo(
+    () => (d: DataPoint) => yScale(getY(d)) || 0,
+    [yScale],
+  );
 
   // Empty data case
   if (!data || data.length === 0) {
