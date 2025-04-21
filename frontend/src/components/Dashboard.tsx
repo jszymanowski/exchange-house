@@ -168,7 +168,7 @@ const ChangeCard = ({
   );
 };
 
-export default function ExchangeRatePage({
+export default function Dashboard({
   defaultFromIsoCode,
   defaultToIsoCode,
 }: InitialProps) {
