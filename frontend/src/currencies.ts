@@ -1,5 +1,3 @@
-export type CurrencyCode = (typeof CURRENCY_SYMBOLS)[number];
-
 interface Currency {
   symbol: string;
   name: string;
@@ -946,4 +944,6 @@ export const CURRENCY_SYMBOLS: string[] = [
   "ZAR",
   "ZMW",
   "ZWL",
-];
+] as const;
+
+export type CurrencyCode = (typeof CURRENCY_SYMBOLS)[number];

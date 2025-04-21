@@ -8,7 +8,7 @@ const queryClient = new QueryClient();
 type MockProviderProps = {
   children: React.ReactNode;
   queryKey: string[];
-  mockData: any;
+  mockData: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 };
 
 export default function MockProvider({

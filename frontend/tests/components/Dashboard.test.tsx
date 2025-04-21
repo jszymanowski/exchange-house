@@ -1,11 +1,10 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, expect, type Mock, test, vi } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom";
 import Big from "big.js";
 import Dashboard from "@/components/Dashboard";
 import MockProvider from "@tests/support/MockProvider";
 
-import exchangeHouseClient from "@/integrations/exchangeHouseClient";
 import { createExchangeRate } from "../support/fixtures";
 import ProperDate from "@jszymanowski/proper-date.js";
 

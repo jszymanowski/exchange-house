@@ -91,7 +91,7 @@ const _getHistoricalExchangeRates = async (
   baseCurrencyCode: string,
   quoteCurrencyCode: string,
   startDate?: ProperDate,
-  page: number = 1,
+  page = 1,
 ): Promise<PaginatedHistoricalExchangeRateResponse> => {
   try {
     const { data: responseData } =

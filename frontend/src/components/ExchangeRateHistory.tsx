@@ -5,7 +5,7 @@ import type ProperDate from "@jszymanowski/proper-date.js";
 import LineChart from "@/components/LineChart";
 import ErrorOverlay from "@/components/ErrorOverlay";
 
-import { Box } from "@jszymanowski/breeze-primitives";
+import { Box, Text } from "@jszymanowski/breeze-primitives";
 import type { CurrencyCode } from "@/types";
 import { getHistoricalExchangeRates } from "@/services/exchangeRateService";
 
@@ -42,16 +42,19 @@ export default function ExchangeRateHistory({
   }));
 
   return (
-    timeSeries.length > 0 && (
-      <Box
-        variant="muted"
-        rounded="lg"
-        width="full"
-        height="full"
-        className="border-border border"
-      >
+    <Box
+      variant="muted"
+      rounded="lg"
+      width="full"
+      height="full"
+      className="border-border border"
+    >
+      {timeSeries.length === 0 && (
+        <Text>No historical data available for this currency pair.</Text>
+      )}
+      {timeSeries.length > 0 && (
         <LineChart data={timeSeries} label={`${fromIsoCode}/${toIsoCode}`} />
-      </Box>
-    )
+      )}
+    </Box>
   );
 }

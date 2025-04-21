@@ -43,7 +43,7 @@ const SingleRateCard = ({
   exchangeRate,
 }: SingleRateCardProps) => {
   return (
-    <Card className="max-w py-0">
+    <Card className="w-full py-0">
       <CardContent>
         <Flex align="center" justify="center" gap="4">
           <Text>
@@ -82,8 +82,12 @@ const getBackgroundColorShade = (
       shadeBounds[0],
   );
 
-  // @ts-expect-error Type 'number' is not assignable to type '100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900'.
-  return Math.round(interpolatedShade / 100) * 100;
+  const clamped = Math.min(
+    shadeBounds[1],
+    Math.max(shadeBounds[0], Math.round(interpolatedShade / 100) * 100),
+  ) as 100 | 200 | 300 | 400 | 500 | 600 | 700;
+
+  return clamped;
 };
 
 const ChangeCard = ({
@@ -91,7 +95,8 @@ const ChangeCard = ({
   currentExchangeRate,
   previousExchangeRate,
 }: ChangeCardProps) => {
-  if (!previousExchangeRate) return <>missing previous date</>;
+  if (!previousExchangeRate)
+    return <Text variant="danger">Data unavailable</Text>;
 
   const { rate: currentValue, date: currentDate } = currentExchangeRate;
   const { rate: previousValue, date: previousDate } = previousExchangeRate;
@@ -147,12 +152,9 @@ const ChangeCard = ({
 
   return (
     <Card
-      className="max-w border py-0 outline-6 -outline-offset-8"
+      className="w-full border py-0 outline-6 -outline-offset-8"
       style={{
-        outlineColor:
-          colorValue[
-            backgroundColorShade.toString() as keyof typeof colorValue
-          ],
+        outlineColor: colorValue[backgroundColorShade] ?? colorValue["500"],
       }}
     >
       <CardContent className="align-center flex flex-col justify-between gap-2 p-6">
@@ -204,33 +206,40 @@ export default function Dashboard({
   if (isErrorHistoricalExchangeRates)
     return <ErrorOverlay message={errorHistoricalExchangeRates.message} />;
 
-  const timeSeries = dataHistoricalExchangeRates.data.map((d) => ({
-    date: d.date,
-    value: Number(d.rate),
-  }));
+  const timeSeries = new Map(
+    dataHistoricalExchangeRates.data.map((d) => [
+      d.date.formatted,
+      { date: d.date, rate: Big(d.rate) } as ExchangeRate,
+    ]),
+  );
 
-  const lastDataPoint = timeSeries[timeSeries.length - 1];
+  const latestDate =
+    dataHistoricalExchangeRates.data[
+      dataHistoricalExchangeRates.data.length - 1
+    ].date;
+  const lastDataPoint = timeSeries.get(latestDate.formatted);
   const lastExchangeRate = lastDataPoint && {
     ...lastDataPoint,
-    rate: Big(lastDataPoint.value),
+    rate: Big(lastDataPoint.rate),
   };
 
   const getExchangeRate = (date: ProperDate): ExchangeRate | undefined => {
-    const dataPoint = timeSeries.find((rate) => rate.date.equals(date));
+    const key = date.formatted;
+    const dataPoint = timeSeries.get(key);
     if (!dataPoint) {
       console.error(`Rate not found forDashboard ${date.formatted}`);
     }
     return (
       dataPoint && {
         ...dataPoint,
-        rate: Big(dataPoint.value),
+        rate: Big(dataPoint.rate),
       }
     );
   };
 
-  const inverseExchangeRate: ExchangeRate = lastExchangeRate && {
+  const inverseExchangeRate: ExchangeRate | undefined = lastExchangeRate && {
     ...lastExchangeRate,
-    rate: Big(1).div(lastExchangeRate?.value),
+    rate: Big(1).div(lastExchangeRate.rate),
   };
 
   const onCurrencyPairChange = (
@@ -259,11 +268,13 @@ export default function Dashboard({
                 toIsoCode={toIsoCode}
                 exchangeRate={lastExchangeRate}
               />
-              <SingleRateCard
-                fromIsoCode={toIsoCode}
-                toIsoCode={fromIsoCode}
-                exchangeRate={inverseExchangeRate}
-              />
+              {inverseExchangeRate && (
+                <SingleRateCard
+                  fromIsoCode={toIsoCode}
+                  toIsoCode={fromIsoCode}
+                  exchangeRate={inverseExchangeRate}
+                />
+              )}
             </Grid>
             <Separator className="my-8" />
             <Grid cols="2" gap="4" className="md:grid-cols-4">

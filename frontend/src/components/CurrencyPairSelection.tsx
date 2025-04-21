@@ -24,10 +24,13 @@ const buildCurrencyOptions = (currencyCodes: CurrencyCode[]) => {
   return options;
 };
 
-const cleanCurrencyList = (isoCodes: CurrencyCode[]) => {
+const cleanCurrencyList = (
+  isoCodes: CurrencyCode[],
+  prioritizedCurrency: CurrencyCode = "USD",
+) => {
   return Array.from(new Set(isoCodes)).sort((a, b) => {
-    if (a === "USD") return -1;
-    if (b === "USD") return 1;
+    if (a === prioritizedCurrency) return -1;
+    if (b === prioritizedCurrency) return 1;
     return a.localeCompare(b);
   });
 };
@@ -114,8 +117,21 @@ export default function CurrencyPairSelection({
 
   const handleSwap = () => {
     if (selectedBaseCurrency && selectedQuoteCurrency) {
-      handleSelectBaseOption(selectedQuoteCurrency);
-      handleSelectQuoteOption(selectedBaseCurrency);
+      // Store current values
+      const tempBase = selectedBaseCurrency;
+      const tempQuote = selectedQuoteCurrency;
+
+      // Reset both to prevent intermediate state submission
+      setSelectedBaseCurrency(null);
+      setSelectedQuoteCurrency(null);
+
+      // Update quote options for the new base
+      const options = buildQuoteCurrencyOptions(tempQuote, currencyPairs);
+      setQuoteCurrencyOptions(options);
+
+      // Set new values
+      setSelectedBaseCurrency(tempQuote);
+      setSelectedQuoteCurrency(tempBase);
     }
   };
 
