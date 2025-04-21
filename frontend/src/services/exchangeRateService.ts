@@ -63,18 +63,25 @@ export const getHistoricalExchangeRates = async (
   quoteCurrencyCode: string,
   startDate?: ProperDate,
 ): Promise<HistoricalExchangeRateResponse> => {
-  const page = 1;
+  let page = 1;
+  let totalPages = 1;
   const allData: ExchangeRate[] = [];
-  const response = await _getHistoricalExchangeRates(
+
+  while (page <= totalPages) {
+    const response = await _getHistoricalExchangeRates(
+      baseCurrencyCode,
+      quoteCurrencyCode,
+      startDate,
+      page,
+    );
+    allData.push(...response.data);
+    totalPages = response.pages;
+    page++;
+  }
+
+  return {
     baseCurrencyCode,
     quoteCurrencyCode,
-    startDate,
-    page,
-  );
-  allData.push(...response.data);
-  return {
-    baseCurrencyCode: response.baseCurrencyCode,
-    quoteCurrencyCode: response.quoteCurrencyCode,
     data: allData,
   };
 };
@@ -93,6 +100,7 @@ const _getHistoricalExchangeRates = async (
           params: {
             start_date: startDate?.toString(),
             page,
+            order: "asc",
           },
         },
       );
