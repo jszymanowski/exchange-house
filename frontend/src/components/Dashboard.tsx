@@ -14,7 +14,7 @@ import {
 
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
 import ErrorOverlay from "@/components/ErrorOverlay";
-import Layout from "@/components/Layout";
+import Container from "@/components/Container";
 import PageLoader from "@/components/PageLoader";
 import CurrencyPairSelection from "@/components/CurrencyPairSelection";
 
@@ -242,7 +242,7 @@ export default function Dashboard({
   };
 
   return (
-    <Layout>
+    <Container>
       <>
         <div className="mb-16">
           <CurrencyPairSelection
@@ -365,6 +365,6 @@ export default function Dashboard({
           />
         </Box>
       </>
-    </Layout>
+    </Container>
   );
 }
