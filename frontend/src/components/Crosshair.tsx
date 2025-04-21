@@ -1,3 +1,4 @@
+import React from "react";
 import { Line } from "@visx/shape";
 
 import chartStyle from "@/styles/charts";
@@ -14,7 +15,7 @@ interface CrosshairProps {
   pointColor?: string;
 }
 
-export default function Crosshair({
+const Crosshair = React.memo(function Crosshair({
   left,
   top,
   xOffset = 0,
@@ -25,7 +26,7 @@ export default function Crosshair({
   pointColor = chartStyle.colors.primary,
 }: CrosshairProps) {
   return (
-    <g>
+    <g aria-hidden="true">
       <Line
         from={{ x: left, y: yOffset }}
         to={{ x: left, y: height }}
@@ -55,4 +56,6 @@ export default function Crosshair({
       />
     </g>
   );
-}
+});
+
+export default Crosshair;

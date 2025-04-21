@@ -14,7 +14,7 @@ import { LinearGradient } from "@visx/gradient";
 
 import Crosshair from "@/components/Crosshair";
 
-import { Text } from "@jszymanowski/breeze-primitives";
+import { Box, Text } from "@jszymanowski/breeze-primitives";
 import { Separator } from "@/components/ui/separator";
 
 import chartStyle, { defaultTooltipStyles } from "@/styles/charts";
@@ -84,8 +84,6 @@ export default function LineChart({
   // range
   const xRange = useMemo(() => [yAxisWidth, maxWidth], [yAxisWidth, maxWidth]);
   const yRange = useMemo(
-    // 590 - 30 + 10 = 570
-    // 566.02
     () => [maxHeight - xAxisHeight - margin.top, margin.top],
     [maxHeight, margin],
   );
@@ -142,12 +140,22 @@ export default function LineChart({
   const getXPlot = (d: DataPoint) => xScale(getX(d)) || 0;
   const getYPlot = (d: DataPoint) => yScale(getY(d)) || 0;
 
+  // Empty data case
+  if (!data || data.length === 0) {
+    return (
+      <Box width="full" height="full" className="min-h-[200px]">
+        <Text className="p-4 text-center">No data available</Text>
+      </Box>
+    );
+  }
+
   return (
     <div
       ref={parentRef}
       style={{ width: "100%", height: "100%", minHeight: 200 }}
     >
       <svg ref={containerRef} width={width} height={height}>
+        <title>{label || "Line chart"}</title>
         <LinePath<DataPoint>
           data={data}
           x={getXPlot}
