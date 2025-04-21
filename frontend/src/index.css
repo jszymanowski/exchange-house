@@ -31,6 +31,12 @@
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.129 0.042 264.695);
 
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.129 0.042 264.695);
+    --border: oklch(0.929 0.013 255.508);
+    --input: oklch(0.929 0.013 255.508);
+    --ring: oklch(0.869 0.022 252.894);
+
     --radius: 0.625rem;
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
@@ -53,9 +59,11 @@
     --card: oklch(0.129 0.042 264.695);
     --card-foreground: oklch(0.984 0.003 247.858);
 
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
+    --popover: oklch(0.129 0.042 264.695);
+    --popover-foreground: oklch(0.984 0.003 247.858);
+    --border: oklch(0.279 0.041 260.031);
+    --input: oklch(0.279 0.041 260.031);
+    --ring: oklch(0.446 0.043 257.281);
   }
 }
 
@@ -83,6 +91,15 @@
   --color-warning-foreground: var(--warning-foreground);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+
+  /* Other */
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
 
   /* Specific elements */
   --color-card: var(--card);

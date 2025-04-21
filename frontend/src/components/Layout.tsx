@@ -1,5 +1,5 @@
 import Container from "@/components/Container";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <Container className="h-full">{children}</Container>;
+  return <Container className="mx-auto h-full">{children}</Container>;
 }
