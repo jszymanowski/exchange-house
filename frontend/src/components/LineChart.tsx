@@ -22,11 +22,8 @@ import color from "@/styles/color";
 
 type TooltipData = {
   dataPoint: DataPoint;
-  height: number;
-  width: number;
   x: number;
   y: number;
-  color: string;
 };
 
 type DataPoint = {
@@ -107,34 +104,29 @@ export default function LineChart({
 
   // events
   const onMouseMove = (event: React.MouseEvent<SVGRectElement>) => {
-    {
-      const { x, y } = localPoint(event) || { x: 0, y: 0 };
-      const x0 = xScale.invert(x);
-      const index = bisectDate(data, x0, 1);
-      const d0 = data[index - 1];
-      const d1 = data[index];
-      let d = d0;
-      if (d1 && getX(d1)) {
-        d =
-          x0.valueOf() - getX(d0).valueOf() > getX(d1).valueOf() - x0.valueOf()
-            ? d1
-            : d0;
-      }
-      const left = x;
-
-      showTooltip({
-        tooltipData: {
-          dataPoint: d,
-          height: 2,
-          width: 3,
-          x: x,
-          y: y,
-          color: "#fff",
-        },
-        tooltipTop: yScale(d.value),
-        tooltipLeft: left,
-      });
+    const { x, y } = localPoint(event) || { x: 0, y: 0 };
+    const x0 = xScale.invert(x);
+    const index = bisectDate(data, x0, 1);
+    const d0 = data[index - 1];
+    const d1 = data[index];
+    let d = d0;
+    if (d1 && getX(d1)) {
+      d =
+        x0.valueOf() - getX(d0).valueOf() > getX(d1).valueOf() - x0.valueOf()
+          ? d1
+          : d0;
     }
+    const left = x;
+
+    showTooltip({
+      tooltipData: {
+        dataPoint: d,
+        x: x,
+        y: y,
+      },
+      tooltipTop: yScale(d.value),
+      tooltipLeft: left,
+    });
   };
 
   const getXPlot = (d: DataPoint) => xScale(getX(d)) || 0;
@@ -209,7 +201,7 @@ export default function LineChart({
           }}
         />
         <AxisBottom
-          top={height - 50}
+          top={height - margin.bottom - xAxisHeight}
           scale={xScale}
           stroke={color.gray["600"]}
           numTicks={numTicksForWidth(width)}
@@ -240,7 +232,7 @@ export default function LineChart({
             </Text>
           </TooltipInPortal>
           <TooltipInPortal
-            top={height - 50}
+            top={height - margin.bottom - xAxisHeight}
             left={tooltipLeft}
             className="bg-card/90"
             style={{
