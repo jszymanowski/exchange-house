@@ -1,11 +1,11 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import type ProperDate from "@jszymanowski/proper-date.js";
+import { Box, Text } from "@jszymanowski/breeze-primitives";
+import { LineChart } from "@jszymanowski/breeze-charts";
 
-import LineChart from "@/components/LineChart";
 import ErrorOverlay from "@/components/ErrorOverlay";
 
-import { Box, Text } from "@jszymanowski/breeze-primitives";
 import type { CurrencyCode } from "@/types";
 import { getHistoricalExchangeRates } from "@/services/exchangeRateService";
 
