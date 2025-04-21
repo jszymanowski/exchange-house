@@ -6,7 +6,7 @@ import { useState } from "react";
 
 type MockProviderProps = {
   children: React.ReactNode;
-  queryKey: string[];
+  queryKey: (string | undefined)[];
   mockData: unknown;
 };
 
