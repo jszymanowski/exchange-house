@@ -10,6 +10,7 @@ RUN corepack enable && \
 COPY frontend/package.json frontend/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
+ENV VITE_API_URL="/"
 COPY frontend ./
 RUN pnpm build
 
