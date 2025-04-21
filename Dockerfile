@@ -10,7 +10,7 @@ RUN corepack enable && \
 COPY frontend/package.json frontend/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 
-ENV VITE_API_URL="/"
+ENV VITE_API_URL="http://exchangehouse.home"
 COPY frontend ./
 RUN pnpm build
 
