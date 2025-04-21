@@ -54,7 +54,7 @@ interface HistoricalExchangeRateResponse extends CurrencyPair {
 export const getHistoricalExchangeRates = async (
   baseCurrencyCode: string,
   quoteCurrencyCode: string,
-  startDate: ProperDate | null,
+  startDate?: ProperDate,
 ): Promise<HistoricalExchangeRateResponse> => {
   try {
     const response =
