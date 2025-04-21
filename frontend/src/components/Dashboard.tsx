@@ -71,7 +71,7 @@ interface ChangeCardProps {
 
 const getBackgroundColorShade = (
   relativeChangePercent: number,
-): 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 => {
+): 100 | 200 | 300 | 400 | 500 | 600 | 700 => {
   const shadeBounds = [100, 700];
   const changePercentBounds = [0.01, 5];
 
@@ -227,7 +227,7 @@ export default function Dashboard({
     const key = date.formatted;
     const dataPoint = timeSeries.get(key);
     if (!dataPoint) {
-      console.error(`Rate not found forDashboard ${date.formatted}`);
+      console.error(`Rate not found for Dashboard ${date.formatted}`);
     }
     return (
       dataPoint && {

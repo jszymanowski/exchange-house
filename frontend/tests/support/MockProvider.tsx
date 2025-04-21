@@ -2,13 +2,12 @@ import type React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { MOCK_CURRENCY_PAIRS } from "@tests/support/server";
-
-const queryClient = new QueryClient();
+import { useState } from "react";
 
 type MockProviderProps = {
   children: React.ReactNode;
   queryKey: string[];
-  mockData: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+  mockData: unknown;
 };
 
 export default function MockProvider({
@@ -16,6 +15,8 @@ export default function MockProvider({
   queryKey,
   mockData,
 }: MockProviderProps) {
+  const [queryClient] = useState(() => new QueryClient());
+
   queryClient.setQueryData(["currency-pairs"], {
     data: MOCK_CURRENCY_PAIRS,
   });
