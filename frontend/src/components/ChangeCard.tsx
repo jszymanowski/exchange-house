@@ -1,5 +1,5 @@
 import { Text, Heading } from "@jszymanowski/breeze-primitives";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card as BaseCard, CardContent } from "@/components/ui/card";
 import color from "@/styles/color";
 
 import type { CurrencyCode, ExchangeRate } from "@/types";
@@ -25,6 +25,34 @@ const getBackgroundColorShade = (
   return clamped;
 };
 
+interface CardProps {
+  outlineColor: string;
+  title: string;
+  changeDisplay: string;
+  subtext: string;
+}
+
+const Card = ({ outlineColor, title, changeDisplay, subtext }: CardProps) => {
+  return (
+    <BaseCard
+      className="w-full border py-0 outline-6 -outline-offset-8"
+      style={{
+        outlineColor,
+      }}
+    >
+      <CardContent className="align-center flex flex-col justify-between gap-2 p-6">
+        <Text variant="muted">{title}</Text>
+        <Heading family="sans" level="2" numeric>
+          {changeDisplay}
+        </Heading>
+        <Text size="xs" variant="muted">
+          {subtext}
+        </Text>
+      </CardContent>
+    </BaseCard>
+  );
+};
+
 interface ChangeCardProps {
   fromIsoCode: CurrencyCode;
   toIsoCode: CurrencyCode;
@@ -38,7 +66,14 @@ export const ChangeCard = ({
   previousExchangeRate,
 }: ChangeCardProps) => {
   if (!previousExchangeRate)
-    return <Text variant="danger">Data unavailable</Text>;
+    return (
+      <Card
+        outlineColor={color["gray"][200]}
+        title="&nbsp;"
+        changeDisplay="N/A"
+        subtext="No data available"
+      />
+    );
 
   const { rate: currentValue, date: currentDate } = currentExchangeRate;
   const { rate: previousValue, date: previousDate } = previousExchangeRate;
@@ -94,20 +129,10 @@ export const ChangeCard = ({
 
   return (
     <Card
-      className="w-full border py-0 outline-6 -outline-offset-8"
-      style={{
-        outlineColor: colorValue[backgroundColorShade] ?? colorValue["500"],
-      }}
-    >
-      <CardContent className="align-center flex flex-col justify-between gap-2 p-6">
-        <Text variant="muted">vs. {headline}</Text>
-        <Heading family="sans" level="2" numeric>
-          {relativeChangeDisplay}
-        </Heading>
-        <Text size="xs" variant="muted">
-          {subtext}
-        </Text>
-      </CardContent>
-    </Card>
+      outlineColor={colorValue[backgroundColorShade] ?? colorValue["500"]}
+      title={`vs. ${headline}`}
+      changeDisplay={relativeChangeDisplay}
+      subtext={subtext}
+    />
   );
 };
