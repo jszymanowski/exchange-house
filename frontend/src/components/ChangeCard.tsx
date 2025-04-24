@@ -25,6 +25,34 @@ const getBackgroundColorShade = (
   return clamped;
 };
 
+const getHeadline = (
+  baseDate: ProperDate,
+  comparisonDate: ProperDate,
+): string => {
+  let headline = "vs. ";
+  const numDaysDifference = baseDate.difference(comparisonDate, {
+    period: "days",
+  });
+
+  if (numDaysDifference < 7) {
+    headline += `${numDaysDifference} days earlier`;
+  } else if (numDaysDifference < 30) {
+    const numWeeksDifference = Math.round(numDaysDifference / 7);
+    if (numWeeksDifference === 1) headline += "1 week earlier";
+    else headline += `${numWeeksDifference} weeks earlier`;
+  } else if (numDaysDifference < 365) {
+    const numMonthsDifference = Math.round(numDaysDifference / 30);
+    if (numMonthsDifference === 1) headline += "1 month earlier";
+    else headline += `${numMonthsDifference} months earlier`;
+  } else {
+    const numYearsDifference = Math.round(numDaysDifference / 365);
+    if (numYearsDifference === 1) headline += "1 year earlier";
+    else headline += `${Math.round(numDaysDifference / 365)} years earlier`;
+  }
+
+  return headline;
+};
+
 interface CardProps {
   outlineColor: string;
   title: string;
@@ -68,45 +96,23 @@ export const ChangeCard = ({
   getExchangeRate,
 }: ChangeCardProps) => {
   const previousExchangeRate = getExchangeRate(comparisonDate);
+  const { rate: currentValue, date: currentDate } = currentExchangeRate;
 
-  if (!previousExchangeRate)
+  if (!previousExchangeRate) {
+    const headline = getHeadline(currentExchangeRate.date, comparisonDate);
     return (
       <Card
         outlineColor={color["gray"][200]}
-        title={comparisonDate.toDate().toLocaleDateString("en-GB", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-        })}
+        title={headline}
         changeDisplay="N/A"
         subtext="No data available"
       />
     );
-
-  const { rate: currentValue, date: currentDate } = currentExchangeRate;
-  const { rate: previousValue, date: previousDate } = previousExchangeRate;
-
-  const numDaysDifference = currentDate.difference(previousDate, {
-    period: "days",
-  });
-
-  let headline = "";
-  if (numDaysDifference < 7) {
-    headline = `${numDaysDifference} days earlier`;
-  } else if (numDaysDifference < 30) {
-    const numWeeksDifference = Math.round(numDaysDifference / 7);
-    if (numWeeksDifference === 1) headline = "1 week earlier";
-    else headline = `${numWeeksDifference} weeks earlier`;
-  } else if (numDaysDifference < 365) {
-    const numMonthsDifference = Math.round(numDaysDifference / 30);
-    if (numMonthsDifference === 1) headline = "1 month earlier";
-    else headline = `${numMonthsDifference} months earlier`;
-  } else {
-    const numYearsDifference = Math.round(numDaysDifference / 365);
-    if (numYearsDifference === 1) headline = "1 year earlier";
-    else headline = `${Math.round(numDaysDifference / 365)} years earlier`;
   }
 
+  const { rate: previousValue, date: previousDate } = previousExchangeRate;
+
+  const headline = getHeadline(currentDate, previousDate);
   const relativeChangePercent: Big = currentValue
     .minus(previousValue)
     .div(previousValue)
@@ -138,7 +144,7 @@ export const ChangeCard = ({
   return (
     <Card
       outlineColor={colorValue[backgroundColorShade] ?? colorValue["500"]}
-      title={`vs. ${headline}`}
+      title={headline}
       changeDisplay={relativeChangeDisplay}
       subtext={subtext}
     />
