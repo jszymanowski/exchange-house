@@ -25,8 +25,8 @@ def run_manual_refresh(start_date: date, end_date: date) -> bool:
     """Run the exchange rate refresh process for the specified date range."""
     try:
         return asyncio.run(_run_manual_refresh(start_date, end_date))
-    except Exception:
-        print("Refresh failed; check logs for more information")
+    except Exception as e:
+        print(f"Refresh failed: {e}", file=sys.stderr)
         return False
 
 
