@@ -1,23 +1,29 @@
 import argparse
 import asyncio
+import sys
 from datetime import date, datetime
 
 from app.core.dependencies import get_exchange_rate_service
 from app.services.exchange_rate_refresh import ExchangeRateRefresh
 
 
-def run_manual_refresh(start_date: date, end_date: date) -> bool:
-    exchange_rate_service = asyncio.run(get_exchange_rate_service())
+async def _run_manual_refresh(start_date: date, end_date: date) -> bool:
+    exchange_rate_service = await get_exchange_rate_service()
     exchange_rate_refresh = ExchangeRateRefresh(
         exchange_rate_service=exchange_rate_service,
         start_date=start_date,
         end_date=end_date,
     )
 
+    await exchange_rate_refresh.save()
+    print("Refresh completed successfully")
+    return True
+
+
+def run_manual_refresh(start_date: date, end_date: date) -> bool:
+    """Run the exchange rate refresh process for the specified date range."""
     try:
-        asyncio.run(exchange_rate_refresh.save())
-        print("Refresh completed successfully")
-        return True
+        return asyncio.run(_run_manual_refresh(start_date, end_date))
     except Exception:
         print("Refresh failed; check logs for more information")
         return False
@@ -43,10 +49,13 @@ if __name__ == "__main__":
             start_date = datetime.strptime(args.start_date, "%Y-%m-%d").date()
         except ValueError:
             print(f"Error: Invalid start date format '{args.start_date}'. Please use YYYY-MM-DD format.")
-            exit(1)
+            sys.exit(1)
     if args.end_date:
         try:
             end_date = datetime.strptime(args.end_date, "%Y-%m-%d").date()
         except ValueError:
             print(f"Error: Invalid end date format '{args.end_date}'. Please use YYYY-MM-DD format.")
-            exit(1)
+            sys.exit(1)
+
+    result = run_manual_refresh(start_date=start_date, end_date=end_date)
+    sys.exit(0 if result else 1)
