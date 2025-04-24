@@ -12,7 +12,7 @@ export default function Home() {
     queryFn: () => getAvailableDates(),
   });
 
-  const asOfDate = data?.data[data.data.length - 1];
+  const asOfDate = data?.data?.at(-1);
 
   const formattedAsOfDate = asOfDate?.toDate()?.toLocaleDateString("en-GB", {
     year: "numeric",

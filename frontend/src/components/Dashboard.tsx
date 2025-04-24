@@ -74,6 +74,7 @@ export default function Dashboard({
   } = useQuery({
     queryKey: ["currency-pairs"],
     queryFn: getAvailableCurrencyPairs,
+    staleTime: 1000 * 60 * 60 * 2, // 12h
   });
 
   const [fromIsoCode, setFromIsoCode] =
@@ -172,14 +173,12 @@ export default function Dashboard({
             <Grid cols="2" gap="4" className="md:grid-cols-4">
               <ChangeCard
                 fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
                 comparisonDate={lastExchangeRate.date.subtract(7, "days")}
                 getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
                 comparisonDate={lastExchangeRate.date.subtract(14, "days")}
                 getExchangeRate={getExchangeRate}
@@ -193,14 +192,12 @@ export default function Dashboard({
               </div>
               <ChangeCard
                 fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
                 comparisonDate={lastExchangeRate.date.subtract(1, "month")}
                 getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
                 comparisonDate={lastExchangeRate.date.subtract(3, "months")}
                 getExchangeRate={getExchangeRate}
@@ -217,28 +214,24 @@ export default function Dashboard({
               </div>
               <ChangeCard
                 fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
                 comparisonDate={lastExchangeRate.date.subtract(6, "months")}
                 getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
                 comparisonDate={lastExchangeRate.date.subtract(12, "months")}
                 getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
                 comparisonDate={lastExchangeRate.date.subtract(2, "years")}
                 getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
                 comparisonDate={lastExchangeRate.date.subtract(5, "years")}
                 getExchangeRate={getExchangeRate}

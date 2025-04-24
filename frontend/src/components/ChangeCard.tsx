@@ -1,3 +1,4 @@
+import Big from "big.js";
 import { Text, Heading } from "@jszymanowski/breeze-primitives";
 import { Card as BaseCard, CardContent } from "@/components/ui/card";
 import color from "@/styles/color";
@@ -83,7 +84,6 @@ const Card = ({ outlineColor, title, changeDisplay, subtext }: CardProps) => {
 
 interface ChangeCardProps {
   fromIsoCode: CurrencyCode;
-  toIsoCode: CurrencyCode;
   currentExchangeRate: ExchangeRate;
   comparisonDate: ProperDate;
   getExchangeRate: (date: ProperDate) => ExchangeRate | undefined;
@@ -143,7 +143,9 @@ export const ChangeCard = ({
 
   return (
     <Card
-      outlineColor={colorValue[backgroundColorShade] ?? colorValue["500"]}
+      outlineColor={
+        colorValue[backgroundColorShade] ?? colorValue["500"] ?? "#FFFFFF"
+      }
       title={headline}
       changeDisplay={relativeChangeDisplay}
       subtext={subtext}
