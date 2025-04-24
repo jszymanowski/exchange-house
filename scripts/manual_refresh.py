@@ -15,7 +15,6 @@ async def _run_manual_refresh(start_date: date, end_date: date) -> bool:
         end_date=end_date,
     )
 
-    await exchange_rate_refresh.save()
     result = await exchange_rate_refresh.save()
     if result:
         print("Refresh completed successfully")
