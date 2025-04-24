@@ -118,6 +118,10 @@ class CelerySettings(BaseSettings):
     def exchange_rates_refresh_minute(self) -> str:
         return os.getenv("EXCHANGE_RATES_REFRESH_MINUTE", "00")
 
+    @property
+    def timezone(self) -> str:
+        return settings.timezone
+
 
 celery_settings = CelerySettings()
 
