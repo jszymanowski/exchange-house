@@ -29,6 +29,7 @@ celery_app.conf.update(
     task_send_sent_event=True,  # Required for monitoring task queue length in Flower
     result_expires=60 * 60 * 24,  # Results expire after 24 hours
     timezone=celery_settings.timezone,
+    enable_utc=celery_settings.timezone == "UTC",
 )
 
 
