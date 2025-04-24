@@ -120,7 +120,7 @@ class CelerySettings(BaseSettings):
 
     @property
     def timezone(self) -> str:
-        return os.getenv("TZ", "UTC")
+        return settings.timezone
 
 
 celery_settings = CelerySettings()
