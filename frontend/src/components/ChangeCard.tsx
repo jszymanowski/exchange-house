@@ -1,8 +1,8 @@
 import { Text, Heading } from "@jszymanowski/breeze-primitives";
 import { Card as BaseCard, CardContent } from "@/components/ui/card";
 import color from "@/styles/color";
-
 import type { CurrencyCode, ExchangeRate } from "@/types";
+import ProperDate from "@jszymanowski/proper-date.js";
 
 const getBackgroundColorShade = (
   relativeChangePercent: number,
@@ -57,19 +57,27 @@ interface ChangeCardProps {
   fromIsoCode: CurrencyCode;
   toIsoCode: CurrencyCode;
   currentExchangeRate: ExchangeRate;
-  previousExchangeRate: ExchangeRate | undefined;
+  comparisonDate: ProperDate;
+  getExchangeRate: (date: ProperDate) => ExchangeRate | undefined;
 }
 
 export const ChangeCard = ({
   fromIsoCode,
   currentExchangeRate,
-  previousExchangeRate,
+  comparisonDate,
+  getExchangeRate,
 }: ChangeCardProps) => {
+  const previousExchangeRate = getExchangeRate(comparisonDate);
+
   if (!previousExchangeRate)
     return (
       <Card
         outlineColor={color["gray"][200]}
-        title="&nbsp;"
+        title={comparisonDate.toDate().toLocaleDateString("en-GB", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
         changeDisplay="N/A"
         subtext="No data available"
       />

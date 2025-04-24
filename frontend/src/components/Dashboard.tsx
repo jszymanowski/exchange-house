@@ -174,17 +174,15 @@ export default function Dashboard({
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
-                previousExchangeRate={getExchangeRate(
-                  lastExchangeRate.date.subtract(7, "days"),
-                )}
+                comparisonDate={lastExchangeRate.date.subtract(7, "days")}
+                getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
-                previousExchangeRate={getExchangeRate(
-                  lastExchangeRate.date.subtract(14, "days"),
-                )}
+                comparisonDate={lastExchangeRate.date.subtract(14, "days")}
+                getExchangeRate={getExchangeRate}
               />
               <div className="col-span-2 md:row-span-2">
                 <ExchangeRateHistory
@@ -197,17 +195,15 @@ export default function Dashboard({
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
-                previousExchangeRate={getExchangeRate(
-                  lastExchangeRate.date.subtract(1, "month"),
-                )}
+                comparisonDate={lastExchangeRate.date.subtract(1, "month")}
+                getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
-                previousExchangeRate={getExchangeRate(
-                  lastExchangeRate.date.subtract(3, "months"),
-                )}
+                comparisonDate={lastExchangeRate.date.subtract(3, "months")}
+                getExchangeRate={getExchangeRate}
               />
             </Grid>
             <Separator className="my-8" />
@@ -223,33 +219,29 @@ export default function Dashboard({
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
-                previousExchangeRate={getExchangeRate(
-                  lastExchangeRate.date.subtract(6, "months"),
-                )}
+                comparisonDate={lastExchangeRate.date.subtract(6, "months")}
+                getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
-                previousExchangeRate={getExchangeRate(
-                  lastExchangeRate.date.subtract(12, "months"),
-                )}
+                comparisonDate={lastExchangeRate.date.subtract(12, "months")}
+                getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
-                previousExchangeRate={getExchangeRate(
-                  lastExchangeRate.date.subtract(2, "years"),
-                )}
+                comparisonDate={lastExchangeRate.date.subtract(2, "years")}
+                getExchangeRate={getExchangeRate}
               />
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
                 currentExchangeRate={lastExchangeRate}
-                previousExchangeRate={getExchangeRate(
-                  lastExchangeRate.date.subtract(5, "years"),
-                )}
+                comparisonDate={lastExchangeRate.date.subtract(5, "years")}
+                getExchangeRate={getExchangeRate}
               />
             </Grid>
           </>
