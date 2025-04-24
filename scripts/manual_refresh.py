@@ -3,8 +3,13 @@ import asyncio
 import sys
 from datetime import date, datetime
 
+from tortoise import Tortoise
+
+from app.core.database import TORTOISE_ORM
 from app.core.dependencies import get_exchange_rate_service
 from app.services.exchange_rate_refresh import ExchangeRateRefresh
+
+# Refresh failed: default_connection for the model <class 'app.models.exchange_rate.ExchangeRate'> cannot be None
 
 
 async def _run_manual_refresh(start_date: date, end_date: date) -> bool:
@@ -15,14 +20,22 @@ async def _run_manual_refresh(start_date: date, end_date: date) -> bool:
         end_date=end_date,
     )
 
-    result = await exchange_rate_refresh.save()
-    if result:
-        print("Refresh completed successfully")
-    return result
+    try:
+        await Tortoise.init(config=TORTOISE_ORM)
+        result = await exchange_rate_refresh.save()
+        if result:
+            print("Refresh completed successfully")
+        return result
+    except Exception as e:
+        print(f"Refresh failed: {e}", file=sys.stderr)
+        return False
+    finally:
+        await Tortoise.close_connections()
 
 
 def run_manual_refresh(start_date: date, end_date: date) -> bool:
     """Run the exchange rate refresh process for the specified date range."""
+
     try:
         return asyncio.run(_run_manual_refresh(start_date, end_date))
     except Exception as e:
