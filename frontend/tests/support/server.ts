@@ -38,6 +38,20 @@ export const handlers = [
     })
   )),
 
+  http.get(`${API_URL}/api/v1/exchange_rates/available_dates`, () => {
+    const startDate = new ProperDate("2024-12-25");
+    const endDate = new ProperDate("2025-04-10");
+
+    const dates = [];
+    for (let date = startDate; date <= endDate; date = date.add(1, "day")) {
+      dates.push(date.toString());
+    }
+
+    return HttpResponse.json({
+      data: dates,
+    });
+  }),
+
   http.get(`${API_URL}/api/v1/exchange_rates/EUR/USD/latest`, () => {
     return HttpResponse.json({
       baseCurrencyCode: "EUR",

@@ -4,6 +4,7 @@ import { describe, test, expect, vi } from "vitest";
 
 import {
   getAvailableCurrencyPairs,
+  getAvailableDates,
   getHistoricalExchangeRates,
   getLatestExchangeRate,
 } from "@/services/exchangeRateService";
@@ -24,6 +25,17 @@ describe("ExchangeRateService", () => {
         baseCurrencyCode: "NZD",
         quoteCurrencyCode: "USD",
       });
+    });
+  });
+
+  describe("#getAvailableDates", () => {
+    test("retrieves the available dates", async () => {
+      const result = await getAvailableDates();
+
+      expect(result.data.length).toBe(107);
+
+      expect(result.data[0]).toEqual(new ProperDate("2024-12-25"));
+      expect(result.data[106]).toEqual(new ProperDate("2025-04-10"));
     });
   });
 
