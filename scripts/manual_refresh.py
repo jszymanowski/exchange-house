@@ -9,8 +9,6 @@ from app.core.database import TORTOISE_ORM
 from app.core.dependencies import get_exchange_rate_service
 from app.services.exchange_rate_refresh import ExchangeRateRefresh
 
-# Refresh failed: default_connection for the model <class 'app.models.exchange_rate.ExchangeRate'> cannot be None
-
 
 async def _run_manual_refresh(start_date: date, end_date: date) -> bool:
     exchange_rate_service = await get_exchange_rate_service()
