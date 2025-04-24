@@ -50,6 +50,7 @@ ENV PYTHONPATH=/app
 
 COPY ./pyproject.toml ./uv.lock ./scripts/entrypoint.sh /app/
 COPY ./migrations /app/migrations
+COPY ./scripts /app/scripts
 
 COPY ./app /app/app
 
