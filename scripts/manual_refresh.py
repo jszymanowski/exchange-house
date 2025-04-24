@@ -16,8 +16,10 @@ async def _run_manual_refresh(start_date: date, end_date: date) -> bool:
     )
 
     await exchange_rate_refresh.save()
-    print("Refresh completed successfully")
-    return True
+    result = await exchange_rate_refresh.save()
+    if result:
+        print("Refresh completed successfully")
+    return result
 
 
 def run_manual_refresh(start_date: date, end_date: date) -> bool:
@@ -56,6 +58,9 @@ if __name__ == "__main__":
         except ValueError:
             print(f"Error: Invalid end date format '{args.end_date}'. Please use YYYY-MM-DD format.")
             sys.exit(1)
+    if start_date and end_date and start_date > end_date:
+        print(f"Error: Start date ({start_date}) must be before end date ({end_date}).")
+        sys.exit(1)
 
     result = run_manual_refresh(start_date=start_date, end_date=end_date)
     sys.exit(0 if result else 1)
