@@ -39,7 +39,8 @@ async def test_exchange_rate_refresh(httpx_mock: HTTPXMock, test_database: Datab
     record_count = await test_database.count_records(ExchangeRate)
     assert record_count == 0
     subject = ExchangeRateRefresh(start_date=start_date, end_date=end_date, exchange_rate_service=exchange_rate_service)
-    await subject.save()
+    result = await subject.save()
+    assert result
 
     forward_rate = await exchange_rate_service.get_latest_rate(Currency("GBP"), Currency("USD"), date(2025, 1, 31))
     inverse_rate = await exchange_rate_service.get_latest_rate(Currency("USD"), Currency("GBP"), date(2025, 1, 31))

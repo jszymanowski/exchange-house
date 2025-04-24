@@ -36,7 +36,7 @@ class ExchangeRateRefresh:
         self.api_client = OpenExchangeRatesClient()
         self.exchange_rate_service = exchange_rate_service
 
-    async def save(self) -> None:
+    async def save(self) -> bool:
         """Fetch and save exchange rates for all required dates.
 
         Retrieves historical exchange rates for each date in the date range
@@ -54,6 +54,8 @@ class ExchangeRateRefresh:
             except Exception as e:
                 logger.error(f"Error processing rates for date {target_date}: {str(e)}", exc_info=True)
                 raise
+
+        return True
 
     async def _save_rates(self, target_date: date, data: HistoricalRatesResponse) -> None:
         params = [
