@@ -1,14 +1,36 @@
 import { Flex, Heading, Text } from "@jszymanowski/breeze-primitives";
 import { API_URL } from "@/config";
+import { useQuery } from "@tanstack/react-query";
 import Dashboard from "@/components/Dashboard";
 import { Button } from "@jszymanowski/breeze-forms";
 import { SquareArrowOutUpRight } from "lucide-react";
+import { getAvailableDates } from "@/services/exchangeRateService";
 
 export default function Home() {
+  const { data } = useQuery({
+    queryKey: ["available-dates"],
+    queryFn: () => getAvailableDates(),
+  });
+
+  const asOfDate = data?.data[data.data.length - 1];
+
+  const formattedAsOfDate = asOfDate?.toDate()?.toLocaleDateString("en-GB", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div>
       <Flex justify="between" align="center">
-        <Heading level="1">Exchange House</Heading>
+        <Flex align="end" gap="2">
+          <Heading level="1">Exchange House API</Heading>
+          {asOfDate && (
+            <Heading level="4" variant="muted" family="sans" weight="thin">
+              as of {formattedAsOfDate}
+            </Heading>
+          )}
+        </Flex>
         <Button
           variant="primary"
           onClick={() => {
