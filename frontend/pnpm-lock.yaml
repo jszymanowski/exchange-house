@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@jszymanowski/breeze-charts':
-        specifier: 0.1.0
-        version: 0.1.0(@jszymanowski/breeze-primitives@0.9.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4))(@jszymanowski/proper-date.js@0.6.1)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(@visx/axis@3.12.0(react@19.1.0))(@visx/brush@3.12.0(react@19.1.0))(@visx/curve@3.12.0)(@visx/event@3.12.0)(@visx/gradient@3.12.0(react@19.1.0))(@visx/grid@3.12.0(react@19.1.0))(@visx/group@3.12.0(react@19.1.0))(@visx/responsive@3.12.0(react@19.1.0))(@visx/scale@3.12.0)(@visx/shape@3.12.0(react@19.1.0))(@visx/tooltip@3.12.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@visx/vendor@3.12.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4)
+        specifier: 0.2.0
+        version: 0.2.0(@jszymanowski/breeze-primitives@0.9.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4))(@jszymanowski/proper-date.js@0.6.1)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(@visx/axis@3.12.0(react@19.1.0))(@visx/brush@3.12.0(react@19.1.0))(@visx/curve@3.12.0)(@visx/event@3.12.0)(@visx/gradient@3.12.0(react@19.1.0))(@visx/grid@3.12.0(react@19.1.0))(@visx/group@3.12.0(react@19.1.0))(@visx/responsive@3.12.0(react@19.1.0))(@visx/scale@3.12.0)(@visx/shape@3.12.0(react@19.1.0))(@visx/tooltip@3.12.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@visx/vendor@3.12.0)(lodash@4.17.21)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4)
       '@jszymanowski/breeze-forms':
         specifier: 0.7.0
         version: 0.7.0(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4)
@@ -550,8 +550,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  '@jszymanowski/breeze-charts@0.1.0':
-    resolution: {integrity: sha512-h20KCF1q7FqAKU4wNQzHkndVIkQ3CNCInAmdN6j4IM3gRKbpFefog7NzCJrxjzGcaAPmPCftJvqIbQXgh61J6w==}
+  '@jszymanowski/breeze-charts@0.2.0':
+    resolution: {integrity: sha512-pj/a41GdvcsV24BG/fzRJOszHufYKqc2NKMun8kBsq0pdVqE7luKoqAWqG/t4b3qqdF1SwtqN/fwdAlamsEXCw==}
     peerDependencies:
       '@jszymanowski/breeze-primitives': ^0.9.0
       '@jszymanowski/proper-date.js': ^0.6.0
@@ -567,6 +567,7 @@ packages:
       '@visx/shape': ^3.12.0
       '@visx/tooltip': ^3.12.0
       '@visx/vendor': ^3.12.0
+      lodash: ^4.17.21
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       tailwindcss: ^4.0.0
@@ -3566,7 +3567,7 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@jszymanowski/breeze-charts@0.1.0(@jszymanowski/breeze-primitives@0.9.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4))(@jszymanowski/proper-date.js@0.6.1)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(@visx/axis@3.12.0(react@19.1.0))(@visx/brush@3.12.0(react@19.1.0))(@visx/curve@3.12.0)(@visx/event@3.12.0)(@visx/gradient@3.12.0(react@19.1.0))(@visx/grid@3.12.0(react@19.1.0))(@visx/group@3.12.0(react@19.1.0))(@visx/responsive@3.12.0(react@19.1.0))(@visx/scale@3.12.0)(@visx/shape@3.12.0(react@19.1.0))(@visx/tooltip@3.12.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@visx/vendor@3.12.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4)':
+  '@jszymanowski/breeze-charts@0.2.0(@jszymanowski/breeze-primitives@0.9.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4))(@jszymanowski/proper-date.js@0.6.1)(@types/react-dom@19.1.2(@types/react@19.1.2))(@types/react@19.1.2)(@visx/axis@3.12.0(react@19.1.0))(@visx/brush@3.12.0(react@19.1.0))(@visx/curve@3.12.0)(@visx/event@3.12.0)(@visx/gradient@3.12.0(react@19.1.0))(@visx/grid@3.12.0(react@19.1.0))(@visx/group@3.12.0(react@19.1.0))(@visx/responsive@3.12.0(react@19.1.0))(@visx/scale@3.12.0)(@visx/shape@3.12.0(react@19.1.0))(@visx/tooltip@3.12.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@visx/vendor@3.12.0)(lodash@4.17.21)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4)':
     dependencies:
       '@jszymanowski/breeze-primitives': 0.9.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(tailwindcss@4.1.4)
       '@jszymanowski/proper-date.js': 0.6.1
@@ -3585,6 +3586,7 @@ snapshots:
       '@visx/vendor': 3.12.0
       class-variance-authority: 0.7.1
       clsx: 2.1.1
+      lodash: 4.17.21
       lucide-react: 0.488.0(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
