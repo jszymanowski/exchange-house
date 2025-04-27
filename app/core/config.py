@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     @property
     def timezone(self) -> str:
-        return os.getenv("TIMEZONE", "UTC")
+        return os.getenv("TZ", "UTC")
 
     @property
     def logging_level(self) -> str:
