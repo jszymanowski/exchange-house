@@ -1,6 +1,6 @@
 
 # Build frontend
-FROM node:22-slim@sha256:157c7ea6f8c30b630d6f0d892c4f961eab9f878e88f43dd1c00514f95ceded8a AS frontend-builder
+FROM node:22-slim@sha256:4424d5626240cdc02a0ce8b30eb1a34b80dee722c26b5a606a7c83abb27c8d63 AS frontend-builder
 
 WORKDIR /frontend
 
