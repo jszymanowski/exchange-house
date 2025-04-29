@@ -17,7 +17,7 @@ RUN pnpm build
 # ----------------------------
 
 # Build backend
-FROM python:3.13-slim-bookworm@sha256:21e39cf1815802d4c6f89a0d3a166cc67ce58f95b6d1639e68a394c99310d2e5 AS api-builder
+FROM python:3.13-slim-bookworm@sha256:f0591da876f85e256727f12c4ea52afbd2adf24b9cbf9b78c02d59231ec46e97 AS api-builder
 
 ENV PYTHONUNBUFFERED=1
 
