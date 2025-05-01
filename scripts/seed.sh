@@ -5,6 +5,12 @@ set -x
 
 source .env
 
+POSTGRES_HOST=${POSTGRES_HOST:-"localhost"}
+POSTGRES_PORT=${POSTGRES_PORT:-"5432"}
+POSTGRES_DB=${POSTGRES_DB:-"exchange_house_development"}
+POSTGRES_USER=${POSTGRES_USER:-"postgres"}
+POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-"postgres"}
+
 # Check for --clear-existing flag
 CLEAR_EXISTING=false
 for arg in "$@"; do
@@ -13,7 +19,7 @@ for arg in "$@"; do
   fi
 done
 
-SELECT_QUERY="SELECT id, as_of, from_iso_code AS base_currency_code, to_iso_code AS quote_currency_code, rate, 'openexchangerates.org' AS data_source, created_at, updated_at FROM exchange_rates WHERE from_iso_code NOT LIKE 'CUSTOM%' AND to_iso_code NOT LIKE 'CUSTOM%'"
+SELECT_QUERY="SELECT id, as_of, base_currency_code, quote_currency_code, rate, data_source, created_at, updated_at FROM exchange_rates"
 
 # Extract from source database
 psql "host=$SOURCE_DB_HOST port=$SOURCE_DB_PORT dbname=$SOURCE_DB user=$SOURCE_DB_USER password=$SOURCE_DB_PASSWORD" << EOF
