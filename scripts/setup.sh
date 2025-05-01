@@ -34,4 +34,10 @@ uv sync --frozen --no-install-project
 echo "Running pre-start"
 uv run -m app.pre_start
 
-echo "Setup complete. Run 'bin/dev' to start the server."
+echo "Setup complete. Next steps:
+
+1. Run 'bin/seed' to seed the database with data.
+2. Run 'bin/dev' to start the server.
+3. Run 'bin/test' to run the tests.
+
+"
