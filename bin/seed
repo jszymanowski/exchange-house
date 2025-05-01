@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -e
+set -x
+
+# Run the seed script
+# Add --clear-existing to clear the existing data
+uv run bash ./scripts/seed.sh "$@"
