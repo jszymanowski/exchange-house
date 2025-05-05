@@ -16,24 +16,45 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
         start_time = time.time()
 
-        response = await call_next(request)
-        response.headers["X-Request-ID"] = request_id
+        try:
+            response = await call_next(request)
+            response.headers["X-Request-ID"] = request_id
 
-        # Build log data
-        process_time_ms = round((time.time() - start_time) * 1000, 2)
-        log_data = {
-            "request_id": request_id,
-            "method": request.method,
-            "path": request.url.path,
-            "query_params": str(request.query_params),
-            "client_ip": request.client.host if request.client else None,
-            "process_time_ms": process_time_ms,
-            "status_code": response.status_code,
-        }
+            # Build log data
+            process_time_ms = round((time.time() - start_time) * 1000, 2)
+            log_data = {
+                "request_id": request_id,
+                "method": request.method,
+                "path": request.url.path,
+                "query_params": str(request.query_params),
+                "client_ip": request.client.host if request.client else None,
+                "process_time_ms": process_time_ms,
+                "status_code": response.status_code,
+            }
 
-        default_logger.info(
-            f"Request to {method} {url} completed in {process_time_ms}ms with status {response.status_code}",
-            extra={"extra": log_data},
-        )
+            default_logger.info(
+                f"Request to {method} {url} completed in {process_time_ms}ms with status {response.status_code}",
+                extra={"extra": log_data},
+            )
 
-        return response
+            return response
+
+        except Exception as e:
+            process_time_ms = round((time.time() - start_time) * 1000, 2)
+            log_data = {
+                "request_id": request_id,
+                "method": request.method,
+                "path": request.url.path,
+                "query_params": str(request.query_params),
+                "client_ip": request.client.host if request.client else None,
+                "process_time_ms": process_time_ms,
+                "error": str(e),
+                "error_type": type(e).__name__,
+            }
+
+            default_logger.error(
+                f"Error processing request to {method} {url} after {process_time_ms}ms: {str(e)}",
+                extra={"extra": log_data},
+            )
+
+            raise
