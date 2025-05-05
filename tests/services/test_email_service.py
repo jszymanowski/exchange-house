@@ -1,4 +1,3 @@
-import logging
 from collections.abc import Generator
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -39,6 +38,7 @@ def service() -> EmailService:
         body="Test Body",
     )
 
+
 @pytest.fixture
 def mock_logger() -> Generator[AsyncMock]:
     with (
@@ -47,6 +47,7 @@ def mock_logger() -> Generator[AsyncMock]:
         mock_logger = AsyncMock()
         mock_get_logger.return_value = mock_logger
         yield mock_logger
+
 
 def test_send_email_non_production(mock_smtp: MagicMock, mock_logger: AsyncMock, service: EmailService) -> None:
     service.send()

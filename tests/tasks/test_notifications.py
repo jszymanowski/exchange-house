@@ -1,13 +1,15 @@
+from collections.abc import Generator
 from datetime import date
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
-from typing import Generator
+
 import pytest
 
 from app.models import Currency
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 from app.tasks.notifications import send_exchange_rate_refresh_email
 from tests.support.factories import build_exchange_rate
+
 
 @pytest.fixture
 def mock_logger() -> Generator[AsyncMock]:
@@ -17,6 +19,7 @@ def mock_logger() -> Generator[AsyncMock]:
         mock_logger = AsyncMock()
         mock_get_logger.return_value = mock_logger
         yield mock_logger
+
 
 @pytest.mark.asyncio
 async def test_send_exchange_rate_refresh_email_success() -> None:

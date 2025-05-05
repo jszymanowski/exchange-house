@@ -11,6 +11,7 @@ from app.api.routes import router as api_router
 from app.core.config import settings
 from app.core.database import register_orm
 from app.core.logger import default_logger, setup_logging
+from app.middleware.logging import LoggingMiddleware
 
 
 @asynccontextmanager
@@ -39,6 +40,8 @@ app = FastAPI(
     lifespan=lifespan,
     exception_handlers=tortoise_exception_handlers(),
 )
+
+app.add_middleware(LoggingMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
