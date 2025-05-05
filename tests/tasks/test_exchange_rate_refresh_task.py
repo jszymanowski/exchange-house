@@ -47,8 +47,10 @@ def mock_send_exchange_rate_refresh_email() -> Generator[AsyncMock]:
 @pytest.fixture
 def mock_logger() -> Generator[AsyncMock]:
     with (
-        patch("app.tasks.exchange_rate_refresh_task.logger") as mock_logger,
+        patch("app.tasks.exchange_rate_refresh_task.get_logger") as mock_get_logger,
     ):
+        mock_logger = AsyncMock()
+        mock_get_logger.return_value = mock_logger
         yield mock_logger
 
 

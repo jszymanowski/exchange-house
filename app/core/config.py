@@ -29,8 +29,13 @@ class Settings(BaseSettings):
         return os.getenv("TZ", "UTC")
 
     @property
-    def logging_level(self) -> str:
-        return os.getenv("LOGGING_LEVEL", "INFO").upper()
+    def debug_mode(self) -> bool:
+        return os.getenv("DEBUG_MODE", "false").lower() == "true"
+
+    @property
+    def log_level(self) -> str:
+        default_log_level = "DEBUG" if self.debug_mode else "INFO"
+        return os.getenv("LOG_LEVEL", default_log_level).upper()
 
     @cached_property
     def open_exchange_rates_app_id(self) -> str | None:
@@ -40,7 +45,7 @@ class Settings(BaseSettings):
         return os.getenv("OPEN_EXCHANGE_RATES_APP_ID")
 
     @cached_property
-    def DATABASE_URL(self) -> str:
+    def database_url(self) -> str:
         user = os.getenv("POSTGRES_USER", "postgres")
         password = os.getenv("POSTGRES_PASSWORD", "postgres")
         host = os.getenv("POSTGRES_HOST", "localhost")

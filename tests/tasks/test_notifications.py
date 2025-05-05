@@ -1,7 +1,7 @@
 from datetime import date
 from decimal import Decimal
 from unittest.mock import AsyncMock, MagicMock, patch
-
+from typing import Generator
 import pytest
 
 from app.models import Currency
@@ -9,6 +9,14 @@ from app.services.exchange_rate_service import ExchangeRateServiceInterface
 from app.tasks.notifications import send_exchange_rate_refresh_email
 from tests.support.factories import build_exchange_rate
 
+@pytest.fixture
+def mock_logger() -> Generator[AsyncMock]:
+    with (
+        patch("app.tasks.notifications.get_logger") as mock_get_logger,
+    ):
+        mock_logger = AsyncMock()
+        mock_get_logger.return_value = mock_logger
+        yield mock_logger
 
 @pytest.mark.asyncio
 async def test_send_exchange_rate_refresh_email_success() -> None:
@@ -61,13 +69,12 @@ async def test_send_exchange_rate_refresh_email_success() -> None:
 
 
 @pytest.mark.asyncio
-async def test_send_exchange_rate_refresh_email_no_admin_email() -> None:
+async def test_send_exchange_rate_refresh_email_no_admin_email(mock_logger: AsyncMock) -> None:
     mock_exchange_rate_service = AsyncMock(spec=ExchangeRateServiceInterface)
 
     with (
         patch("app.tasks.notifications.email_settings") as mock_email_settings,
         patch("app.tasks.notifications.EmailService") as mock_email_service_class,
-        patch("app.tasks.notifications.logger") as mock_logger,
     ):
         mock_email_settings.admin_email = None
 
@@ -79,7 +86,7 @@ async def test_send_exchange_rate_refresh_email_no_admin_email() -> None:
 
 
 @pytest.mark.asyncio
-async def test_send_exchange_rate_refresh_email_not_enough_rates() -> None:
+async def test_send_exchange_rate_refresh_email_not_enough_rates(mock_logger: AsyncMock) -> None:
     mock_exchange_rate_service = AsyncMock(spec=ExchangeRateServiceInterface)
 
     latest_rate = build_exchange_rate(
@@ -93,7 +100,6 @@ async def test_send_exchange_rate_refresh_email_not_enough_rates() -> None:
     with (
         patch("app.tasks.notifications.email_settings") as mock_email_settings,
         patch("app.tasks.notifications.EmailService") as mock_email_service_class,
-        patch("app.tasks.notifications.logger") as mock_logger,
     ):
         mock_email_settings.admin_email = "admin@example.com"
 
@@ -105,7 +111,7 @@ async def test_send_exchange_rate_refresh_email_not_enough_rates() -> None:
 
 
 @pytest.mark.asyncio
-async def test_send_exchange_rate_refresh_email_empty_rates() -> None:
+async def test_send_exchange_rate_refresh_email_empty_rates(mock_logger: AsyncMock) -> None:
     mock_exchange_rate_service = AsyncMock(spec=ExchangeRateServiceInterface)
 
     mock_exchange_rate_service.get_historical_rates.return_value = [], 0
@@ -113,7 +119,6 @@ async def test_send_exchange_rate_refresh_email_empty_rates() -> None:
     with (
         patch("app.tasks.notifications.email_settings") as mock_email_settings,
         patch("app.tasks.notifications.EmailService") as mock_email_service_class,
-        patch("app.tasks.notifications.logger") as mock_logger,
     ):
         mock_email_settings.admin_email = "admin@example.com"
 

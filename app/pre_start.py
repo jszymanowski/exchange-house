@@ -5,7 +5,7 @@ from aerich import Command
 from tortoise import Tortoise
 
 from app.core.database import TORTOISE_ORM
-from app.core.logger import logger
+from app.core.logger import default_logger as logger
 
 
 async def check_db_connection() -> bool:

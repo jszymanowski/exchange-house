@@ -1,9 +1,8 @@
 import logging
 from collections.abc import Generator
-from unittest.mock import MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from pytest import LogCaptureFixture
 
 from app.services.email_service import EmailService
 
@@ -40,15 +39,21 @@ def service() -> EmailService:
         body="Test Body",
     )
 
+@pytest.fixture
+def mock_logger() -> Generator[AsyncMock]:
+    with (
+        patch("app.services.email_service.get_logger") as mock_get_logger,
+    ):
+        mock_logger = AsyncMock()
+        mock_get_logger.return_value = mock_logger
+        yield mock_logger
 
-def test_send_email_non_production(mock_smtp: MagicMock, caplog: LogCaptureFixture, service: EmailService) -> None:
-    caplog.set_level(logging.INFO, logger="app.services.email_service")
-
+def test_send_email_non_production(mock_smtp: MagicMock, mock_logger: AsyncMock, service: EmailService) -> None:
     service.send()
 
     expected_log_msg = "Sending email is disabled in non-production environments."
 
-    assert expected_log_msg in caplog.text
+    mock_logger.info.assert_called_once_with(expected_log_msg)
 
     mock_smtp.assert_not_called()
 

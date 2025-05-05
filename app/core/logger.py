@@ -1,42 +1,72 @@
+import json
 import logging
-import logging.handlers
 import sys
+from datetime import datetime
 from logging import Handler
 from pathlib import Path
+from typing import Any, Literal
 
 from app.core.config import settings
 
+type LogDomain = Literal["default", "celery", "email", "rate_refresh", "heartbeat"]
+
+
+class JSONLogFormatter(logging.Formatter):
+    def format(self, record: logging.LogRecord) -> str:
+        try:
+            simple_path = record.pathname.split("/app/")[-1]
+        except Exception:
+            simple_path = record.pathname
+
+        log_record: dict[str, Any] = {
+            "domain": record.name,
+            "timestamp": datetime.fromtimestamp(record.created).isoformat(),
+            "level": record.levelname,
+            "message": record.getMessage(),
+            "module": record.module,
+            "function": record.funcName,
+            "path": simple_path,
+            "line": record.lineno,
+        }
+
+        # Include exception info if present
+        if record.exc_info:
+            log_record["exception"] = self.formatException(record.exc_info)
+
+        # Include any extra attributes
+        if hasattr(record, "extra"):
+            log_record.update(record.extra)
+
+        return json.dumps(log_record)
+
 
 def setup_logging() -> None:
-    try:
-        logs_dir = Path("logs")
-        logs_dir.mkdir(exist_ok=True)
+    logs_dir = Path("logs")
+    logs_dir.mkdir(exist_ok=True)
 
-        logging_level = settings.logging_level
+    log_level = settings.log_level
 
-        handlers: list[Handler] = [
-            logging.handlers.TimedRotatingFileHandler(
-                f"logs/{settings.environment}.log",
-                when="midnight",
-                backupCount=30,  # Keep logs for 30 days
-            )
-        ]
+    handlers: list[Handler] = [logging.FileHandler(f"logs/{settings.environment}.log")]
 
-        if not settings.is_test:
-            handlers.append(logging.StreamHandler(sys.stdout))
+    if not settings.is_test:
+        handlers.append(logging.StreamHandler(sys.stdout))
 
-        logging.basicConfig(
-            level=logging_level,
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-            handlers=handlers,
-        )
-    except Exception as e:
-        # Fallback to basic console logging if setup fails
-        print(f"Error setting up logging: {e}")
-        logging.basicConfig(
-            level="INFO",
-            format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        )
+    if settings.is_production:
+        format = ""
+        for handler in handlers:
+            handler.setFormatter(JSONLogFormatter())
+    else:
+        format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+    logging.basicConfig(
+        level=log_level,
+        format=format,
+        handlers=handlers,
+    )
 
 
-logger = logging.getLogger("exchange-house")
+def get_logger(name: LogDomain) -> logging.Logger:
+    return logging.getLogger(name)
+
+
+default_logger = logging.getLogger("default")

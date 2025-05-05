@@ -10,7 +10,7 @@ from tortoise.contrib.fastapi import tortoise_exception_handlers
 from app.api.routes import router as api_router
 from app.core.config import settings
 from app.core.database import register_orm
-from app.core.logger import logger, setup_logging
+from app.core.logger import default_logger, setup_logging
 
 
 @asynccontextmanager
@@ -28,7 +28,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
                 # app teardown
             # db connections closed
         except Exception as e:
-            logger.error(f"Database connection error: {e}")
+            default_logger.error(f"Database connection error: {e}")
             raise
 
 
