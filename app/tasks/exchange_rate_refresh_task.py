@@ -5,7 +5,7 @@ from tortoise import Tortoise
 from app.celery_app import celery_app
 from app.core.database import TORTOISE_ORM
 from app.core.dependencies import get_exchange_rate_service
-from app.core.logger import logger
+from app.core.logger import get_logger
 from app.services.exchange_rate_refresh import build_exchange_rate_refresh
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
 from app.services.healthchecks_service import NoURLSetError, get_healthchecks_service
@@ -26,6 +26,8 @@ class CheckInException(Exception):
 
 
 async def _exchange_rate_refresh() -> TaskResult:
+    logger = get_logger("rate_refresh")
+
     async def _update_exchange_rates(exchange_rate_service: ExchangeRateServiceInterface) -> None:
         exchange_rate_refresh = build_exchange_rate_refresh(exchange_rate_service=exchange_rate_service)
         try:

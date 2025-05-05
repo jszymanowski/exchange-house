@@ -1,6 +1,6 @@
 from app.core.config import email_settings
 from app.core.dependencies import exchange_rate_service_dependency
-from app.core.logger import logger
+from app.core.logger import get_logger
 from app.models import Currency
 from app.services.email_service import EmailService
 from app.services.exchange_rate_service import ExchangeRateServiceInterface
@@ -14,6 +14,8 @@ async def send_exchange_rate_refresh_email(
     base_currency: Currency = DEFAULT_BASE_CURRENCY,
     quote_currency: Currency = DEFAULT_QUOTE_CURRENCY,
 ) -> None:
+    logger = get_logger("email")
+
     if not email_settings.admin_email:
         logger.warning("No admin email found")
         return

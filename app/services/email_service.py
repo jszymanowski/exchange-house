@@ -4,7 +4,7 @@ from typing import Any
 from pydantic import BaseModel, EmailStr
 
 from app.core.config import EmailSettings, email_settings, settings
-from app.core.logger import logger
+from app.core.logger import get_logger
 from app.decorators.perform_as_background_task import perform_as_background_task
 
 
@@ -19,6 +19,8 @@ class EmailService(BaseModel):
         self.email_settings = email_settings
 
     def send(self) -> None:
+        logger = get_logger("email")
+
         if not settings.is_production:
             logger.info("Sending email is disabled in non-production environments.")
             return

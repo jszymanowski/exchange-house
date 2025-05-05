@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta
 from decimal import Decimal
 
-from app.core.logger import logger
+from app.core.logger import get_logger
 from app.integrations.open_exchange_rates import HistoricalRatesResponse, OpenExchangeRatesClient
 from app.models import Currency
 from app.services.exchange_rate_service import CreateRateParams, ExchangeRateServiceInterface
@@ -35,6 +35,7 @@ class ExchangeRateRefresh:
         self.end_date = end_date or (datetime.now().date() - timedelta(days=1))
         self.api_client = OpenExchangeRatesClient()
         self.exchange_rate_service = exchange_rate_service
+        self.logger = get_logger("rate_refresh")
 
     async def save(self) -> bool:
         """Fetch and save exchange rates for all required dates.
@@ -52,7 +53,7 @@ class ExchangeRateRefresh:
                 data = await self.api_client.historical_rates_for(target_date)
                 await self._save_rates(target_date, data)
             except Exception as e:
-                logger.error(f"Error processing rates for date {target_date}: {str(e)}", exc_info=True)
+                self.logger.error(f"Error processing rates for date {target_date}: {str(e)}", exc_info=True)
                 raise
 
         return True
