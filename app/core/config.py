@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     PROJECT_DESCRIPTION: str = "A simple API for exchange rates"
     PROJECT_VERSION: str = "v1"
 
-    @property
+    @cached_property
     def environment(self) -> str:
         return os.getenv("ENV", "development")
 
@@ -24,15 +24,15 @@ class Settings(BaseSettings):
     def is_production(self) -> bool:
         return self.environment == "production"
 
-    @property
+    @cached_property
     def timezone(self) -> str:
         return os.getenv("TZ", "UTC")
 
-    @property
+    @cached_property
     def debug_mode(self) -> bool:
         return os.getenv("DEBUG_MODE", "false").lower() == "true"
 
-    @property
+    @cached_property
     def log_level(self) -> str:
         default_log_level = "DEBUG" if self.debug_mode else "INFO"
         return os.getenv("LOG_LEVEL", default_log_level).upper()
@@ -66,23 +66,23 @@ class EmailSettings(BaseSettings):
     def is_configured(self) -> bool:
         return all([self.smtp_server, self.smtp_port, self.smtp_username, self.smtp_password])
 
-    @property
+    @cached_property
     def smtp_server(self) -> str | None:
         return os.getenv("SMTP_SERVER")
 
-    @property
+    @cached_property
     def smtp_port(self) -> int:
         return int(os.getenv("SMTP_PORT", "587"))
 
-    @property
+    @cached_property
     def smtp_username(self) -> str | None:
         return os.getenv("SMTP_USERNAME")
 
-    @property
+    @cached_property
     def smtp_password(self) -> str | None:
         return os.getenv("SMTP_PASSWORD")
 
-    @property
+    @cached_property
     def admin_email(self) -> str | None:
         return os.getenv("ADMIN_EMAIL")
 
@@ -91,11 +91,11 @@ email_settings = EmailSettings()
 
 
 class CelerySettings(BaseSettings):
-    @property
+    @cached_property
     def redis_host(self) -> str:
         return os.getenv("REDIS_HOST", "localhost")
 
-    @property
+    @cached_property
     def redis_port(self) -> str:
         return os.getenv("REDIS_PORT", "6379")
 
@@ -107,19 +107,19 @@ class CelerySettings(BaseSettings):
     def celery_backend_url(self) -> str:
         return self.celery_broker_url
 
-    @property
+    @cached_property
     def flower_port(self) -> int:
         return int(os.getenv("FLOWER_PORT", "5555"))
 
-    @property
+    @cached_property
     def heartbeat_interval(self) -> str:
         return os.getenv("HEARTBEAT_INTERVAL", "*/5")
 
-    @property
+    @cached_property
     def exchange_rates_refresh_hour(self) -> str:
         return os.getenv("EXCHANGE_RATES_REFRESH_HOUR", "13")
 
-    @property
+    @cached_property
     def exchange_rates_refresh_minute(self) -> str:
         return os.getenv("EXCHANGE_RATES_REFRESH_MINUTE", "00")
 
@@ -132,11 +132,11 @@ celery_settings = CelerySettings()
 
 
 class HealthcheckSettings(BaseSettings):
-    @property
+    @cached_property
     def heartbeat_check_url(self) -> str | None:
         return os.getenv("HEARTBEAT_CHECK_URL")
 
-    @property
+    @cached_property
     def refresh_completed_url(self) -> str | None:
         return os.getenv("REFRESH_COMPLETED_URL")
 

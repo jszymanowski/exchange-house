@@ -6,6 +6,7 @@ from tortoise import Tortoise
 
 from app.core.database import TORTOISE_ORM
 from app.core.logger import default_logger as logger
+from app.core.logger import setup_logging
 
 
 async def check_db_connection() -> bool:
@@ -53,6 +54,7 @@ async def init_db() -> bool:
 
 
 def main() -> None:
+    setup_logging()
     logger.info("Starting database connection check...")
     success = asyncio.run(check_db_connection())
     if not success:

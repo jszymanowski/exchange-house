@@ -5,7 +5,7 @@ from celery.app.task import Task
 from celery.schedules import crontab
 
 from app.core.config import celery_settings
-from app.core.logger import get_logger
+from app.core.logger import get_logger, setup_logging
 
 # Monkey patch Task class to reduce (but not eliminate) type errors, as recommended in celery-type docs: https://pypi.org/project/celery-types/
 # Related issues: https://github.com/python/mypy/issues/18900, https://github.com/sbdchd/celery-types/pull/178
@@ -32,6 +32,7 @@ celery_app.conf.update(
     enable_utc=celery_settings.timezone == "UTC",
 )
 
+setup_logging()
 logger = get_logger("celery")
 
 

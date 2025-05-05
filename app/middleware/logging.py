@@ -14,14 +14,15 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         method = request.method
         url = request.url.path
 
-        start_time = time.time()
+        start_time = time.perf_counter()
 
         try:
             response = await call_next(request)
             response.headers["X-Request-ID"] = request_id
+            request.state.request_id = request_id
 
             # Build log data
-            process_time_ms = round((time.time() - start_time) * 1000, 2)
+            process_time_ms = round((time.perf_counter() - start_time) * 1000, 2)
             log_data = {
                 "request_id": request_id,
                 "method": request.method,

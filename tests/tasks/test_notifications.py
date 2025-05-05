@@ -72,7 +72,7 @@ async def test_send_exchange_rate_refresh_email_success() -> None:
 
 
 @pytest.mark.asyncio
-async def test_send_exchange_rate_refresh_email_no_admin_email(mock_logger: AsyncMock) -> None:
+async def test_send_exchange_rate_refresh_email_no_admin_email(mock_logger: MagicMock) -> None:
     mock_exchange_rate_service = AsyncMock(spec=ExchangeRateServiceInterface)
 
     with (
@@ -89,7 +89,7 @@ async def test_send_exchange_rate_refresh_email_no_admin_email(mock_logger: Asyn
 
 
 @pytest.mark.asyncio
-async def test_send_exchange_rate_refresh_email_not_enough_rates(mock_logger: AsyncMock) -> None:
+async def test_send_exchange_rate_refresh_email_not_enough_rates(mock_logger: MagicMock) -> None:
     mock_exchange_rate_service = AsyncMock(spec=ExchangeRateServiceInterface)
 
     latest_rate = build_exchange_rate(
@@ -114,7 +114,7 @@ async def test_send_exchange_rate_refresh_email_not_enough_rates(mock_logger: As
 
 
 @pytest.mark.asyncio
-async def test_send_exchange_rate_refresh_email_empty_rates(mock_logger: AsyncMock) -> None:
+async def test_send_exchange_rate_refresh_email_empty_rates(mock_logger: MagicMock) -> None:
     mock_exchange_rate_service = AsyncMock(spec=ExchangeRateServiceInterface)
 
     mock_exchange_rate_service.get_historical_rates.return_value = [], 0

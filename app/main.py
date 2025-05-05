@@ -29,7 +29,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
                 # app teardown
             # db connections closed
         except Exception as e:
-            default_logger.error(f"Database connection error: {e}")
+            default_logger.error(
+                "Database connection error",
+                extra={"extra": {"error": str(e), "error_type": type(e).__name__}},
+            )
             raise
 
 

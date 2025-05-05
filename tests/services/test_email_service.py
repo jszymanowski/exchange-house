@@ -49,7 +49,7 @@ def mock_logger() -> Generator[AsyncMock]:
         yield mock_logger
 
 
-def test_send_email_non_production(mock_smtp: MagicMock, mock_logger: AsyncMock, service: EmailService) -> None:
+def test_send_email_non_production(mock_smtp: MagicMock, mock_logger: MagicMock, service: EmailService) -> None:
     service.send()
 
     expected_log_msg = "Sending email is disabled in non-production environments."

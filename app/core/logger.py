@@ -44,9 +44,8 @@ def setup_logging() -> None:
     logs_dir = Path("logs")
     logs_dir.mkdir(exist_ok=True)
 
-    log_level = settings.log_level
-
-    handlers: list[Handler] = [logging.FileHandler(f"logs/{settings.environment}.log")]
+    log_file = logs_dir / f"{settings.environment}.log"
+    handlers: list[Handler] = [logging.FileHandler(log_file)]
 
     if not settings.is_test:
         handlers.append(logging.StreamHandler(sys.stdout))
@@ -59,7 +58,7 @@ def setup_logging() -> None:
         format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
     logging.basicConfig(
-        level=log_level,
+        level=settings.log_level,
         format=format,
         handlers=handlers,
     )

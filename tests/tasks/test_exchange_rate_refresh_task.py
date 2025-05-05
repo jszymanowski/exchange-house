@@ -1,5 +1,5 @@
 from collections.abc import Generator
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
@@ -93,7 +93,7 @@ async def test_latest_exchange_rates_task_no_healthcheck_url(
     mock_get_exchange_rate_service: AsyncMock,
     mock_healthchecks_service: AsyncMock,
     mock_send_exchange_rate_refresh_email: AsyncMock,
-    mock_logger: AsyncMock,
+    mock_logger: MagicMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     mock_healthchecks_service.ping_refresh_completed.side_effect = NoURLSetError
@@ -111,7 +111,7 @@ async def test_latest_exchange_rates_task_email_failure(
     mock_get_exchange_rate_service: AsyncMock,
     mock_healthchecks_service: AsyncMock,
     mock_send_exchange_rate_refresh_email: AsyncMock,
-    mock_logger: AsyncMock,
+    mock_logger: MagicMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     mock_send_exchange_rate_refresh_email.side_effect = Exception("Email sending error")
@@ -134,7 +134,7 @@ async def test_latest_exchange_rates_task_healthcheck_failure(
     mock_get_exchange_rate_service: AsyncMock,
     mock_healthchecks_service: AsyncMock,
     mock_send_exchange_rate_refresh_email: AsyncMock,
-    mock_logger: AsyncMock,
+    mock_logger: MagicMock,
     test_exchange_rate_service: ExchangeRateServiceInterface,
 ) -> None:
     mock_healthchecks_service.ping_refresh_completed.side_effect = Exception("Healthcheck error")
