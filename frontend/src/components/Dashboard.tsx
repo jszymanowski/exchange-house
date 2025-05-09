@@ -243,13 +243,13 @@ export default function Dashboard({
         <Separator className="my-8" />
 
         <Heading level="2" className="mb-6">
-          Since 2010
+          Since 1999
         </Heading>
         <Box className="max-h[300px]">
           <ExchangeRateHistory
             fromIsoCode={fromIsoCode}
             toIsoCode={toIsoCode}
-            startDate={new ProperDate("2009-12-31")}
+            startDate={new ProperDate("1999-12-31")}
           />
         </Box>
       </>
