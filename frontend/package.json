@@ -19,7 +19,7 @@
     "@jszymanowski/breeze-primitives": "0.9.0",
     "@jszymanowski/proper-date.js": "0.6.1",
     "@radix-ui/react-separator": "^1.1.4",
-    "@tailwindcss/vite": "4.1.4",
+    "@tailwindcss/vite": "4.1.5",
     "@tanstack/react-query": "5.74.11",
     "axios": "1.9.0",
     "big.js": "7.0.1",
@@ -29,7 +29,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "3.2.0",
-    "tailwindcss": "4.1.4",
+    "tailwindcss": "4.1.5",
     "tailwindcss-animate": "1.0.7"
   },
   "devDependencies": {
