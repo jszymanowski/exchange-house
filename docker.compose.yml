@@ -12,7 +12,7 @@ x-common-env-file: &common-env-file
 # Common service template
 x-service-common: &service-common
   <<: *common-env-file
-  image: ghcr.io/jszymanowski/exchange-house:latest
+  image: ghcr.io/still-forest/exchange-house:latest
   networks:
     - exchange-house-network
     - external_proxy_net

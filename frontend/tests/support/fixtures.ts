@@ -1,5 +1,5 @@
 import { CurrencyPair, ExchangeRate } from "@/types";
-import ProperDate from "@jszymanowski/proper-date.js";
+import ProperDate from "@still-forest/proper-date.js";
 import Big from "big.js";
 
 export const createCurrencyPair = (

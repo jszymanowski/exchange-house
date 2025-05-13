@@ -1,5 +1,5 @@
 import Big from "big.js";
-import ProperDate from "@jszymanowski/proper-date.js";
+import ProperDate from "@still-forest/proper-date.js";
 
 import exchangeHouseClient, {
   handleError,

@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
-import type ProperDate from "@jszymanowski/proper-date.js";
+import type ProperDate from "@still-forest/proper-date.js";
 import { Box, Text } from "@still-forest/canopy";
 import { LineChart } from "@still-forest/canopy-charts";
 
