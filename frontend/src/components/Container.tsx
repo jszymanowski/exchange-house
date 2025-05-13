@@ -1,4 +1,4 @@
-import { Box, type BoxProps } from "@jszymanowski/breeze-primitives";
+import { Box, type BoxProps } from "@still-forest/canopy";
 
 import { cn } from "@/lib/utils";
 

@@ -1,6 +1,6 @@
 import { CircleDollarSign } from "lucide-react";
 
-import { Flex, Heading } from "@jszymanowski/breeze-primitives";
+import { Flex, Heading } from "@still-forest/canopy";
 
 interface Props {
   message?: string;

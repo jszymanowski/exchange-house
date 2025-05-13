@@ -7,21 +7,21 @@ import { API_URL } from "@/config";
 import { createCurrencyPair } from "./fixtures";
 
 const pairs = [
-      ["USD", "EUR"],
-      ["USD", "GBP"],
-      ["USD", "JPY"],
-      ["USD", "CHF"],
-      ["USD", "CAD"],
-      ["USD", "AUD"],
-      ["USD", "NZD"],
-      ["EUR", "USD"],
-      ["GBP", "USD"],
-      ["JPY", "USD"],
-      ["CHF", "USD"],
-      ["CAD", "USD"],
-      ["AUD", "USD"],
-      ["NZD", "USD"],
-    ];
+  ["USD", "EUR"],
+  ["USD", "GBP"],
+  ["USD", "JPY"],
+  ["USD", "CHF"],
+  ["USD", "CAD"],
+  ["USD", "AUD"],
+  ["USD", "NZD"],
+  ["EUR", "USD"],
+  ["GBP", "USD"],
+  ["JPY", "USD"],
+  ["CHF", "USD"],
+  ["CAD", "USD"],
+  ["AUD", "USD"],
+  ["NZD", "USD"],
+];
 
 export const MOCK_CURRENCY_PAIRS = pairs.map((pair) =>
   createCurrencyPair({
@@ -30,13 +30,12 @@ export const MOCK_CURRENCY_PAIRS = pairs.map((pair) =>
   }),
 );
 
-
 export const handlers = [
-  http.get(`${API_URL}/api/v1/exchange_rates/available_currency_pairs`, () => (
+  http.get(`${API_URL}/api/v1/exchange_rates/available_currency_pairs`, () =>
     HttpResponse.json({
       data: MOCK_CURRENCY_PAIRS,
-    })
-  )),
+    }),
+  ),
 
   http.get(`${API_URL}/api/v1/exchange_rates/available_dates`, () => {
     const startDate = new ProperDate("2024-12-25");

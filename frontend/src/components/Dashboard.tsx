@@ -4,13 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import Big from "big.js";
 import { useQuery } from "@tanstack/react-query";
 import ProperDate from "@jszymanowski/proper-date.js";
-import {
-  Box,
-  Flex,
-  Grid,
-  Text,
-  Heading,
-} from "@jszymanowski/breeze-primitives";
+import { Box, Flex, Grid, Text, Heading } from "@still-forest/canopy";
 
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
 import ErrorOverlay from "@/components/ErrorOverlay";

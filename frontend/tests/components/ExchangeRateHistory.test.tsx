@@ -5,12 +5,12 @@ import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom";
 
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
-import type { LineChartProps } from "@jszymanowski/breeze-charts";
+import type { LineChartProps } from "@still-forest/canopy-charts";
 
 import { createExchangeRate } from "@tests/support/fixtures";
 import MockProvider from "@tests/support/MockProvider";
 
-vi.mock("@jszymanowski/breeze-charts", () => ({
+vi.mock("@still-forest/canopy-charts", () => ({
   LineChart: ({ data }: LineChartProps) => {
     const startDate = data[0].date.formatted;
     const endDate = data[data.length - 1].date.formatted;

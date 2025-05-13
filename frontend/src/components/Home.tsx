@@ -1,8 +1,7 @@
-import { Flex, Heading, Text } from "@jszymanowski/breeze-primitives";
+import { Button, Flex, Heading, Text } from "@still-forest/canopy";
 import { API_URL } from "@/config";
 import { useQuery } from "@tanstack/react-query";
 import Dashboard from "@/components/Dashboard";
-import { Button } from "@jszymanowski/breeze-forms";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { getAvailableDates } from "@/services/exchangeRateService";
 
