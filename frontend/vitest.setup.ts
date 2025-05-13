@@ -1,7 +1,6 @@
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 import { server } from "./tests/support/server";
 
-
 vi.stubGlobal(
   "ResizeObserver",
   vi.fn().mockImplementation(() => ({
@@ -10,7 +9,6 @@ vi.stubGlobal(
     disconnect: vi.fn(),
   })),
 );
-
 
 beforeAll(() => server.listen({ onUnhandledRequest: "error" }));
 

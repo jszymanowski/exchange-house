@@ -2,9 +2,8 @@
 @plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
-@source "../node_modules/@jszymanowski/breeze-primitives/dist";
-@source "../node_modules/@jszymanowski/breeze-forms/dist";
-@source "../node_modules/@jszymanowski/breeze-charts/dist";
+@source "../node_modules/@still-forest/canopy/dist";
+@source "../node_modules/@still-forest/canopy-charts/dist";
 
 @layer base {
   :root {

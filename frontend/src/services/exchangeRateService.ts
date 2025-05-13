@@ -22,7 +22,6 @@ export const getAvailableCurrencyPairs =
     }
   };
 
-
 interface RawAvailableDatesResponse {
   data: string[];
 }
@@ -30,20 +29,17 @@ interface AvailableDatesResponse {
   data: ProperDate[];
 }
 
-export const getAvailableDates =
-  async (): Promise<AvailableDatesResponse> => {
-    try {
-      const response = await exchangeHouseClient.get<RawAvailableDatesResponse>(
-        "exchange_rates/available_dates",
-      );
-      const data = response.data.data
-        .map((item) => new ProperDate(item))
-        .sort();
-      return { data };
-    } catch (error) {
-      throw new Error(handleError(error));
-    }
-  };
+export const getAvailableDates = async (): Promise<AvailableDatesResponse> => {
+  try {
+    const response = await exchangeHouseClient.get<RawAvailableDatesResponse>(
+      "exchange_rates/available_dates",
+    );
+    const data = response.data.data.map((item) => new ProperDate(item)).sort();
+    return { data };
+  } catch (error) {
+    throw new Error(handleError(error));
+  }
+};
 
 interface LatestExchangeRateResponse extends CurrencyPair {
   data: ExchangeRate;

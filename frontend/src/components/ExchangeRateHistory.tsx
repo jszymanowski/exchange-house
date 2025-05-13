@@ -1,8 +1,8 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import type ProperDate from "@jszymanowski/proper-date.js";
-import { Box, Text } from "@jszymanowski/breeze-primitives";
-import { LineChart } from "@jszymanowski/breeze-charts";
+import { Box, Text } from "@still-forest/canopy";
+import { LineChart } from "@still-forest/canopy-charts";
 
 import ErrorOverlay from "@/components/ErrorOverlay";
 

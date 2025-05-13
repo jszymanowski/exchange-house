@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { ArrowLeftRight } from "lucide-react";
 
-import { Button, SelectPicker } from "@jszymanowski/breeze-forms";
 import type { CurrencyPair, CurrencyCode } from "@/types";
 import { CURRENCIES } from "@/currencies";
 
-import { Flex, Text } from "@jszymanowski/breeze-primitives";
+import { Button, SelectPicker, Flex, Text } from "@still-forest/canopy";
 
 const buildCurrencyOptions = (currencyCodes: CurrencyCode[]) => {
   const options = currencyCodes.map((isoCode) => {

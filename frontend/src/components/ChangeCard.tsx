@@ -1,5 +1,5 @@
 import Big from "big.js";
-import { Text, Heading } from "@jszymanowski/breeze-primitives";
+import { Text, Heading } from "@still-forest/canopy";
 import { Card as BaseCard, CardContent } from "@/components/ui/card";
 import color from "@/styles/color";
 import type { CurrencyCode, ExchangeRate } from "@/types";
