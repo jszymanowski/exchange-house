@@ -6,7 +6,7 @@ import Dashboard from "@/components/Dashboard";
 import MockProvider from "@tests/support/MockProvider";
 
 import { createExchangeRate } from "../support/fixtures";
-import ProperDate from "@jszymanowski/proper-date.js";
+import ProperDate from "@still-forest/proper-date.js";
 
 vi.mock("@/integrations/exchangeHouseClient");
 

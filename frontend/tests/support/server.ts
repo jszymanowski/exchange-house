@@ -1,5 +1,5 @@
 import { setupServer } from "msw/node";
-import ProperDate from "@jszymanowski/proper-date.js";
+import ProperDate from "@still-forest/proper-date.js";
 
 import { http, HttpResponse } from "msw";
 import { API_URL } from "@/config";

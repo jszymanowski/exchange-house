@@ -1,5 +1,5 @@
 import Big from "big.js";
-import ProperDate from "@jszymanowski/proper-date.js";
+import ProperDate from "@still-forest/proper-date.js";
 import { describe, test, expect, vi } from "vitest";
 
 import {
@@ -55,8 +55,8 @@ describe("ExchangeRateService", () => {
   });
 
   describe("#getHistoricalExchangeRates", () => {
-    vi.mock("@jszymanowski/proper-date.js", async () => {
-      const actual = await vi.importActual("@jszymanowski/proper-date.js");
+    vi.mock("@still-forest/proper-date.js", async () => {
+      const actual = await vi.importActual("@still-forest/proper-date.js");
       return {
         ...actual,
         getYesterday: vi.fn(() => new ProperDate("2025-04-10")),

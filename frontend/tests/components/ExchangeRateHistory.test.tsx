@@ -1,5 +1,5 @@
 import Big from "big.js";
-import ProperDate from "@jszymanowski/proper-date.js";
+import ProperDate from "@still-forest/proper-date.js";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom";

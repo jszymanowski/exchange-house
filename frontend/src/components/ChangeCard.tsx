@@ -3,7 +3,7 @@ import { Text, Heading } from "@still-forest/canopy";
 import { Card as BaseCard, CardContent } from "@/components/ui/card";
 import color from "@/styles/color";
 import type { CurrencyCode, ExchangeRate } from "@/types";
-import ProperDate from "@jszymanowski/proper-date.js";
+import ProperDate from "@still-forest/proper-date.js";
 
 const getBackgroundColorShade = (
   relativeChangePercent: number,
