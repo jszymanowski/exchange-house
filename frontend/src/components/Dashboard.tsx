@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import Big from "big.js";
 import { useQuery } from "@tanstack/react-query";
 import ProperDate from "@still-forest/proper-date.js";
-import { Box, Flex, Grid, Text, Heading } from "@still-forest/canopy";
+import {
+  Card,
+  CardContent,
+  Container,
+  ErrorOverlay,
+  Box,
+  Flex,
+  Grid,
+  Text,
+  Heading,
+} from "@still-forest/canopy";
 
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
-import ErrorOverlay from "@/components/ErrorOverlay";
-import Container from "@/components/Container";
-import PageLoader from "@/components/PageLoader";
 import CurrencyPairSelection from "@/components/CurrencyPairSelection";
 import { ChangeCard } from "@/components/ChangeCard";
-
+import PageLoader from "@/components/PageLoader";
 import type { CurrencyCode, ExchangeRate } from "@/types";
 import { CURRENCIES } from "@/currencies";
 import {
@@ -89,9 +94,20 @@ export default function Dashboard({
     return <PageLoader message="Loading exchange rates" />;
   }
   if (isErrorCurrencyPairs)
-    return <ErrorOverlay message={errorCurrencyPairs.message} />;
+    return (
+      <ErrorOverlay
+        message={errorCurrencyPairs?.message || "Error loading currency pairs"}
+      />
+    );
   if (isErrorHistoricalExchangeRates)
-    return <ErrorOverlay message={errorHistoricalExchangeRates.message} />;
+    return (
+      <ErrorOverlay
+        message={
+          errorHistoricalExchangeRates?.message ||
+          "Error loading historical exchange rates"
+        }
+      />
+    );
 
   const timeSeries = new Map(
     dataHistoricalExchangeRates.data.map((d) => [
@@ -138,17 +154,17 @@ export default function Dashboard({
   };
 
   return (
-    <Container>
-      <>
-        <div className="mb-16">
-          <CurrencyPairSelection
-            currencyPairs={dataCurrencyPairs.data}
-            initialValues={{ fromIsoCode, toIsoCode }}
-            handleSubmit={onCurrencyPairChange}
-          />
-        </div>
-        {lastExchangeRate && (
-          <>
+    <>
+      <Container>
+        <CurrencyPairSelection
+          currencyPairs={dataCurrencyPairs.data}
+          initialValues={{ fromIsoCode, toIsoCode }}
+          handleSubmit={onCurrencyPairChange}
+        />
+      </Container>
+      {lastExchangeRate && (
+        <>
+          <Container>
             <Grid gap="4" className="md:grid-cols-2">
               <SingleRateCard
                 fromIsoCode={fromIsoCode}
@@ -163,7 +179,8 @@ export default function Dashboard({
                 />
               )}
             </Grid>
-            <Separator className="my-8" />
+          </Container>
+          <Container>
             <Grid cols="2" gap="4" className="md:grid-cols-4">
               <ChangeCard
                 fromIsoCode={fromIsoCode}
@@ -177,13 +194,13 @@ export default function Dashboard({
                 comparisonDate={lastExchangeRate.date.subtract(14, "days")}
                 getExchangeRate={getExchangeRate}
               />
-              <div className="col-span-2 md:row-span-2">
+              <Box className="col-span-2 md:row-span-2">
                 <ExchangeRateHistory
                   fromIsoCode={fromIsoCode}
                   toIsoCode={toIsoCode}
                   startDate={lastExchangeRate.date.subtract(3, "months")}
                 />
-              </div>
+              </Box>
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 currentExchangeRate={lastExchangeRate}
@@ -197,15 +214,16 @@ export default function Dashboard({
                 getExchangeRate={getExchangeRate}
               />
             </Grid>
-            <Separator className="my-8" />
+          </Container>
+          <Container>
             <Grid cols="2" gap="4" className="md:grid-cols-4">
-              <div className="col-span-2 md:row-span-2">
+              <Box className="col-span-2 md:row-span-2">
                 <ExchangeRateHistory
                   fromIsoCode={fromIsoCode}
                   toIsoCode={toIsoCode}
                   startDate={lastExchangeRate.date.subtract(5, "years")}
                 />
-              </div>
+              </Box>
               <ChangeCard
                 fromIsoCode={fromIsoCode}
                 currentExchangeRate={lastExchangeRate}
@@ -231,11 +249,10 @@ export default function Dashboard({
                 getExchangeRate={getExchangeRate}
               />
             </Grid>
-          </>
-        )}
-
-        <Separator className="my-8" />
-
+          </Container>
+        </>
+      )}
+      <Container>
         <Heading level="2" className="mb-6">
           Since 1999
         </Heading>
@@ -246,7 +263,7 @@ export default function Dashboard({
             startDate={new ProperDate("1999-12-31")}
           />
         </Box>
-      </>
-    </Container>
+      </Container>
+    </>
   );
 }

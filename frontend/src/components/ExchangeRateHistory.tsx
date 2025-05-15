@@ -1,10 +1,7 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { useQuery } from "@tanstack/react-query";
 import type ProperDate from "@still-forest/proper-date.js";
-import { Box, Text } from "@still-forest/canopy";
+import { Box, Skeleton, Text, ErrorOverlay } from "@still-forest/canopy";
 import { LineChart } from "@still-forest/canopy-charts";
-
-import ErrorOverlay from "@/components/ErrorOverlay";
 
 import type { CurrencyCode } from "@/types";
 import { getHistoricalExchangeRates } from "@/services/exchangeRateService";
@@ -34,7 +31,12 @@ export default function ExchangeRateHistory({
   if (isPending) {
     return <Skeleton className="h-full w-full rounded-xl" />;
   }
-  if (isError) return <ErrorOverlay message={error.message} />;
+  if (isError)
+    return (
+      <ErrorOverlay
+        message={error?.message || "Error loading historical exchange rates"}
+      />
+    );
 
   const timeSeries = response.data.map((d) => ({
     date: d.date,

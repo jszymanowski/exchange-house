@@ -1,7 +1,7 @@
-import { Button, Flex, Heading, Text } from "@still-forest/canopy";
+import { Button, Container, Flex, Heading, Text } from "@still-forest/canopy";
 import { API_URL } from "@/config";
 import { useQuery } from "@tanstack/react-query";
-import Dashboard from "@/components/Dashboard";
+
 import { SquareArrowOutUpRight } from "lucide-react";
 import { getAvailableDates } from "@/services/exchangeRateService";
 
@@ -20,7 +20,7 @@ export default function Home() {
   });
 
   return (
-    <div>
+    <Container>
       <Flex justify="between" align="center">
         <Flex align="end" gap="2">
           <Heading level="1">Exchange House API</Heading>
@@ -42,7 +42,6 @@ export default function Home() {
           <SquareArrowOutUpRight size={12} />
         </Button>
       </Flex>
-      <Dashboard defaultFromIsoCode="SGD" defaultToIsoCode="USD" />
-    </div>
+    </Container>
   );
 }
