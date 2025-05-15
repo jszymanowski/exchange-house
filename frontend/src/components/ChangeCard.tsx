@@ -1,6 +1,10 @@
 import Big from "big.js";
-import { Text, Heading } from "@still-forest/canopy";
-import { Card as BaseCard, CardContent } from "@/components/ui/card";
+import {
+  Card as BaseCard,
+  CardContent,
+  Text,
+  Heading,
+} from "@still-forest/canopy";
 import color from "@/styles/color";
 import type { CurrencyCode, ExchangeRate } from "@/types";
 import ProperDate from "@still-forest/proper-date.js";

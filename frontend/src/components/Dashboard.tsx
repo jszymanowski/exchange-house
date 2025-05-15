@@ -1,10 +1,17 @@
 import { useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import Big from "big.js";
 import { useQuery } from "@tanstack/react-query";
 import ProperDate from "@still-forest/proper-date.js";
-import { Box, Flex, Grid, Text, Heading } from "@still-forest/canopy";
+import {
+  Card,
+  CardContent,
+  Box,
+  Flex,
+  Grid,
+  Text,
+  Heading,
+} from "@still-forest/canopy";
 
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
 import ErrorOverlay from "@/components/ErrorOverlay";
