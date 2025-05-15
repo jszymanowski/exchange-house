@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
 @source "../node_modules/@still-forest/canopy/dist";

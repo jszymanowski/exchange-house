@@ -14,22 +14,19 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@radix-ui/react-separator": "^1.1.4",
-    "@still-forest/canopy": "0.19.0",
+    "@still-forest/canopy": "0.19.1",
     "@still-forest/canopy-charts": "0.3.2",
     "@still-forest/proper-date.js": "0.6.3",
     "@tailwindcss/vite": "4.1.5",
     "@tanstack/react-query": "5.75.5",
     "axios": "1.9.0",
     "big.js": "7.0.1",
-    "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "lucide-react": "0.508.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "3.2.0",
-    "tailwindcss": "4.1.5",
-    "tailwindcss-animate": "1.0.7"
+    "tailwindcss": "4.1.5"
   },
   "devDependencies": {
     "@eslint/js": "9.26.0",

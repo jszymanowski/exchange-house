@@ -16,10 +16,9 @@ import {
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
 import ErrorOverlay from "@/components/ErrorOverlay";
 import Container from "@/components/Container";
-import PageLoader from "@/components/PageLoader";
 import CurrencyPairSelection from "@/components/CurrencyPairSelection";
 import { ChangeCard } from "@/components/ChangeCard";
-
+import PageLoader from "@/components/PageLoader";
 import type { CurrencyCode, ExchangeRate } from "@/types";
 import { CURRENCIES } from "@/currencies";
 import {

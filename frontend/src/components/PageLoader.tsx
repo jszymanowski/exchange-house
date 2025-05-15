@@ -1,26 +1,15 @@
 import { CircleDollarSign } from "lucide-react";
 
-import { Flex, Heading } from "@still-forest/canopy";
+import { PageLoader as PageLoaderBase } from "@still-forest/canopy";
 
 interface Props {
   message?: string;
 }
 
+const IconComponent = () => (
+  <CircleDollarSign size={128} className="text-info animate-bounce" />
+);
+
 export default function PageLoader({ message }: Props) {
-  return (
-    <Flex align="center" justify="center" className="h-full w-full">
-      <Flex direction="col" justify="center">
-        <Flex align="center" justify="center" gapX="4" className="my-6">
-          <CircleDollarSign size={128} className="text-info animate-bounce" />
-        </Flex>
-        <Flex direction="col" justify="center" className="max-w-[500px]">
-          {message ? (
-            <Heading level="4" align="center" weight="normal">
-              {message}
-            </Heading>
-          ) : null}
-        </Flex>
-      </Flex>
-    </Flex>
-  );
+  return <PageLoaderBase message={message} iconComponent={IconComponent} />;
 }

@@ -20,7 +20,7 @@ export default function Home() {
   });
 
   return (
-    <div>
+    <>
       <Flex justify="between" align="center">
         <Flex align="end" gap="2">
           <Heading level="1">Exchange House API</Heading>
@@ -43,6 +43,6 @@ export default function Home() {
         </Button>
       </Flex>
       <Dashboard defaultFromIsoCode="SGD" defaultToIsoCode="USD" />
-    </div>
+    </>
   );
 }
