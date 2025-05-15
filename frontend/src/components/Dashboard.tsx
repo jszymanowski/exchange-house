@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Separator } from "@/components/ui/separator";
 import Big from "big.js";
 import { useQuery } from "@tanstack/react-query";
 import ProperDate from "@still-forest/proper-date.js";
@@ -11,6 +10,7 @@ import {
   Grid,
   Text,
   Heading,
+  Separator,
 } from "@still-forest/canopy";
 
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
@@ -170,7 +170,7 @@ export default function Dashboard({
                 />
               )}
             </Grid>
-            <Separator className="my-8" />
+            <Separator gap="8" />
             <Grid cols="2" gap="4" className="md:grid-cols-4">
               <ChangeCard
                 fromIsoCode={fromIsoCode}
@@ -204,7 +204,7 @@ export default function Dashboard({
                 getExchangeRate={getExchangeRate}
               />
             </Grid>
-            <Separator className="my-8" />
+            <Separator gap="8" />
             <Grid cols="2" gap="4" className="md:grid-cols-4">
               <div className="col-span-2 md:row-span-2">
                 <ExchangeRateHistory
@@ -241,7 +241,7 @@ export default function Dashboard({
           </>
         )}
 
-        <Separator className="my-8" />
+        <Separator gap="8" />
 
         <Heading level="2" className="mb-6">
           Since 1999
