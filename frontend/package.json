@@ -14,7 +14,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "@still-forest/canopy": "0.19.1",
+    "@still-forest/canopy": "0.19.2",
     "@still-forest/canopy-charts": "0.3.2",
     "@still-forest/proper-date.js": "0.6.3",
     "@tailwindcss/vite": "4.1.5",

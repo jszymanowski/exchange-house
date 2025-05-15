@@ -5,6 +5,7 @@ import ProperDate from "@still-forest/proper-date.js";
 import {
   Card,
   CardContent,
+  Container,
   Box,
   Flex,
   Grid,
@@ -15,7 +16,6 @@ import {
 
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
 import ErrorOverlay from "@/components/ErrorOverlay";
-import Container from "@/components/Container";
 import CurrencyPairSelection from "@/components/CurrencyPairSelection";
 import { ChangeCard } from "@/components/ChangeCard";
 import PageLoader from "@/components/PageLoader";
@@ -145,114 +145,112 @@ export default function Dashboard({
 
   return (
     <Container>
-      <>
-        <div className="mb-16">
-          <CurrencyPairSelection
-            currencyPairs={dataCurrencyPairs.data}
-            initialValues={{ fromIsoCode, toIsoCode }}
-            handleSubmit={onCurrencyPairChange}
-          />
-        </div>
-        {lastExchangeRate && (
-          <>
-            <Grid gap="4" className="md:grid-cols-2">
+      <div className="mb-16">
+        <CurrencyPairSelection
+          currencyPairs={dataCurrencyPairs.data}
+          initialValues={{ fromIsoCode, toIsoCode }}
+          handleSubmit={onCurrencyPairChange}
+        />
+      </div>
+      {lastExchangeRate && (
+        <>
+          <Grid gap="4" className="md:grid-cols-2">
+            <SingleRateCard
+              fromIsoCode={fromIsoCode}
+              toIsoCode={toIsoCode}
+              exchangeRate={lastExchangeRate}
+            />
+            {inverseExchangeRate && (
               <SingleRateCard
+                fromIsoCode={toIsoCode}
+                toIsoCode={fromIsoCode}
+                exchangeRate={inverseExchangeRate}
+              />
+            )}
+          </Grid>
+          <Separator gap="8" />
+          <Grid cols="2" gap="4" className="md:grid-cols-4">
+            <ChangeCard
+              fromIsoCode={fromIsoCode}
+              currentExchangeRate={lastExchangeRate}
+              comparisonDate={lastExchangeRate.date.subtract(7, "days")}
+              getExchangeRate={getExchangeRate}
+            />
+            <ChangeCard
+              fromIsoCode={fromIsoCode}
+              currentExchangeRate={lastExchangeRate}
+              comparisonDate={lastExchangeRate.date.subtract(14, "days")}
+              getExchangeRate={getExchangeRate}
+            />
+            <div className="col-span-2 md:row-span-2">
+              <ExchangeRateHistory
                 fromIsoCode={fromIsoCode}
                 toIsoCode={toIsoCode}
-                exchangeRate={lastExchangeRate}
+                startDate={lastExchangeRate.date.subtract(3, "months")}
               />
-              {inverseExchangeRate && (
-                <SingleRateCard
-                  fromIsoCode={toIsoCode}
-                  toIsoCode={fromIsoCode}
-                  exchangeRate={inverseExchangeRate}
-                />
-              )}
-            </Grid>
-            <Separator gap="8" />
-            <Grid cols="2" gap="4" className="md:grid-cols-4">
-              <ChangeCard
+            </div>
+            <ChangeCard
+              fromIsoCode={fromIsoCode}
+              currentExchangeRate={lastExchangeRate}
+              comparisonDate={lastExchangeRate.date.subtract(1, "month")}
+              getExchangeRate={getExchangeRate}
+            />
+            <ChangeCard
+              fromIsoCode={fromIsoCode}
+              currentExchangeRate={lastExchangeRate}
+              comparisonDate={lastExchangeRate.date.subtract(3, "months")}
+              getExchangeRate={getExchangeRate}
+            />
+          </Grid>
+          <Separator gap="8" />
+          <Grid cols="2" gap="4" className="md:grid-cols-4">
+            <div className="col-span-2 md:row-span-2">
+              <ExchangeRateHistory
                 fromIsoCode={fromIsoCode}
-                currentExchangeRate={lastExchangeRate}
-                comparisonDate={lastExchangeRate.date.subtract(7, "days")}
-                getExchangeRate={getExchangeRate}
+                toIsoCode={toIsoCode}
+                startDate={lastExchangeRate.date.subtract(5, "years")}
               />
-              <ChangeCard
-                fromIsoCode={fromIsoCode}
-                currentExchangeRate={lastExchangeRate}
-                comparisonDate={lastExchangeRate.date.subtract(14, "days")}
-                getExchangeRate={getExchangeRate}
-              />
-              <div className="col-span-2 md:row-span-2">
-                <ExchangeRateHistory
-                  fromIsoCode={fromIsoCode}
-                  toIsoCode={toIsoCode}
-                  startDate={lastExchangeRate.date.subtract(3, "months")}
-                />
-              </div>
-              <ChangeCard
-                fromIsoCode={fromIsoCode}
-                currentExchangeRate={lastExchangeRate}
-                comparisonDate={lastExchangeRate.date.subtract(1, "month")}
-                getExchangeRate={getExchangeRate}
-              />
-              <ChangeCard
-                fromIsoCode={fromIsoCode}
-                currentExchangeRate={lastExchangeRate}
-                comparisonDate={lastExchangeRate.date.subtract(3, "months")}
-                getExchangeRate={getExchangeRate}
-              />
-            </Grid>
-            <Separator gap="8" />
-            <Grid cols="2" gap="4" className="md:grid-cols-4">
-              <div className="col-span-2 md:row-span-2">
-                <ExchangeRateHistory
-                  fromIsoCode={fromIsoCode}
-                  toIsoCode={toIsoCode}
-                  startDate={lastExchangeRate.date.subtract(5, "years")}
-                />
-              </div>
-              <ChangeCard
-                fromIsoCode={fromIsoCode}
-                currentExchangeRate={lastExchangeRate}
-                comparisonDate={lastExchangeRate.date.subtract(6, "months")}
-                getExchangeRate={getExchangeRate}
-              />
-              <ChangeCard
-                fromIsoCode={fromIsoCode}
-                currentExchangeRate={lastExchangeRate}
-                comparisonDate={lastExchangeRate.date.subtract(12, "months")}
-                getExchangeRate={getExchangeRate}
-              />
-              <ChangeCard
-                fromIsoCode={fromIsoCode}
-                currentExchangeRate={lastExchangeRate}
-                comparisonDate={lastExchangeRate.date.subtract(2, "years")}
-                getExchangeRate={getExchangeRate}
-              />
-              <ChangeCard
-                fromIsoCode={fromIsoCode}
-                currentExchangeRate={lastExchangeRate}
-                comparisonDate={lastExchangeRate.date.subtract(5, "years")}
-                getExchangeRate={getExchangeRate}
-              />
-            </Grid>
-          </>
-        )}
+            </div>
+            <ChangeCard
+              fromIsoCode={fromIsoCode}
+              currentExchangeRate={lastExchangeRate}
+              comparisonDate={lastExchangeRate.date.subtract(6, "months")}
+              getExchangeRate={getExchangeRate}
+            />
+            <ChangeCard
+              fromIsoCode={fromIsoCode}
+              currentExchangeRate={lastExchangeRate}
+              comparisonDate={lastExchangeRate.date.subtract(12, "months")}
+              getExchangeRate={getExchangeRate}
+            />
+            <ChangeCard
+              fromIsoCode={fromIsoCode}
+              currentExchangeRate={lastExchangeRate}
+              comparisonDate={lastExchangeRate.date.subtract(2, "years")}
+              getExchangeRate={getExchangeRate}
+            />
+            <ChangeCard
+              fromIsoCode={fromIsoCode}
+              currentExchangeRate={lastExchangeRate}
+              comparisonDate={lastExchangeRate.date.subtract(5, "years")}
+              getExchangeRate={getExchangeRate}
+            />
+          </Grid>
+        </>
+      )}
 
-        <Separator gap="8" />
+      <Separator gap="8" />
 
-        <Heading level="2" className="mb-6">
-          Since 1999
-        </Heading>
-        <Box className="max-h[300px]">
-          <ExchangeRateHistory
-            fromIsoCode={fromIsoCode}
-            toIsoCode={toIsoCode}
-            startDate={new ProperDate("1999-12-31")}
-          />
-        </Box>
-      </>
+      <Heading level="2" className="mb-6">
+        Since 1999
+      </Heading>
+      <Box className="max-h[300px]">
+        <ExchangeRateHistory
+          fromIsoCode={fromIsoCode}
+          toIsoCode={toIsoCode}
+          startDate={new ProperDate("1999-12-31")}
+        />
+      </Box>
     </Container>
   );
 }
