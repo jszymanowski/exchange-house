@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   Container,
+  ErrorOverlay,
   Box,
   Flex,
   Grid,
@@ -15,7 +16,6 @@ import {
 } from "@still-forest/canopy";
 
 import ExchangeRateHistory from "@/components/ExchangeRateHistory";
-import ErrorOverlay from "@/components/ErrorOverlay";
 import CurrencyPairSelection from "@/components/CurrencyPairSelection";
 import { ChangeCard } from "@/components/ChangeCard";
 import PageLoader from "@/components/PageLoader";
@@ -95,9 +95,20 @@ export default function Dashboard({
     return <PageLoader message="Loading exchange rates" />;
   }
   if (isErrorCurrencyPairs)
-    return <ErrorOverlay message={errorCurrencyPairs.message} />;
+    return (
+      <ErrorOverlay
+        message={errorCurrencyPairs?.message || "Error loading currency pairs"}
+      />
+    );
   if (isErrorHistoricalExchangeRates)
-    return <ErrorOverlay message={errorHistoricalExchangeRates.message} />;
+    return (
+      <ErrorOverlay
+        message={
+          errorHistoricalExchangeRates?.message ||
+          "Error loading historical exchange rates"
+        }
+      />
+    );
 
   const timeSeries = new Map(
     dataHistoricalExchangeRates.data.map((d) => [
