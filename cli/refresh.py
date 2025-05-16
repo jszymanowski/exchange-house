@@ -46,7 +46,7 @@ if __name__ == "__main__":
     Manually refresh exchange rates for a date range.
 
     Example:
-        python -m scripts.manual_refresh --start-date 2025-01-01 --end-date 2025-01-31
+        uv run python -m cli.refresh --start-date 2025-01-01 --end-date 2025-01-31
     """
     parser = argparse.ArgumentParser(description="Manually refresh exchange rates for a date range")
     parser.add_argument("--start-date", type=str, help="Start date in YYYY-MM-DD format")
