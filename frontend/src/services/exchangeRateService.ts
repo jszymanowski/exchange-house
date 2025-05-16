@@ -1,26 +1,21 @@
-import Big from "big.js";
 import ProperDate from "@still-forest/proper-date.js";
+import Big from "big.js";
 
-import exchangeHouseClient, {
-  handleError,
-} from "@/integrations/exchangeHouseClient";
-import { CurrencyPair, ExchangeRate } from "@/types";
+import exchangeHouseClient, { handleError } from "@/integrations/exchangeHouseClient";
+import type { CurrencyPair, ExchangeRate } from "@/types";
 
 interface CurrencyPairResponse {
   data: CurrencyPair[];
 }
 
-export const getAvailableCurrencyPairs =
-  async (): Promise<CurrencyPairResponse> => {
-    try {
-      const response = await exchangeHouseClient.get<CurrencyPairResponse>(
-        "exchange_rates/available_currency_pairs",
-      );
-      return response.data;
-    } catch (error) {
-      throw new Error(handleError(error));
-    }
-  };
+export const getAvailableCurrencyPairs = async (): Promise<CurrencyPairResponse> => {
+  try {
+    const response = await exchangeHouseClient.get<CurrencyPairResponse>("exchange_rates/available_currency_pairs");
+    return response.data;
+  } catch (error) {
+    throw new Error(handleError(error));
+  }
+};
 
 interface RawAvailableDatesResponse {
   data: string[];
@@ -31,9 +26,7 @@ interface AvailableDatesResponse {
 
 export const getAvailableDates = async (): Promise<AvailableDatesResponse> => {
   try {
-    const response = await exchangeHouseClient.get<RawAvailableDatesResponse>(
-      "exchange_rates/available_dates",
-    );
+    const response = await exchangeHouseClient.get<RawAvailableDatesResponse>("exchange_rates/available_dates");
     const data = response.data.data.map((item) => new ProperDate(item)).sort();
     return { data };
   } catch (error) {
@@ -70,8 +63,7 @@ interface HistoricalExchangeRateResponse extends CurrencyPair {
   data: ExchangeRate[];
 }
 
-interface PaginatedHistoricalExchangeRateResponse
-  extends HistoricalExchangeRateResponse {
+interface PaginatedHistoricalExchangeRateResponse extends HistoricalExchangeRateResponse {
   page: number;
   pages: number;
   total: number;
@@ -88,12 +80,7 @@ export const getHistoricalExchangeRates = async (
   const allData: ExchangeRate[] = [];
 
   while (page <= totalPages) {
-    const response = await _getHistoricalExchangeRates(
-      baseCurrencyCode,
-      quoteCurrencyCode,
-      startDate,
-      page,
-    );
+    const response = await _getHistoricalExchangeRates(baseCurrencyCode, quoteCurrencyCode, startDate, page);
     allData.push(...response.data);
     totalPages = response.pages;
     page++;
@@ -113,17 +100,16 @@ const _getHistoricalExchangeRates = async (
   page = 1,
 ): Promise<PaginatedHistoricalExchangeRateResponse> => {
   try {
-    const { data: responseData } =
-      await exchangeHouseClient.get<PaginatedHistoricalExchangeRateResponse>(
-        `exchange_rates/${baseCurrencyCode}/${quoteCurrencyCode}/historical`,
-        {
-          params: {
-            start_date: startDate?.toString(),
-            page,
-            order: "asc",
-          },
+    const { data: responseData } = await exchangeHouseClient.get<PaginatedHistoricalExchangeRateResponse>(
+      `exchange_rates/${baseCurrencyCode}/${quoteCurrencyCode}/historical`,
+      {
+        params: {
+          start_date: startDate?.toString(),
+          page,
+          order: "asc",
         },
-      );
+      },
+    );
     const data = responseData.data.map((item) => ({
       date: new ProperDate(item.date),
       rate: Big(item.rate),

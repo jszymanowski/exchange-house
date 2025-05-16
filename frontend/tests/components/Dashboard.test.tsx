@@ -1,12 +1,11 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom";
+import ProperDate from "@still-forest/proper-date.js";
+import MockProvider from "@tests/support/MockProvider";
 import Big from "big.js";
 import Dashboard from "@/components/Dashboard";
-import MockProvider from "@tests/support/MockProvider";
-
 import { createExchangeRate } from "../support/fixtures";
-import ProperDate from "@still-forest/proper-date.js";
 
 vi.mock("@/integrations/exchangeHouseClient");
 
@@ -60,10 +59,7 @@ describe("Dashboard", () => {
 
   test("renders Dashboard", async () => {
     render(
-      <MockProvider
-        queryKey={["historical-exchange-rates", "CAD", "USD"]}
-        mockData={mockExchangeRates}
-      >
+      <MockProvider queryKey={["historical-exchange-rates", "CAD", "USD"]} mockData={mockExchangeRates}>
         <Dashboard defaultFromIsoCode="CAD" defaultToIsoCode="USD" />
       </MockProvider>,
     );

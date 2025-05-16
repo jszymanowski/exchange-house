@@ -32,9 +32,6 @@
 
     --popover: oklch(1 0 0);
     --popover-foreground: oklch(0.129 0.042 264.695);
-    --border: oklch(0.929 0.013 255.508);
-    --input: oklch(0.929 0.013 255.508);
-    --ring: oklch(0.869 0.022 252.894);
 
     --radius: 0.625rem;
     --border: oklch(0.922 0 0);
@@ -105,15 +102,11 @@
   --color-card-foreground: var(--card-foreground);
 
   /* Typography */
-  --font-sans:
-    "Source Sans 3", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-serif:
-    "Source Serif 4", ui-serif, Georgia, Cambria, "Times New Roman", Times,
-    serif;
-  --font-mono:
-    "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-    "Liberation Mono", "Courier New", monospace;
+  --font-sans: "Source Sans 3", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: "Source Serif 4", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "Source Code Pro", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+    "Courier New", monospace;
 
   --font-display: var(--font-serif);
 
