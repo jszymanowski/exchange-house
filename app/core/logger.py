@@ -8,7 +8,7 @@ from typing import Any, Literal
 
 from app.core.config import settings
 
-type LogDomain = Literal["default", "celery", "email", "rate_refresh", "heartbeat"]
+type LogDomain = Literal["default", "celery", "email", "rate_refresh", "heartbeat", "firebase"]
 
 
 class JSONLogFormatter(logging.Formatter):
