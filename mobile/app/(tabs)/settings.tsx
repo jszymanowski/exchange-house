@@ -17,9 +17,7 @@ export default function SettingsTab() {
   const { getItem, setItem } = useStorage();
 
   const [currenciesLoaded, setCurrenciesLoaded] = useState(false);
-  const [selectedCurrencies, setSelectedCurrencies] = useState<CurrencyCode[]>(
-    []
-  );
+  const [selectedCurrencies, setSelectedCurrencies] = useState<CurrencyCode[]>([]);
 
   const loadCurrencies = useCallback(async () => {
     const data = await getItem("selected-currencies");
@@ -43,13 +41,10 @@ export default function SettingsTab() {
 
   const handleSave = useCallback(
     async (newSelectedCurrencies: CurrencyCode[]) => {
-      await setItem(
-        "selected-currencies",
-        JSON.stringify(newSelectedCurrencies)
-      );
+      await setItem("selected-currencies", JSON.stringify(newSelectedCurrencies));
       // This will trigger updates in any components subscribed to this key
     },
-    [setItem]
+    [setItem],
   );
 
   useEffect(() => {

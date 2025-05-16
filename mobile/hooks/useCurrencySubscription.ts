@@ -5,9 +5,7 @@ import { useStorage } from "./useStorage";
 
 export function useCurrencySubscription() {
   const { getItem, subscribe } = useStorage();
-  const [currencies, setCurrencies] = useState<CurrencyCode[]>(
-    DEFAULT_CURRENCY_CODES,
-  );
+  const [currencies, setCurrencies] = useState<CurrencyCode[]>(DEFAULT_CURRENCY_CODES);
 
   const loadCurrencies = useCallback(async () => {
     const data = await getItem("selected-currencies");

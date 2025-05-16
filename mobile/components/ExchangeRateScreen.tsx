@@ -12,9 +12,7 @@ interface ExchangeRateScreenProps {
   currencyCode: CurrencyCode;
 }
 
-export default function ExchangeRateScreen({
-  currencyCode,
-}: ExchangeRateScreenProps) {
+export default function ExchangeRateScreen({ currencyCode }: ExchangeRateScreenProps) {
   const { colors } = useTheme();
   const currency = Currency.getCurrency(currencyCode);
   const [exchangeRate, setExchangeRate] = useState<ExchangeRate | null>(null);
@@ -57,10 +55,7 @@ export default function ExchangeRateScreen({
         <>
           <ExchangeRateForm currency={currency} exchangeRate={exchangeRate} />
 
-          <View
-            testID="exchange-rate-summary"
-            className="mt-8 flex grow flex-col items-center justify-end pb-[100px]"
-          >
+          <View testID="exchange-rate-summary" className="mt-8 flex grow flex-col items-center justify-end pb-[100px]">
             <Text color="muted" className="text-center">
               $1 ≈ {currency.symbol}
               {exchangeRate.formattedRate}

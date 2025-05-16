@@ -13,18 +13,11 @@ interface CurrencySelectionProps {
   last?: boolean;
 }
 
-export const CurrencySelection = ({
-  selectedCurrency,
-  onCurrencyChange,
-  currencies,
-  last,
-}: CurrencySelectionProps) => {
+export const CurrencySelection = ({ selectedCurrency, onCurrencyChange, currencies, last }: CurrencySelectionProps) => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const selectedCurrencyObj = currencies.find(
-    (c) => c.code === selectedCurrency
-  );
+  const selectedCurrencyObj = currencies.find((c) => c.code === selectedCurrency);
 
   return (
     <>
@@ -33,9 +26,7 @@ export const CurrencySelection = ({
         onPress={() => setModalVisible(true)}
         accessibilityRole="button"
         accessibilityLabel={
-          selectedCurrencyObj
-            ? `Select currency. Current selection: ${selectedCurrencyObj.name}`
-            : "Select currency"
+          selectedCurrencyObj ? `Select currency. Current selection: ${selectedCurrencyObj.name}` : "Select currency"
         }
         accessibilityHint="Opens currency selection modal"
         testID="currency-selection-button"
@@ -49,10 +40,7 @@ export const CurrencySelection = ({
         {selectedCurrencyObj ? (
           <View className="flex flex-row items-center justify-between">
             <Text className="mr-4 text-lg">{selectedCurrencyObj.flag}</Text>
-            <Text
-              className="mr-4 font-bold text-lg"
-              style={{ color: colors.buttonBackground }}
-            >
+            <Text className="mr-4 font-bold text-lg" style={{ color: colors.buttonBackground }}>
               {selectedCurrencyObj.code}
             </Text>
             <Text style={{ color: colors.textMuted }} numberOfLines={1}>

@@ -2,14 +2,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useCallback, useMemo, useState } from "react";
 import { StorageContext } from "./StorageContext";
 
-export const StorageProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const [listeners, setListeners] = useState<Record<string, Array<() => void>>>(
-    {}
-  );
+export const StorageProvider = ({ children }: { children: React.ReactNode }) => {
+  const [listeners, setListeners] = useState<Record<string, Array<() => void>>>({});
 
   const getItem = useCallback(async (key: string) => {
     try {
@@ -30,10 +24,7 @@ export const StorageProvider = ({
             try {
               callback();
             } catch (callbackError) {
-              console.error(
-                `Error in storage listener for key "${key}":`,
-                callbackError
-              );
+              console.error(`Error in storage listener for key "${key}":`, callbackError);
             }
           });
         }
@@ -42,7 +33,7 @@ export const StorageProvider = ({
         throw error; // Re-throw to allow callers to handle the error
       }
     },
-    [listeners]
+    [listeners],
   );
 
   const subscribe = useCallback((key: string, callback: () => void) => {
@@ -66,12 +57,8 @@ export const StorageProvider = ({
       setItem,
       subscribe,
     }),
-    [getItem, setItem, subscribe]
+    [getItem, setItem, subscribe],
   );
 
-  return (
-    <StorageContext.Provider value={contextValue}>
-      {children}
-    </StorageContext.Provider>
-  );
+  return <StorageContext.Provider value={contextValue}>{children}</StorageContext.Provider>;
 };

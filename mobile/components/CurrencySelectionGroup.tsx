@@ -32,35 +32,17 @@ export const CurrencySelectionGroup = ({
     >
       <CurrencySelection
         selectedCurrency={selectedCurrencies[0]}
-        onCurrencyChange={(currency) =>
-          setSelectedCurrencies([
-            currency,
-            selectedCurrencies[1],
-            selectedCurrencies[2],
-          ])
-        }
+        onCurrencyChange={(currency) => setSelectedCurrencies([currency, selectedCurrencies[1], selectedCurrencies[2]])}
         currencies={currencies}
       />
       <CurrencySelection
         selectedCurrency={selectedCurrencies[1]}
-        onCurrencyChange={(currency) =>
-          setSelectedCurrencies([
-            selectedCurrencies[0],
-            currency,
-            selectedCurrencies[2],
-          ])
-        }
+        onCurrencyChange={(currency) => setSelectedCurrencies([selectedCurrencies[0], currency, selectedCurrencies[2]])}
         currencies={currencies}
       />
       <CurrencySelection
         selectedCurrency={selectedCurrencies[2]}
-        onCurrencyChange={(currency) =>
-          setSelectedCurrencies([
-            selectedCurrencies[0],
-            selectedCurrencies[1],
-            currency,
-          ])
-        }
+        onCurrencyChange={(currency) => setSelectedCurrencies([selectedCurrencies[0], selectedCurrencies[1], currency])}
         currencies={currencies}
         last={true}
       />
