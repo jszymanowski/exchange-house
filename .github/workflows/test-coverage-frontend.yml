@@ -9,8 +9,8 @@ on:
   pull_request:
     branches:
       - main
-    # paths:
-    #   - "frontend/**"
+    paths:
+      - "frontend/**"
 
 defaults:
   run:

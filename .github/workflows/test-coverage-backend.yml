@@ -8,8 +8,8 @@ on:
       - backend/**
   pull_request:
     branches: main
-    # paths:
-    #   - backend/**
+    paths:
+      - backend/**
 
 defaults:
   run:

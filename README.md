@@ -1,5 +1,7 @@
 # Exchange House
 
+[![codecov](https://codecov.io/gh/still-forest/exchange-house/graph/badge.svg?token=QR2NHMMCS6)](https://codecov.io/gh/still-forest/exchange-house)
+
 ## Local development
 
 ### Set up pre-commit
