@@ -13,17 +13,32 @@ interface CurrencySelectionProps {
   last?: boolean;
 }
 
-export const CurrencySelection = ({ selectedCurrency, onCurrencyChange, currencies, last }: CurrencySelectionProps) => {
+export const CurrencySelection = ({
+  selectedCurrency,
+  onCurrencyChange,
+  currencies,
+  last,
+}: CurrencySelectionProps) => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const selectedCurrencyObj = currencies.find((c) => c.code === selectedCurrency);
+  const selectedCurrencyObj = currencies.find(
+    (c) => c.code === selectedCurrency
+  );
 
   return (
     <>
       <TouchableOpacity
         className="flex flex-row items-center justify-between px-4 py-0"
         onPress={() => setModalVisible(true)}
+        accessibilityRole="button"
+        accessibilityLabel={
+          selectedCurrencyObj
+            ? `Select currency. Current selection: ${selectedCurrencyObj.name}`
+            : "Select currency"
+        }
+        accessibilityHint="Opens currency selection modal"
+        testID="currency-selection-button"
         style={{
           backgroundColor: colors.buttonForeground,
           borderBottomWidth: last ? 0 : 1,
@@ -34,7 +49,10 @@ export const CurrencySelection = ({ selectedCurrency, onCurrencyChange, currenci
         {selectedCurrencyObj ? (
           <View className="flex flex-row items-center justify-between">
             <Text className="mr-4 text-lg">{selectedCurrencyObj.flag}</Text>
-            <Text className="mr-4 font-bold text-lg" style={{ color: colors.buttonBackground }}>
+            <Text
+              className="mr-4 font-bold text-lg"
+              style={{ color: colors.buttonBackground }}
+            >
               {selectedCurrencyObj.code}
             </Text>
             <Text style={{ color: colors.textMuted }} numberOfLines={1}>
@@ -44,7 +62,7 @@ export const CurrencySelection = ({ selectedCurrency, onCurrencyChange, currenci
         ) : (
           <Text style={{ color: colors.textMuted }}>Select currency</Text>
         )}
-        <Ionicons name="chevron-forward" size={18} color="#555" />
+        <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
       </TouchableOpacity>
       <CurrencySelectionModal
         selectedCurrency={selectedCurrency}

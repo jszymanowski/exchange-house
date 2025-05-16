@@ -17,15 +17,31 @@ interface VerticalButtonGroupProps {
   extras?: React.ReactNode;
 }
 
-export const VerticalButtonGroup = ({ selectedIndex, onPress, options, extras }: VerticalButtonGroupProps) => {
+export const VerticalButtonGroup = ({
+  selectedIndex,
+  onPress,
+  options,
+  extras,
+}: VerticalButtonGroupProps) => {
   const { colors } = useTheme();
 
-  const buttons = options?.map((option) => ({
+  if (!options || options.length === 0) {
+    return null;
+  }
+
+  const buttons = options.map((option) => ({
     element: ({ isSelected }: { isSelected: boolean }) => {
-      const color = isSelected ? colors.buttonForeground : colors.buttonSecondaryForeground;
+      const color = isSelected
+        ? colors.buttonForeground
+        : colors.buttonSecondaryForeground;
 
       return (
-        <View className="flex w-full flex-row items-center justify-between px-4 py-4">
+        <View
+          className="flex w-full flex-row items-center justify-between px-4 py-4"
+          accessibilityRole="button"
+          accessibilityState={{ selected: isSelected }}
+          accessibilityLabel={option.label}
+        >
           <View className="flex flex-row items-center gap-4">
             <option.icon color={color} />
             <Text
@@ -36,7 +52,11 @@ export const VerticalButtonGroup = ({ selectedIndex, onPress, options, extras }:
             >
               {option.label}
             </Text>
-            {option.description && <Text style={{ color: colors.textMuted }}>{option.description}</Text>}
+            {option.description && (
+              <Text style={{ color: colors.textMuted }}>
+                {option.description}
+              </Text>
+            )}
           </View>
           {extras}
         </View>

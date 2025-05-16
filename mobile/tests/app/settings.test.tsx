@@ -1,5 +1,6 @@
 import SettingsTab from "@/app/(tabs)/settings";
 import { renderWithProviders } from "../test-utils";
+import { waitFor } from "@testing-library/react-native";
 
 describe("SettingsTab", () => {
   test("renders", () => {

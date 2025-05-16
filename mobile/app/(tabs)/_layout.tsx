@@ -42,7 +42,9 @@ export default function TabLayout() {
           name={`currency${i + 1}`}
           options={{
             title: code,
-            tabBarIcon: () => <EmojiIcon>{CURRENCIES[code].flag}</EmojiIcon>,
+            tabBarIcon: () => (
+              <EmojiIcon>{CURRENCIES[code]?.flag || "🌐"}</EmojiIcon>
+            ),
           }}
         />
       ))}
@@ -50,7 +52,9 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color }) => <IconSymbol size={20} name="gear" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <IconSymbol size={20} name="gear" color={color} />
+          ),
         }}
       />
     </Tabs>

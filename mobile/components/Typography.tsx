@@ -1,5 +1,11 @@
-import { Text as BaseText, type TextProps as BaseTextProps, type StyleProp, type TextStyle } from "react-native";
+import {
+  Text as BaseText,
+  type TextProps as BaseTextProps,
+  type StyleProp,
+  type TextStyle,
+} from "react-native";
 import { useTheme } from "@/hooks/useThemePreference";
+import { Platform } from "react-native";
 
 type TextProps = BaseTextProps & {
   family?: "sans" | "serif" | "monospace";
@@ -8,16 +14,24 @@ type TextProps = BaseTextProps & {
   color?: "default" | "muted";
 };
 
-export const Text = ({ children, family, style, color, ...props }: TextProps) => {
+export const Text = ({
+  children,
+  family,
+  style,
+  color,
+  ...props
+}: TextProps) => {
   const { colors } = useTheme();
 
-  const fontFamily = family
-    ? family === "sans"
-      ? "Inter"
-      : family === "serif"
-        ? "Georgia"
-        : "monospace"
-    : "sans-serif";
+  const getFontFamily = (family?: "sans" | "serif" | "monospace") => {
+    if (!family) return Platform.OS === "ios" ? "System" : "sans-serif";
+
+    if (family === "sans") return Platform.OS === "ios" ? "System" : "Inter";
+    if (family === "serif") return "Georgia";
+    return Platform.OS === "ios" ? "Courier" : "monospace";
+  };
+
+  const fontFamily = getFontFamily(family);
 
   const textColor = color === "muted" ? colors.textMuted : colors.text;
 
@@ -41,13 +55,24 @@ const HEADING_SIZES = {
   6: "text-base",
 };
 
-export const Heading = ({ level = 3, family = "serif", children, className, ...props }: HeadingProps) => {
+export const Heading = ({
+  level = 3,
+  family = "serif",
+  children,
+  className,
+  ...props
+}: HeadingProps) => {
   const { colors } = useTheme();
 
   const fontClass = HEADING_SIZES[level];
 
   return (
-    <Text family={family} className={`${fontClass} ${className}`} style={{ color: colors.text }} {...props}>
+    <Text
+      family={family}
+      className={`${fontClass} ${className || ""}`}
+      style={{ color: colors.text }}
+      {...props}
+    >
       {children}
     </Text>
   );
@@ -63,7 +88,11 @@ type EmojiIconProps = TextProps & {
   size?: "small" | "medium" | "large";
 };
 
-export const EmojiIcon = ({ size = "medium", children, ...props }: EmojiIconProps) => {
+export const EmojiIcon = ({
+  size = "medium",
+  children,
+  ...props
+}: EmojiIconProps) => {
   const fontClass = EMOJI_SIZES[size];
 
   return (

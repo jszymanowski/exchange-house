@@ -26,22 +26,22 @@ repos:
     hooks:
       - id: ts-lint-fix
         name: TypeScript Lint Fix
-        entry: bash -c 'cd frontend && pnpm lint:fix'
+        entry: bash -c 'if [[ "$FILE" =~ ^frontend/ ]]; then cd frontend && pnpm lint:fix; elif [[ "$FILE" =~ ^mobile/ ]]; then cd mobile && pnpm lint:fix; fi'
         language: system
         files: ^(frontend|mobile)/.*\.(ts|tsx)$
-        pass_filenames: false
+        pass_filenames: true
         always_run: false
       - id: ts-format
         name: TypeScript Format
-        entry: bash -c 'cd frontend && pnpm format'
+        entry: bash -c 'if [[ "$FILE" =~ ^frontend/ ]]; then cd frontend && pnpm format; elif [[ "$FILE" =~ ^mobile/ ]]; then cd mobile && pnpm format; fi'
         language: system
         files: ^(frontend|mobile)/.*\.(ts|tsx)$
-        pass_filenames: false
+        pass_filenames: true
         always_run: false
       - id: ts-test
         name: TypeScript Tests
-        entry: bash -c 'cd frontend && pnpm test'
+        entry: bash -c 'if [[ "$FILE" =~ ^frontend/ ]]; then cd frontend && pnpm test; elif [[ "$FILE" =~ ^mobile/ ]]; then cd mobile && pnpm test; fi'
         language: system
         files: ^(frontend|mobile)/.*\.(ts|tsx)$
-        pass_filenames: false
+        pass_filenames: true
         always_run: false

@@ -1,7 +1,7 @@
 import { Input } from "@rneui/themed";
-import { Big } from "big.js";
-import { createRef, useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import Big from "big.js";
+import { useEffect, useRef, useState } from "react";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { Text } from "@/components/Typography";
 import { IconSymbol } from "@/components/ui/IconSymbol.ios";
 import { useTheme } from "@/hooks/useThemePreference";
@@ -26,27 +26,38 @@ interface ExchangeRateFormProps {
 
 const DEFAULT_RESULT_USD = 10;
 
-export const ExchangeRateForm = ({ currency, exchangeRate }: ExchangeRateFormProps) => {
-  const initialValue = exchangeRate.rate.mul(DEFAULT_RESULT_USD).toFixed(currency.decimalPlaces);
-  const { numeric: initialNumericValue, formatted: initialDisplayValue } = parseTextAsNumber(initialValue);
+export const ExchangeRateForm = ({
+  currency,
+  exchangeRate,
+}: ExchangeRateFormProps) => {
+  const initialValue = exchangeRate.rate
+    .times(DEFAULT_RESULT_USD)
+    .toFixed(currency.decimalPlaces);
+  const { numeric: initialNumericValue, formatted: initialDisplayValue } =
+    parseTextAsNumber(initialValue);
   const [numericValue, setNumericValue] = useState(initialNumericValue);
   const [displayValue, setDisplayValue] = useState(initialDisplayValue);
-  const [amountUsd, setAmountUsd] = useState<number | null>(exchangeToUsd(exchangeRate, numericValue));
+  const [amountUsd, setAmountUsd] = useState<number | null>(
+    exchangeToUsd(exchangeRate, numericValue)
+  );
   const { colors } = useTheme();
 
   useEffect(() => {
-    const newInitialValue = exchangeRate.rate.mul(DEFAULT_RESULT_USD).toFixed(currency.decimalPlaces);
+    const newInitialValue = exchangeRate.rate
+      .times(DEFAULT_RESULT_USD)
+      .toFixed(currency.decimalPlaces);
     handleChangeText(newInitialValue);
   }, [exchangeRate, currency.decimalPlaces]);
 
   const isDefaultSelected = numericValue === initialNumericValue;
 
-  const input = createRef();
+  const input = useRef<TextInput>(null);
 
   const { symbol } = currency;
 
   const handleChangeText = (value: string) => {
-    const { numeric: numericValue, formatted: formattedValue } = parseTextAsNumber(value);
+    const { numeric: numericValue, formatted: formattedValue } =
+      parseTextAsNumber(value);
     setNumericValue(numericValue);
     setDisplayValue(formattedValue);
     setAmountUsd(exchangeToUsd(exchangeRate, numericValue));
@@ -60,7 +71,7 @@ export const ExchangeRateForm = ({ currency, exchangeRate }: ExchangeRateFormPro
     } else {
       handleChangeText(initialValue.toString());
     }
-    input.current.blur();
+    input.current?.blur();
   };
 
   const styles = StyleSheet.create({
@@ -99,7 +110,10 @@ export const ExchangeRateForm = ({ currency, exchangeRate }: ExchangeRateFormPro
   });
 
   return (
-    <View className="flex flex-col content-center justify-center gap-8" testID="exchange-rate-form">
+    <View
+      className="flex flex-col content-center justify-center gap-8"
+      testID="exchange-rate-form"
+    >
       <View>
         <Input
           ref={input}
@@ -115,10 +129,16 @@ export const ExchangeRateForm = ({ currency, exchangeRate }: ExchangeRateFormPro
           leftIcon={<Text style={styles.leftIcon}>{symbol}</Text>}
           leftIconContainerStyle={styles.leftIconContainer}
           rightIcon={
-            <TouchableOpacity onPress={clearText} style={styles.clearButton} accessibilityLabel="Clear text">
+            <TouchableOpacity
+              onPress={clearText}
+              style={styles.clearButton}
+              accessibilityLabel="Clear text"
+            >
               <IconSymbol
                 name={
-                  isDefaultSelected ? "multiply.circle.fill" : "arrow.trianglehead.2.clockwise.rotate.90.circle.fill"
+                  isDefaultSelected
+                    ? "multiply.circle.fill"
+                    : "arrow.trianglehead.2.clockwise.rotate.90.circle.fill"
                 }
                 size={28}
                 color={styles.clearButton.color}
@@ -134,8 +154,12 @@ export const ExchangeRateForm = ({ currency, exchangeRate }: ExchangeRateFormPro
           </Text>
           <View className="flex flex-row justify-center gap-1">
             <Text className="font-light text-lg">US</Text>
-            <Text className="font-light text-7xl">{displayUsd(Math.floor(amountUsd), true)}</Text>
-            <Text className="font-light text-lg">{extractCents(amountUsd)}</Text>
+            <Text className="font-light text-7xl">
+              {displayUsd(Math.floor(amountUsd), true)}
+            </Text>
+            <Text className="font-light text-lg">
+              {extractCents(amountUsd)}
+            </Text>
           </View>
         </>
       )}
