@@ -1,12 +1,19 @@
-name: CI (API lint)
+name: Backend CI (lint)
 
 on:
   pull_request:
     branches: main
+    paths:
+      - backend/**
+
+defaults:
+  run:
+    working-directory: backend
 
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Checkout

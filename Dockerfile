@@ -42,17 +42,17 @@ ENV UV_LINK_MODE=copy
 # Install dependencies
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers
 RUN --mount=type=cache,target=/root/.cache/uv \
-  --mount=type=bind,source=uv.lock,target=uv.lock \
-  --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+  --mount=type=bind,source=backend/uv.lock,target=uv.lock \
+  --mount=type=bind,source=backend/pyproject.toml,target=pyproject.toml \
   uv sync --frozen --no-install-project
 
 ENV PYTHONPATH=/app
 
-COPY ./pyproject.toml ./uv.lock ./scripts/entrypoint.sh /app/
-COPY ./migrations /app/migrations
-COPY ./scripts /app/scripts
+COPY ./backend/pyproject.toml ./backend/uv.lock ./backend/scripts/entrypoint.sh /app/
+COPY ./backend/migrations /app/migrations
+COPY ./backend/scripts /app/scripts
 
-COPY ./app /app/app
+COPY ./backend/app /app/app
 
 # Sync the project
 # Ref: https://docs.astral.sh/uv/guides/integration/docker/#intermediate-layers

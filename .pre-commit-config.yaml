@@ -17,9 +17,7 @@ repos:
       - id: ruff
         args:
           - --fix
-          - --exclude
-          - ^migrations/.*
-        exclude: ^migrations/.*
+        exclude: ^backend/migrations/.*
   - repo: https://github.com/rhysd/actionlint
     rev: v1.7.7
     hooks:
