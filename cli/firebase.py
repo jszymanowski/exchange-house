@@ -9,6 +9,18 @@ from app.core.dependencies import get_exchange_rate_service, get_firebase_servic
 from app.models import Currency, ExchangeRate
 
 
+async def upload_currencies() -> tuple[bool, Exception | None]:
+    """Upload currencies to Firebase and return success status."""
+
+    try:
+        firebase_service = await get_firebase_service()
+        result = firebase_service.update_currencies()
+        return result
+    except Exception as e:
+        print(f"Uploading currencies failed: {e}", file=sys.stderr)
+        return False, e
+
+
 async def _get_latest_exchange_rates() -> list[ExchangeRate]:
     exchange_rate_service = await get_exchange_rate_service()
 
@@ -31,8 +43,8 @@ async def upload_exchange_rates(exchange_rates: list[ExchangeRate]) -> tuple[boo
 
     try:
         firebase_service = await get_firebase_service()
-        firebase_service.update_exchange_rates(exchange_rates)
-        return True, None
+        result = firebase_service.update_exchange_rates(exchange_rates)
+        return result
     except Exception as e:
         print(f"Uploading exchange rates failed: {e}", file=sys.stderr)
         return False, e
@@ -54,5 +66,21 @@ if __name__ == "__main__":
         print("No exchange rates found", file=sys.stderr)
         sys.exit(1)
 
-    result = asyncio.run(upload_exchange_rates(exchange_rates))
-    sys.exit(0 if result else 1)
+    print("Uploading currencies...")
+    currencies_result = asyncio.run(upload_currencies())
+    if currencies_result[0]:
+        print("success")
+    else:
+        print(f"failed: {currencies_result[1]}", file=sys.stderr)
+        sys.exit(1)
+
+    print("Uploading exchange rates...")
+    exchange_rates_result = asyncio.run(upload_exchange_rates(exchange_rates))
+    if exchange_rates_result[0]:
+        print("success")
+    else:
+        print(f"failed: {exchange_rates_result[1]}", file=sys.stderr)
+        sys.exit(1)
+
+    print("\nCurrencies and exchange rates uploaded successfully")
+    sys.exit(0)

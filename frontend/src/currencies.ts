@@ -485,11 +485,6 @@ export const CURRENCIES: Record<CurrencyCode, Currency> = {
     name: "Mozambican Metical",
     icon: "🇲🇿",
   },
-  "N/A": {
-    symbol: "N/A",
-    name: "N/A",
-    icon: "🇦🇶",
-  },
   NAD: {
     symbol: "$",
     name: "Namibian Dollar",
@@ -884,7 +879,6 @@ export const CURRENCY_SYMBOLS: string[] = [
   "MXN",
   "MYR",
   "MZN",
-  "N/A",
   "NAD",
   "NGN",
   "NIO",
