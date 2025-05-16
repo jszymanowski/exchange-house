@@ -3,43 +3,23 @@ from typing import Any
 
 import pytest
 from freezegun import freeze_time
-from pytest_mock import MockFixture, MockType
+from pytest_mock import MockFixture
 
 from app.models import ExchangeRate
 from app.services.firebase_service import FirebaseService
-
-
-class MockFirebaseClient:
-    def __init__(self) -> None:
-        pass
-
-    def collection(self, collection_name: str) -> "MockFirebaseClient":
-        return self
-
-    def document(self, document_name: str) -> "MockFirebaseClient":
-        return self
-
-    def set(self, data: dict[str, Any]) -> None:
-        pass
-
-
-@pytest.fixture
-def mock_firebase(mocker: MockFixture) -> tuple[MockFirebaseClient, MockType]:
-    mock_client = MockFirebaseClient()
-    return mock_client, mocker.spy(mock_client, "set")
+from tests.support.mock_firebase_client import MockFirebaseClient
 
 
 @freeze_time("2023-01-02 01:23:45")
 @pytest.mark.asyncio
-async def test_update_exchange_rates_success(mock_firebase: tuple[MockFirebaseClient, MockType]) -> None:
+async def test_update_exchange_rates_success(test_firebase_client: MockFirebaseClient, mocker: MockFixture) -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="USD", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 1)),
     ]
 
-    [mock_client, firebase_set_spy] = mock_firebase
-
-    firebase_service = FirebaseService(client=mock_client)
+    firebase_set_spy = mocker.spy(test_firebase_client, "set")
+    firebase_service = FirebaseService(client=test_firebase_client)
     result = firebase_service.update_exchange_rates(exchange_rates)
 
     assert result[0] is True
@@ -57,16 +37,16 @@ async def test_update_exchange_rates_success(mock_firebase: tuple[MockFirebaseCl
 
 @pytest.mark.asyncio
 async def test_update_exchange_rates_failure_invalid_exchange_rate_dates(
-    mock_firebase: tuple[MockFirebaseClient, MockType],
+    test_firebase_client: MockFirebaseClient,
+    mocker: MockFixture,
 ) -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="USD", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 2)),
     ]
 
-    [mock_client, firebase_set_spy] = mock_firebase
-
-    firebase_service = FirebaseService(client=mock_client)
+    firebase_set_spy = mocker.spy(test_firebase_client, "set")
+    firebase_service = FirebaseService(client=test_firebase_client)
 
     with pytest.raises(
         ValueError,
@@ -74,19 +54,21 @@ async def test_update_exchange_rates_failure_invalid_exchange_rate_dates(
     ):
         firebase_service.update_exchange_rates(exchange_rates)
 
+    assert firebase_set_spy.call_count == 0
+
 
 @pytest.mark.asyncio
 async def test_update_exchange_rates_failure_invalid_exchange_rate_base_currency(
-    mock_firebase: tuple[MockFirebaseClient, MockType],
+    test_firebase_client: MockFirebaseClient,
+    mocker: MockFixture,
 ) -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="EUR", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 1)),
     ]
 
-    [mock_client, firebase_set_spy] = mock_firebase
-
-    firebase_service = FirebaseService(client=mock_client)
+    firebase_set_spy = mocker.spy(test_firebase_client, "set")
+    firebase_service = FirebaseService(client=test_firebase_client)
 
     with pytest.raises(
         ValueError,
@@ -94,39 +76,45 @@ async def test_update_exchange_rates_failure_invalid_exchange_rate_base_currency
     ):
         firebase_service.update_exchange_rates(exchange_rates)
 
+    assert firebase_set_spy.call_count == 0
+
 
 @pytest.mark.asyncio
 async def test_update_exchange_rates_failure_no_exchange_rates(
-    mock_firebase: tuple[MockFirebaseClient, MockType],
+    test_firebase_client: MockFirebaseClient,
+    mocker: MockFixture,
 ) -> None:
     exchange_rates: list[ExchangeRate] = []
 
-    [mock_client, firebase_set_spy] = mock_firebase
-
-    firebase_service = FirebaseService(client=mock_client)
+    firebase_set_spy = mocker.spy(test_firebase_client, "set")
+    firebase_service = FirebaseService(client=test_firebase_client)
 
     with pytest.raises(ValueError, match="No exchange rates provided"):
         firebase_service.update_exchange_rates(exchange_rates)
 
+    assert firebase_set_spy.call_count == 0
+
 
 @pytest.mark.asyncio
 async def test_update_exchange_rates_failure_with_multiple_dates(
-    mock_firebase: tuple[MockFirebaseClient, MockType],
+    test_firebase_client: MockFirebaseClient,
+    mocker: MockFixture,
 ) -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="USD", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 2)),
     ]
 
-    [mock_client, firebase_set_spy] = mock_firebase
-
-    firebase_service = FirebaseService(client=mock_client)
+    firebase_set_spy = mocker.spy(test_firebase_client, "set")
+    firebase_service = FirebaseService(client=test_firebase_client)
 
     with pytest.raises(
         ValueError,
         match=r"As of date \(2023-01-02\) differs from the first rate's as of date \(2023-01-01\)",
     ):
         firebase_service.update_exchange_rates(exchange_rates)
+
+    assert firebase_set_spy.call_count == 0
 
 
 @pytest.mark.asyncio
