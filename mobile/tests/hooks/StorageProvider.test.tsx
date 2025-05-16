@@ -33,7 +33,7 @@ describe("StorageProvider", () => {
     const mockValue = "test-value";
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue(mockValue);
 
-    let storageContext: any;
+    let storageContext: React.ContextType<typeof StorageContext>;
     const { getByText } = render(
       <StorageProvider>
         <TestComponent
@@ -55,7 +55,7 @@ describe("StorageProvider", () => {
     (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
     const mockValue = "test-value";
 
-    let storageContext: any;
+    let storageContext: React.ContextType<typeof StorageContext>;
     const { getByText } = render(
       <StorageProvider>
         <TestComponent
@@ -77,7 +77,7 @@ describe("StorageProvider", () => {
     const mockError = new Error("Storage error");
     (AsyncStorage.getItem as jest.Mock).mockRejectedValue(mockError);
 
-    let storageContext: any;
+    let storageContext: React.ContextType<typeof StorageContext>;
     const { getByText } = render(
       <StorageProvider>
         <TestComponent
@@ -98,7 +98,7 @@ describe("StorageProvider", () => {
     const mockError = new Error("Storage error");
     (AsyncStorage.setItem as jest.Mock).mockRejectedValue(mockError);
 
-    let storageContext: any;
+    let storageContext: React.ContextType<typeof StorageContext>;
     const { getByText } = render(
       <StorageProvider>
         <TestComponent
@@ -117,7 +117,8 @@ describe("StorageProvider", () => {
   it("should notify subscribers when item is set", async () => {
     (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
     const mockCallback = jest.fn();
-    let storageContext: any;
+
+    let storageContext: React.ContextType<typeof StorageContext>;
     const { getByText } = render(
       <StorageProvider>
         <TestComponent
@@ -161,7 +162,8 @@ describe("StorageProvider", () => {
     (AsyncStorage.setItem as jest.Mock).mockResolvedValue(undefined);
     const mockCallback1 = jest.fn();
     const mockCallback2 = jest.fn();
-    let storageContext: any;
+
+    let storageContext: React.ContextType<typeof StorageContext>;
     const { getByText } = render(
       <StorageProvider>
         <TestComponent
@@ -192,7 +194,7 @@ describe("StorageProvider", () => {
 });
 
 // Test component to access the context
-const TestComponent = ({ onContext }: { onContext?: (context: any) => void }) => {
+const TestComponent = ({ onContext }: { onContext?: (context: React.ContextType<typeof StorageContext>) => void }) => {
   const context = React.useContext(StorageContext);
 
   React.useEffect(() => {
