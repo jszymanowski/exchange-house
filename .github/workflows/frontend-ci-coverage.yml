@@ -1,4 +1,4 @@
-name: CI (frontend test coverage)
+name: Frontend CI (test coverage)
 
 on:
   push:

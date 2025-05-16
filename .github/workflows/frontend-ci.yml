@@ -1,4 +1,4 @@
-name: CI (frontend test suite)
+name: Frontend CI (test suite)
 
 on:
   pull_request:

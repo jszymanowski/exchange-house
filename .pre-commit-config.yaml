@@ -22,3 +22,26 @@ repos:
     rev: v1.7.7
     hooks:
       - id: actionlint
+  - repo: local
+    hooks:
+      - id: ts-lint-fix
+        name: TypeScript Lint Fix
+        entry: bash -c 'cd frontend && pnpm lint:fix'
+        language: system
+        files: ^(frontend|mobile)/.*\.(ts|tsx)$
+        pass_filenames: false
+        always_run: false
+      - id: ts-format
+        name: TypeScript Format
+        entry: bash -c 'cd frontend && pnpm format'
+        language: system
+        files: ^(frontend|mobile)/.*\.(ts|tsx)$
+        pass_filenames: false
+        always_run: false
+      - id: ts-test
+        name: TypeScript Tests
+        entry: bash -c 'cd frontend && pnpm test'
+        language: system
+        files: ^(frontend|mobile)/.*\.(ts|tsx)$
+        pass_filenames: false
+        always_run: false

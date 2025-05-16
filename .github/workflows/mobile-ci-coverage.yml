@@ -1,16 +1,20 @@
-name: CI (test coverage on main)
+name: Mobile CI (test coverage)
 
 on:
   push:
     branches:
       - main
+    paths:
+      - mobile/**
+
+defaults:
+  run:
+    working-directory: mobile
 
 jobs:
   ci:
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    env:
-      HUSKY: 0
 
     steps:
       - name: Checkout code
