@@ -146,7 +146,7 @@ healthcheck_settings = HealthcheckSettings()
 
 class FirebaseSettings(BaseSettings):
     @cached_property
-    def firebase_credentials_path(self) -> str:
+    def firebase_credentials_path(self) -> str | None:
         return os.getenv("FIREBASE_CREDENTIALS_PATH")
 
     @cached_property

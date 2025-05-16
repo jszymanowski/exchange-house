@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Any
 
 import pytest
 from freezegun import freeze_time
@@ -9,28 +10,28 @@ from app.services.firebase_service import FirebaseService
 
 
 class MockFirebaseClient:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
-    def collection(self, collection_name: str):
+    def collection(self, collection_name: str) -> "MockFirebaseClient":
         return self
 
-    def document(self, document_name: str):
+    def document(self, document_name: str) -> "MockFirebaseClient":
         return self
 
-    def set(self, data: dict):
+    def set(self, data: dict[str, Any]) -> None:
         pass
 
 
 @pytest.fixture
 def mock_firebase(mocker: MockFixture) -> tuple[MockFirebaseClient, MockType]:
     mock_client = MockFirebaseClient()
-    return [mock_client, mocker.spy(mock_client, "set")]
+    return mock_client, mocker.spy(mock_client, "set")
 
 
 @freeze_time("2023-01-02 01:23:45")
 @pytest.mark.asyncio
-async def test_update_exchange_rates_success(mock_firebase: tuple[MockFirebaseClient, MockType]):
+async def test_update_exchange_rates_success(mock_firebase: tuple[MockFirebaseClient, MockType]) -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="USD", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 1)),
@@ -57,7 +58,7 @@ async def test_update_exchange_rates_success(mock_firebase: tuple[MockFirebaseCl
 @pytest.mark.asyncio
 async def test_update_exchange_rates_failure_invalid_exchange_rate_dates(
     mock_firebase: tuple[MockFirebaseClient, MockType],
-):
+) -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="USD", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 2)),
@@ -77,7 +78,7 @@ async def test_update_exchange_rates_failure_invalid_exchange_rate_dates(
 @pytest.mark.asyncio
 async def test_update_exchange_rates_failure_invalid_exchange_rate_base_currency(
     mock_firebase: tuple[MockFirebaseClient, MockType],
-):
+) -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="EUR", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 1)),
@@ -97,8 +98,8 @@ async def test_update_exchange_rates_failure_invalid_exchange_rate_base_currency
 @pytest.mark.asyncio
 async def test_update_exchange_rates_failure_no_exchange_rates(
     mock_firebase: tuple[MockFirebaseClient, MockType],
-):
-    exchange_rates = []
+) -> None:
+    exchange_rates: list[ExchangeRate] = []
 
     [mock_client, firebase_set_spy] = mock_firebase
 
@@ -111,7 +112,7 @@ async def test_update_exchange_rates_failure_no_exchange_rates(
 @pytest.mark.asyncio
 async def test_update_exchange_rates_failure_with_multiple_dates(
     mock_firebase: tuple[MockFirebaseClient, MockType],
-):
+) -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="USD", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 2)),
@@ -129,14 +130,14 @@ async def test_update_exchange_rates_failure_with_multiple_dates(
 
 
 @pytest.mark.asyncio
-async def test_update_exchange_rates_failure_remote():
+async def test_update_exchange_rates_failure_remote_error() -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
         ExchangeRate(base_currency_code="USD", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 1)),
     ]
 
     class ErrorFirebaseClient(MockFirebaseClient):
-        def set(self, data: dict):
+        def set(self, data: dict[str, Any]) -> None:
             raise Exception("Error updating exchange rates")
 
     firebase_service = FirebaseService(client=ErrorFirebaseClient())

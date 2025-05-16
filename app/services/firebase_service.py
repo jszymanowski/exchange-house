@@ -11,18 +11,20 @@ from app.utils import quantize_decimal
 
 
 class FirebaseExchangeRateData(TypedDict):
-    base: Currency
-    rates: dict[Currency, str]
+    base: str
+    rates: dict[str, str]
     date: str
     timestamp: str
 
+
+class FirebaseExchangeRateDataBuilder:
     @classmethod
     def from_model_list(cls, model_list: list[ExchangeRate]) -> "FirebaseExchangeRateData":
         rates = {}
         for model in model_list:
             rates[model.quote_currency_code] = str(quantize_decimal(model.rate))
 
-        return cls(
+        return FirebaseExchangeRateData(
             base=Currency(firebase_settings.base_currency_code),
             rates=rates,
             date=str(model_list[0].as_of),
@@ -69,5 +71,5 @@ class FirebaseService:
             if rate.as_of != as_of:
                 raise ValueError(f"As of date ({rate.as_of}) differs from the first rate's as of date ({as_of})")
 
-    def _build_firebase_data(self, exchange_rates: list[ExchangeRate]) -> list[FirebaseExchangeRateData]:
-        return FirebaseExchangeRateData.from_model_list(exchange_rates)
+    def _build_firebase_data(self, exchange_rates: list[ExchangeRate]) -> FirebaseExchangeRateData:
+        return FirebaseExchangeRateDataBuilder.from_model_list(exchange_rates)
