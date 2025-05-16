@@ -1,5 +1,18 @@
 # Exchange House API
 
+## Local development
+
+### Set up pre-commit
+
+On a new machine, the defined pre-commit config must be installed:
+
+```bash
+uv run pre-commit install
+
+# Run against all files
+uv run pre-commit run --all-files
+```
+
 ## Background workers (Celery)
 
 ### Administration
