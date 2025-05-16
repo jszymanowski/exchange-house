@@ -1,9 +1,9 @@
-import React from "react";
-import { render, act } from "@testing-library/react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StorageProvider } from "../../hooks/StorageProvider";
-import { StorageContext } from "../../hooks/StorageContext";
+import { act, render } from "@testing-library/react-native";
+import React from "react";
 import { Text } from "react-native";
+import { StorageContext } from "../../hooks/StorageContext";
+import { StorageProvider } from "../../hooks/StorageProvider";
 
 // Mock AsyncStorage
 jest.mock("@react-native-async-storage/async-storage", () => ({
@@ -22,7 +22,7 @@ describe("StorageProvider", () => {
     const { getByText } = render(
       <StorageProvider>
         <TestComponent />
-      </StorageProvider>
+      </StorageProvider>,
     );
 
     expect(getByText("Test Child")).toBeTruthy();
@@ -36,8 +36,12 @@ describe("StorageProvider", () => {
     let storageContext: any;
     const { getByText } = render(
       <StorageProvider>
-        <TestComponent onContext={(context) => (storageContext = context)} />
-      </StorageProvider>
+        <TestComponent
+          onContext={(context) => {
+            storageContext = context;
+          }}
+        />
+      </StorageProvider>,
     );
 
     expect(getByText("Test Child")).toBeTruthy();
@@ -54,8 +58,12 @@ describe("StorageProvider", () => {
     let storageContext: any;
     const { getByText } = render(
       <StorageProvider>
-        <TestComponent onContext={(context) => (storageContext = context)} />
-      </StorageProvider>
+        <TestComponent
+          onContext={(context) => {
+            storageContext = context;
+          }}
+        />
+      </StorageProvider>,
     );
 
     expect(getByText("Test Child")).toBeTruthy();
@@ -72,8 +80,12 @@ describe("StorageProvider", () => {
     let storageContext: any;
     const { getByText } = render(
       <StorageProvider>
-        <TestComponent onContext={(context) => (storageContext = context)} />
-      </StorageProvider>
+        <TestComponent
+          onContext={(context) => {
+            storageContext = context;
+          }}
+        />
+      </StorageProvider>,
     );
 
     expect(getByText("Test Child")).toBeTruthy();
@@ -89,15 +101,17 @@ describe("StorageProvider", () => {
     let storageContext: any;
     const { getByText } = render(
       <StorageProvider>
-        <TestComponent onContext={(context) => (storageContext = context)} />
-      </StorageProvider>
+        <TestComponent
+          onContext={(context) => {
+            storageContext = context;
+          }}
+        />
+      </StorageProvider>,
     );
 
     expect(getByText("Test Child")).toBeTruthy();
 
-    await expect(storageContext.setItem("test-key", "value")).rejects.toThrow(
-      "Storage error"
-    );
+    await expect(storageContext.setItem("test-key", "value")).rejects.toThrow("Storage error");
   });
 
   it("should notify subscribers when item is set", async () => {
@@ -106,8 +120,12 @@ describe("StorageProvider", () => {
     let storageContext: any;
     const { getByText } = render(
       <StorageProvider>
-        <TestComponent onContext={(context) => (storageContext = context)} />
-      </StorageProvider>
+        <TestComponent
+          onContext={(context) => {
+            storageContext = context;
+          }}
+        />
+      </StorageProvider>,
     );
 
     expect(getByText("Test Child")).toBeTruthy();
@@ -146,8 +164,12 @@ describe("StorageProvider", () => {
     let storageContext: any;
     const { getByText } = render(
       <StorageProvider>
-        <TestComponent onContext={(context) => (storageContext = context)} />
-      </StorageProvider>
+        <TestComponent
+          onContext={(context) => {
+            storageContext = context;
+          }}
+        />
+      </StorageProvider>,
     );
 
     expect(getByText("Test Child")).toBeTruthy();
@@ -170,11 +192,7 @@ describe("StorageProvider", () => {
 });
 
 // Test component to access the context
-const TestComponent = ({
-  onContext,
-}: {
-  onContext?: (context: any) => void;
-}) => {
+const TestComponent = ({ onContext }: { onContext?: (context: any) => void }) => {
   const context = React.useContext(StorageContext);
 
   React.useEffect(() => {
