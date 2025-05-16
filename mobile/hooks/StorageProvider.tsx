@@ -39,7 +39,7 @@ export const StorageProvider = ({ children }: { children: React.ReactNode }) => 
   const subscribe = useCallback((key: string, callback: () => void) => {
     setListeners((prev) => ({
       ...prev,
-      [key]: prev[key] ? prev[key].filter((cb) => cb !== callback) : [],
+      [key]: [...(prev[key] || []), callback],
     }));
 
     // Return unsubscribe function
