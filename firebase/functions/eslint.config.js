@@ -1,14 +1,11 @@
 // eslint.config.js
-import eslintPluginImport from "eslint-plugin-import";
-import eslintPluginTs from "@typescript-eslint/eslint-plugin";
-import parserTs from "@typescript-eslint/parser";
+import eslintPluginImport from "eslint-plugin-import"
+import eslintPluginTs from "@typescript-eslint/eslint-plugin"
+import parserTs from "@typescript-eslint/parser"
 
 export default [
   {
-    ignores: [
-      "/lib/**/*",
-      "/generated/**/*",
-    ],
+    ignores: ["/lib/**/*", "/generated/**/*"],
   },
   {
     files: ["**/*.ts", "**/*.tsx"],
@@ -25,14 +22,22 @@ export default [
       import: eslintPluginImport,
     },
     rules: {
-      "quotes": ["error", "double"],
+      quotes: ["error", "double"],
       "import/no-unresolved": "off",
-      "indent": ["error", 2],
+      indent: ["error", 2],
       "max-len": ["error", { code: 120 }],
       ...eslintPluginTs.configs.recommended.rules,
       ...eslintPluginImport.configs.errors.rules,
       ...eslintPluginImport.configs.warnings.rules,
-      ...eslintPluginImport.configs.typescript?.rules || {},
+      ...(eslintPluginImport.configs.typescript?.rules || {}),
+    },
+    settings: {
+      "import/resolver": {
+        typescript: {
+          alwaysTryTypes: true,
+          project: "./tsconfig.json",
+        },
+      },
     },
   },
-];
+]
