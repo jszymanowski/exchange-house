@@ -29,6 +29,8 @@ dev-dependencies = [
   "pytest-env==1.1.5",
   "pytest-httpx==0.35.0",
   "celery-types==0.23.0",
+  "pytest-mock>=3.14.0",
+  "freezegun>=1.5.1",
 ]
 
 [tool.mypy]
