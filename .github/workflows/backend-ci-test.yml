@@ -6,9 +6,14 @@ on:
     paths:
       - backend/**
 
+defaults:
+  run:
+    working-directory: backend
+
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     services:
       postgres:

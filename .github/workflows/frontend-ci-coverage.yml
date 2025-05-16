@@ -12,14 +12,14 @@ on:
     paths:
       - "frontend/**"
 
+defaults:
+  run:
+    working-directory: ./frontend
+
 jobs:
   test-coverage:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-
-    defaults:
-      run:
-        working-directory: ./frontend
 
     steps:
       - name: Checkout code

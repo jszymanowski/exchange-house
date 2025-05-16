@@ -7,6 +7,10 @@ on:
     paths:
       - "frontend/**"
 
+defaults:
+  run:
+    working-directory: ./frontend
+
 jobs:
   test-suite:
     runs-on: ubuntu-latest
@@ -22,10 +26,6 @@ jobs:
             run_command: pnpm test
           - task: build
             run_command: pnpm build
-
-    defaults:
-      run:
-        working-directory: ./frontend
 
     steps:
       - name: Checkout code
