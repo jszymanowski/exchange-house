@@ -1,3 +1,0 @@
-{
-  "extends": ["github>still-forest/renovate-config:fastapi-react#v0.12.0"]
-}
