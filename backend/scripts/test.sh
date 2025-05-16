@@ -26,3 +26,4 @@ done
 coverage run --source=app -m pytest "${ARGS[@]}"
 coverage report --show-missing
 coverage html --title "$REPORT_TITLE"
+coverage xml

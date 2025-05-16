@@ -1,0 +1,41 @@
+codecov:
+  require_ci_to_pass: yes
+
+coverage:
+  status:
+    project:
+      default: false # disable the default status
+      backend:
+        flags:
+          - backend
+        paths:
+          - "backend/"
+      frontend:
+        flags:
+          - frontend
+        paths:
+          - "frontend/"
+      mobile:
+        flags:
+          - mobile
+        paths:
+          - "mobile/"
+
+    patch:
+      default:
+        target: 80%
+
+flags:
+  backend:
+    paths:
+      - backend/
+  frontend:
+    paths:
+      - frontend/
+  mobile:
+    paths:
+      - mobile/
+
+comment:
+  layout: "reach,diff,flags,files,footer"
+  behavior: default

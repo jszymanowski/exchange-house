@@ -1,7 +1,12 @@
-name: Mobile CI (test coverage)
+name: Test coverage (mobile)
 
 on:
   push:
+    branches:
+      - main
+    paths:
+      - mobile/**
+  pull_request:
     branches:
       - main
     paths:
@@ -12,7 +17,7 @@ defaults:
     working-directory: mobile
 
 jobs:
-  ci:
+  test-coverage:
     runs-on: ubuntu-latest
     timeout-minutes: 2
 
@@ -42,4 +47,4 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           directory: ./mobile/coverage/
           flags: mobile
-          fail_ci_if_error: false
+          fail_ci_if_error: true
