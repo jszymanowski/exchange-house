@@ -4,8 +4,8 @@ const config = {
   printWidth: 120,
   tabWidth: 2,
   useTabs: false,
-  semi: false,
+  semi: true,
   bracketSpacing: true,
-}
+};
 
-export default config
+export default config;

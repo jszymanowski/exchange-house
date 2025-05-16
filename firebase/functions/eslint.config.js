@@ -1,7 +1,7 @@
 // eslint.config.js
-import eslintPluginImport from "eslint-plugin-import"
-import eslintPluginTs from "@typescript-eslint/eslint-plugin"
-import parserTs from "@typescript-eslint/parser"
+import eslintPluginImport from "eslint-plugin-import";
+import eslintPluginTs from "@typescript-eslint/eslint-plugin";
+import parserTs from "@typescript-eslint/parser";
 
 export default [
   {
@@ -40,4 +40,4 @@ export default [
       },
     },
   },
-]
+];
