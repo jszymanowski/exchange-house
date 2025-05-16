@@ -7,8 +7,27 @@ from app.core.config import firebase_settings
 from app.core.firebase import get_firebase_client
 from app.core.logger import get_logger
 from app.models import Currency, ExchangeRate
+from app.models.currency_metadata import CurrencyMetadata, CurrencyMetadataDict
 from app.services.currency_service import get_currency_service
 from app.utils import quantize_decimal
+
+
+class FirebaseCurrenciesData(TypedDict):
+    data: dict[str, CurrencyMetadataDict]
+    timestamp: str
+
+
+class FirebaseCurrenciesDataBuilder:
+    @classmethod
+    def from_model_list(cls, model_list: list[CurrencyMetadata]) -> "FirebaseCurrenciesData":
+        data = {}
+        for model in model_list:
+            data[model.iso_code] = model.to_dict()
+
+        return FirebaseCurrenciesData(
+            data=data,
+            timestamp=str(datetime.now()),
+        )
 
 
 class FirebaseExchangeRateData(TypedDict):
@@ -46,7 +65,7 @@ class FirebaseService:
             raise ValueError("No currencies metadata found")
 
         currencies_ref = self.client.collection("currencies").document("metadata")
-        data = currencies_metadata
+        data = FirebaseCurrenciesDataBuilder.from_model_list(currencies_metadata)
 
         try:
             currencies_ref.set(data)

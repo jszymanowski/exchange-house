@@ -28,3 +28,11 @@ class CurrencyMetadata(BaseModel):
             flag=data["flag"],
             decimals=data.get("decimals", DEFAULT_DECIMALS),
         )
+
+    def to_dict(self) -> CurrencyMetadataDict:
+        return {
+            "name": self.name,
+            "symbol": self.symbol,
+            "flag": self.flag,
+            "decimals": self.decimals,
+        }
