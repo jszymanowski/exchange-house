@@ -1,0 +1,94 @@
+{
+  "exchangeRates": [
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "HKD",
+      "rate": 7.7588,
+      "date": "2025-05-01"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "IDR",
+      "rate": 16621,
+      "date": "2025-04-27"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "INR",
+      "rate": 84.8175,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "SGD",
+      "rate": 1.2887,
+      "date": "2025-05-06"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "KRW",
+      "rate": 1375.7858,
+      "date": "2025-05-06"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "CNY",
+      "rate": 7.2254,
+      "date": "2025-05-06"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "JPY",
+      "rate": 143.851,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "THB",
+      "rate": 32.91,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "AUD",
+      "rate": 1.4325,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "KHR",
+      "rate": 4014.7622,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "PHP",
+      "rate": 55.55,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "VND",
+      "rate": 25957.1711,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "MYR",
+      "rate": 4.2406,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "LAK",
+      "rate": 21691.101,
+      "date": "2025-05-07"
+    },
+    {
+      "baseCurrencyCode": "USD",
+      "quoteCurrencyCode": "TWD",
+      "rate": 30.4059,
+      "date": "2025-05-07"
+    }
+  ]
+}
