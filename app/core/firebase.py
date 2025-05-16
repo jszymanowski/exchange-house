@@ -5,8 +5,15 @@ from firebase_admin.firestore import Client
 from app.core.config import firebase_settings
 
 if firebase_settings.firebase_credentials_path:
-    cred = credentials.Certificate(firebase_settings.firebase_credentials_path)
-    firebase_admin.initialize_app(cred)
+    try:
+        cred = credentials.Certificate(firebase_settings.firebase_credentials_path)
+        firebase_admin.initialize_app(cred)
+    except Exception as e:
+        from app.core.logger import get_logger
+
+        logger = get_logger("firebase")
+        logger.error(f"Failed to initialize Firebase: {e}")
+        raise e
 
 client = firestore.client() if firebase_settings.firebase_credentials_path else None
 

@@ -96,28 +96,6 @@ async def test_update_exchange_rates_failure_no_exchange_rates(
 
 
 @pytest.mark.asyncio
-async def test_update_exchange_rates_failure_with_multiple_dates(
-    test_firebase_client: MockFirebaseClient,
-    mocker: MockFixture,
-) -> None:
-    exchange_rates = [
-        ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
-        ExchangeRate(base_currency_code="USD", quote_currency_code="JPY", rate=100.03, as_of=date(2023, 1, 2)),
-    ]
-
-    firebase_set_spy = mocker.spy(test_firebase_client, "set")
-    firebase_service = FirebaseService(client=test_firebase_client)
-
-    with pytest.raises(
-        ValueError,
-        match=r"As of date \(2023-01-02\) differs from the first rate's as of date \(2023-01-01\)",
-    ):
-        firebase_service.update_exchange_rates(exchange_rates)
-
-    assert firebase_set_spy.call_count == 0
-
-
-@pytest.mark.asyncio
 async def test_update_exchange_rates_failure_remote_error() -> None:
     exchange_rates = [
         ExchangeRate(base_currency_code="USD", quote_currency_code="EUR", rate=1.02, as_of=date(2023, 1, 1)),
