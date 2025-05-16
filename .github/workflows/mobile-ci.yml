@@ -45,10 +45,3 @@ jobs:
 
       - name: Run ${{ matrix.task }}
         run: ${{ matrix.run_command }}
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5
-        if: ${{ matrix.task == 'test' }}
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          slug: still-forest/exchange-house-mobile
