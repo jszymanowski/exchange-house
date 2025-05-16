@@ -1,14 +1,13 @@
-import Big from "big.js";
 import ProperDate from "@still-forest/proper-date.js";
 import { render, screen, waitFor } from "@testing-library/react";
+import Big from "big.js";
 import { describe, expect, test, vi } from "vitest";
 import "@testing-library/jest-dom";
 
-import ExchangeRateHistory from "@/components/ExchangeRateHistory";
 import type { LineChartProps } from "@still-forest/canopy-charts";
-
 import { createExchangeRate } from "@tests/support/fixtures";
 import MockProvider from "@tests/support/MockProvider";
+import ExchangeRateHistory from "@/components/ExchangeRateHistory";
 
 vi.mock("@still-forest/canopy-charts", () => ({
   LineChart: ({ data }: LineChartProps) => {
@@ -36,39 +35,21 @@ describe("ExchangeRateHistory", () => {
 
   test("renders ExchangeRateHistory and fetches data", async () => {
     render(
-      <MockProvider
-        queryKey={["historical-exchange-rates", "EUR", "USD", undefined]}
-        mockData={mockExchangeRates1}
-      >
+      <MockProvider queryKey={["historical-exchange-rates", "EUR", "USD", undefined]} mockData={mockExchangeRates1}>
         <ExchangeRateHistory fromIsoCode="EUR" toIsoCode="USD" />
       </MockProvider>,
     );
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("Mocked LineChart for 2022-12-01 - 2024-06-01"),
-      ).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByText("Mocked LineChart for 2022-12-01 - 2024-06-01")).toBeInTheDocument());
   });
 
   test("renders ExchangeRateHistory with startDate and fetches data", async () => {
     render(
-      <MockProvider
-        queryKey={["historical-exchange-rates", "EUR", "USD", "2023-01-01"]}
-        mockData={mockExchangeRates2}
-      >
-        <ExchangeRateHistory
-          fromIsoCode="EUR"
-          toIsoCode="USD"
-          startDate={new ProperDate("2023-01-01")}
-        />
+      <MockProvider queryKey={["historical-exchange-rates", "EUR", "USD", "2023-01-01"]} mockData={mockExchangeRates2}>
+        <ExchangeRateHistory fromIsoCode="EUR" toIsoCode="USD" startDate={new ProperDate("2023-01-01")} />
       </MockProvider>,
     );
 
-    await waitFor(() =>
-      expect(
-        screen.getByText("Mocked LineChart for 2023-10-01 - 2024-06-01"),
-      ).toBeInTheDocument(),
-    );
+    await waitFor(() => expect(screen.getByText("Mocked LineChart for 2023-10-01 - 2024-06-01")).toBeInTheDocument());
   });
 });

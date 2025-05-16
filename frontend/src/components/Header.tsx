@@ -1,8 +1,7 @@
 import { Button, Container, Flex, Heading, Text } from "@still-forest/canopy";
-import { API_URL } from "@/config";
 import { useQuery } from "@tanstack/react-query";
-
 import { SquareArrowOutUpRight } from "lucide-react";
+import { API_URL } from "@/config";
 import { getAvailableDates } from "@/services/exchangeRateService";
 
 export default function Home() {

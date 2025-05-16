@@ -1,29 +1,15 @@
-import { useState } from "react";
-import Big from "big.js";
-import { useQuery } from "@tanstack/react-query";
+import { Box, Card, CardContent, Container, ErrorOverlay, Flex, Grid, Heading, Text } from "@still-forest/canopy";
 import ProperDate from "@still-forest/proper-date.js";
-import {
-  Card,
-  CardContent,
-  Container,
-  ErrorOverlay,
-  Box,
-  Flex,
-  Grid,
-  Text,
-  Heading,
-} from "@still-forest/canopy";
-
-import ExchangeRateHistory from "@/components/ExchangeRateHistory";
-import CurrencyPairSelection from "@/components/CurrencyPairSelection";
+import { useQuery } from "@tanstack/react-query";
+import Big from "big.js";
+import { useState } from "react";
 import { ChangeCard } from "@/components/ChangeCard";
+import CurrencyPairSelection from "@/components/CurrencyPairSelection";
+import ExchangeRateHistory from "@/components/ExchangeRateHistory";
 import PageLoader from "@/components/PageLoader";
-import type { CurrencyCode, ExchangeRate } from "@/types";
 import { CURRENCIES } from "@/currencies";
-import {
-  getAvailableCurrencyPairs,
-  getHistoricalExchangeRates,
-} from "@/services/exchangeRateService";
+import { getAvailableCurrencyPairs, getHistoricalExchangeRates } from "@/services/exchangeRateService";
+import type { CurrencyCode, ExchangeRate } from "@/types";
 
 interface InitialProps {
   defaultFromIsoCode: CurrencyCode;
@@ -36,11 +22,7 @@ interface SingleRateCardProps {
   exchangeRate: ExchangeRate;
 }
 
-const SingleRateCard = ({
-  fromIsoCode,
-  toIsoCode,
-  exchangeRate,
-}: SingleRateCardProps) => {
+const SingleRateCard = ({ fromIsoCode, toIsoCode, exchangeRate }: SingleRateCardProps) => {
   return (
     <Card className="w-full py-0">
       <CardContent>
@@ -61,10 +43,7 @@ const SingleRateCard = ({
   );
 };
 
-export default function Dashboard({
-  defaultFromIsoCode,
-  defaultToIsoCode,
-}: InitialProps) {
+export default function Dashboard({ defaultFromIsoCode, defaultToIsoCode }: InitialProps) {
   const {
     isPending: isPendingCurrencyPairs,
     isError: isErrorCurrencyPairs,
@@ -76,8 +55,7 @@ export default function Dashboard({
     staleTime: 1000 * 60 * 60 * 2, // 12h
   });
 
-  const [fromIsoCode, setFromIsoCode] =
-    useState<CurrencyCode>(defaultFromIsoCode);
+  const [fromIsoCode, setFromIsoCode] = useState<CurrencyCode>(defaultFromIsoCode);
   const [toIsoCode, setToIsoCode] = useState<CurrencyCode>(defaultToIsoCode);
 
   const {
@@ -94,19 +72,10 @@ export default function Dashboard({
     return <PageLoader message="Loading exchange rates" />;
   }
   if (isErrorCurrencyPairs)
-    return (
-      <ErrorOverlay
-        message={errorCurrencyPairs?.message || "Error loading currency pairs"}
-      />
-    );
+    return <ErrorOverlay message={errorCurrencyPairs?.message || "Error loading currency pairs"} />;
   if (isErrorHistoricalExchangeRates)
     return (
-      <ErrorOverlay
-        message={
-          errorHistoricalExchangeRates?.message ||
-          "Error loading historical exchange rates"
-        }
-      />
+      <ErrorOverlay message={errorHistoricalExchangeRates?.message || "Error loading historical exchange rates"} />
     );
 
   const timeSeries = new Map(
@@ -116,10 +85,7 @@ export default function Dashboard({
     ]),
   );
 
-  const latestDate =
-    dataHistoricalExchangeRates.data[
-      dataHistoricalExchangeRates.data.length - 1
-    ].date;
+  const latestDate = dataHistoricalExchangeRates.data[dataHistoricalExchangeRates.data.length - 1].date;
   const lastDataPoint = timeSeries.get(latestDate.formatted);
   const lastExchangeRate = lastDataPoint && {
     ...lastDataPoint,
@@ -145,10 +111,7 @@ export default function Dashboard({
     rate: Big(1).div(lastExchangeRate.rate),
   };
 
-  const onCurrencyPairChange = (
-    fromIsoCode: CurrencyCode,
-    toIsoCode: CurrencyCode,
-  ) => {
+  const onCurrencyPairChange = (fromIsoCode: CurrencyCode, toIsoCode: CurrencyCode) => {
     setFromIsoCode(fromIsoCode);
     setToIsoCode(toIsoCode);
   };
@@ -166,17 +129,9 @@ export default function Dashboard({
         <>
           <Container>
             <Grid gap="4" className="md:grid-cols-2">
-              <SingleRateCard
-                fromIsoCode={fromIsoCode}
-                toIsoCode={toIsoCode}
-                exchangeRate={lastExchangeRate}
-              />
+              <SingleRateCard fromIsoCode={fromIsoCode} toIsoCode={toIsoCode} exchangeRate={lastExchangeRate} />
               {inverseExchangeRate && (
-                <SingleRateCard
-                  fromIsoCode={toIsoCode}
-                  toIsoCode={fromIsoCode}
-                  exchangeRate={inverseExchangeRate}
-                />
+                <SingleRateCard fromIsoCode={toIsoCode} toIsoCode={fromIsoCode} exchangeRate={inverseExchangeRate} />
               )}
             </Grid>
           </Container>

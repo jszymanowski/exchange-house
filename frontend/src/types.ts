@@ -1,5 +1,5 @@
-import type Big from "big.js";
 import type ProperDate from "@still-forest/proper-date.js";
+import type Big from "big.js";
 
 export type { CurrencyCode } from "@/currencies";
 
