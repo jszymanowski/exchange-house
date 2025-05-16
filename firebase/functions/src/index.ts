@@ -4,19 +4,17 @@ import {initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import * as logger from "firebase-functions/logger";
 import cors from "cors";
-import {CurrenciesResponse, ExchangeRates} from "./types";
+import {CurrenciesResponse, CurrencyMetadata, ExchangeRates} from "./types";
+import {Request, Response} from "express";
 
-// Set global options
 setGlobalOptions({maxInstances: 10});
 
-// Initialize Firebase Admin
 initializeApp();
 const db = getFirestore();
 const corsHandler = cors({origin: true});
 
-// Helper function to handle CORS
-const withCors = (handler: (req: any, res: any) => Promise<void>) => {
-  return (req: any, res: any) => {
+const withCors = (handler: (req: Request, res: Response) => Promise<void>) => {
+  return (req: Request, res: Response) => {
     return new Promise<void>((resolve) => {
       corsHandler(req, res, () => {
         resolve(handler(req, res));
@@ -25,23 +23,18 @@ const withCors = (handler: (req: any, res: any) => Promise<void>) => {
   };
 };
 
-/**
- * HTTP function to get currency metadata
- */
 export const getCurrencies = onRequest({
   memory: "256MiB",
   timeoutSeconds: 30,
 }, withCors(async (request, response) => {
   try {
-    // Only allow GET requests
     if (request.method !== "GET") {
       response.status(405).send("Method Not Allowed");
       return;
     }
 
-    // Get all currencies from Firestore
     const currenciesSnapshot = await db.collection("currencies").get();
-    const currencies: Record<string, any> = {};
+    const currencies: Record<string, CurrencyMetadata> = {};
 
     currenciesSnapshot.forEach((doc) => {
       currencies[doc.id] = doc.data();
@@ -58,21 +51,17 @@ export const getCurrencies = onRequest({
   }
 }));
 
-/**
- * HTTP function to get exchange rates
- */
+
 export const getExchangeRates = onRequest({
   memory: "256MiB",
   timeoutSeconds: 30,
 }, withCors(async (request, response) => {
   try {
-    // Only allow GET requests
     if (request.method !== "GET") {
       response.status(405).send("Method Not Allowed");
       return;
     }
 
-    // Get exchange rates from Firestore
     const ratesDoc = await db.collection("exchangeRates").doc("latest").get();
 
     if (!ratesDoc.exists) {
