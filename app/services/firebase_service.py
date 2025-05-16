@@ -7,6 +7,7 @@ from app.core.config import firebase_settings
 from app.core.firebase import get_firebase_client
 from app.core.logger import get_logger
 from app.models import Currency, ExchangeRate
+from app.services.currency_service import get_currency_service
 from app.utils import quantize_decimal
 
 
@@ -35,7 +36,25 @@ class FirebaseExchangeRateDataBuilder:
 class FirebaseService:
     def __init__(self, client: Client | None = None):
         self.client = client or get_firebase_client()
+        self.currencies_repository = get_currency_service()
         self.logger = get_logger("firebase")
+
+    def update_currencies(self) -> tuple[bool, Exception | None]:
+        currencies_metadata = self.currencies_repository.get_all_currencies()
+
+        if len(currencies_metadata) == 0:
+            raise ValueError("No currencies metadata found")
+
+        currencies_ref = self.client.collection("currencies").document("metadata")
+        data = currencies_metadata
+
+        try:
+            currencies_ref.set(data)
+            self.logger.info("Updated currencies")
+            return True, None
+        except Exception as e:
+            self.logger.error(f"Error updating currencies: {e}")
+            return False, e
 
     def update_exchange_rates(self, exchange_rates: list[ExchangeRate]) -> tuple[bool, Exception | None]:
         try:
@@ -45,7 +64,7 @@ class FirebaseService:
             raise e
 
         rates_ref = self.client.collection("exchangeRates").document("latest")
-        data = self._build_firebase_data(exchange_rates)
+        data = FirebaseExchangeRateDataBuilder.from_model_list(exchange_rates)
 
         try:
             rates_ref.set(data)
@@ -70,6 +89,3 @@ class FirebaseService:
 
             if rate.as_of != as_of:
                 raise ValueError(f"As of date ({rate.as_of}) differs from the first rate's as of date ({as_of})")
-
-    def _build_firebase_data(self, exchange_rates: list[ExchangeRate]) -> FirebaseExchangeRateData:
-        return FirebaseExchangeRateDataBuilder.from_model_list(exchange_rates)
