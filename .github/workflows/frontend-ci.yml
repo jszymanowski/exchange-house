@@ -15,6 +15,7 @@ jobs:
   test-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+
     strategy:
       matrix:
         include:
@@ -39,7 +40,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4
         with:
-          version: 10.8.1
+          version: 10.10.0
 
       - name: Get pnpm store directory
         id: pnpm-cache
@@ -59,6 +60,6 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run ${{ matrix.task }}
+        run: ${{ matrix.run_command }}
         env:
           VITE_API_URL: http://exchangehouse.test
-        run: ${{ matrix.run_command }}
