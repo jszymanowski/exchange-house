@@ -1,7 +1,6 @@
-import type React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import { MOCK_CURRENCY_PAIRS } from "@tests/support/server";
+import type React from "react";
 import { useState } from "react";
 
 type MockProviderProps = {
@@ -10,11 +9,7 @@ type MockProviderProps = {
   mockData: unknown;
 };
 
-export default function MockProvider({
-  children,
-  queryKey,
-  mockData,
-}: MockProviderProps) {
+export default function MockProvider({ children, queryKey, mockData }: MockProviderProps) {
   const [queryClient] = useState(() => new QueryClient());
 
   queryClient.setQueryData(["currency-pairs"], {
@@ -24,7 +19,5 @@ export default function MockProvider({
     data: mockData,
   });
 
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

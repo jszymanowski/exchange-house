@@ -1,6 +1,6 @@
-import Big from "big.js";
 import ProperDate from "@still-forest/proper-date.js";
-import { describe, test, expect, vi } from "vitest";
+import Big from "big.js";
+import { describe, expect, test, vi } from "vitest";
 
 import {
   getAvailableCurrencyPairs,
@@ -64,11 +64,7 @@ describe("ExchangeRateService", () => {
     });
 
     test("retrieves the historical exchange rates", async () => {
-      const result = await getHistoricalExchangeRates(
-        "EUR",
-        "USD",
-        new ProperDate("2024-12-25"),
-      );
+      const result = await getHistoricalExchangeRates("EUR", "USD", new ProperDate("2024-12-25"));
 
       expect(result.baseCurrencyCode).toBe("EUR");
       expect(result.quoteCurrencyCode).toBe("USD");

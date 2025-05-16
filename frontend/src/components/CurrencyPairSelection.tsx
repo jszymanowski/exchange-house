@@ -1,18 +1,14 @@
-import { useEffect, useState } from "react";
+import { Button, Flex, SelectPicker, Text } from "@still-forest/canopy";
 import { ArrowLeftRight } from "lucide-react";
-
-import type { CurrencyPair, CurrencyCode } from "@/types";
+import { useEffect, useState } from "react";
 import { CURRENCIES } from "@/currencies";
-
-import { Button, SelectPicker, Flex, Text } from "@still-forest/canopy";
+import type { CurrencyCode, CurrencyPair } from "@/types";
 
 const buildCurrencyOptions = (currencyCodes: CurrencyCode[]) => {
   const options = currencyCodes.map((isoCode) => {
     const currencyMetadata = CURRENCIES[isoCode];
     const icon = currencyMetadata?.icon || "";
-    const label = currencyMetadata
-      ? `${isoCode} (${CURRENCIES[isoCode]?.name})`
-      : isoCode;
+    const label = currencyMetadata ? `${isoCode} (${CURRENCIES[isoCode]?.name})` : isoCode;
 
     return {
       icon: icon,
@@ -23,10 +19,7 @@ const buildCurrencyOptions = (currencyCodes: CurrencyCode[]) => {
   return options;
 };
 
-const cleanCurrencyList = (
-  isoCodes: CurrencyCode[],
-  prioritizedCurrency: CurrencyCode = "USD",
-) => {
+const cleanCurrencyList = (isoCodes: CurrencyCode[], prioritizedCurrency: CurrencyCode = "USD") => {
   return Array.from(new Set(isoCodes)).sort((a, b) => {
     if (a === prioritizedCurrency) return -1;
     if (b === prioritizedCurrency) return 1;
@@ -46,24 +39,16 @@ interface Props {
     fromIsoCode: CurrencyCode | null;
     toIsoCode: CurrencyCode | null;
   };
-  handleSubmit: (
-    baseCurrency: CurrencyCode,
-    quoteCurrency: CurrencyCode,
-  ) => void;
+  handleSubmit: (baseCurrency: CurrencyCode, quoteCurrency: CurrencyCode) => void;
 }
 
-const buildQuoteCurrencyOptions = (
-  baseCurrency: CurrencyCode | null,
-  currencyPairs: CurrencyPair[],
-) => {
+const buildQuoteCurrencyOptions = (baseCurrency: CurrencyCode | null, currencyPairs: CurrencyPair[]) => {
   if (!baseCurrency) {
     return [];
   }
 
   const quoteCurrencies = cleanCurrencyList(
-    currencyPairs
-      .filter((pair) => pair.baseCurrencyCode === baseCurrency)
-      .map((pair) => pair.quoteCurrencyCode),
+    currencyPairs.filter((pair) => pair.baseCurrencyCode === baseCurrency).map((pair) => pair.quoteCurrencyCode),
   );
 
   const options = buildCurrencyOptions(quoteCurrencies);
@@ -75,18 +60,14 @@ export default function CurrencyPairSelection({
   initialValues = { fromIsoCode: null, toIsoCode: null },
   handleSubmit,
 }: Props) {
-  const [selectedBaseCurrency, setSelectedBaseCurrency] =
-    useState<CurrencyCode | null>(initialValues.fromIsoCode);
-  const [selectedQuoteCurrency, setSelectedQuoteCurrency] =
-    useState<CurrencyCode | null>(initialValues.toIsoCode);
+  const [selectedBaseCurrency, setSelectedBaseCurrency] = useState<CurrencyCode | null>(initialValues.fromIsoCode);
+  const [selectedQuoteCurrency, setSelectedQuoteCurrency] = useState<CurrencyCode | null>(initialValues.toIsoCode);
 
-  const [quoteCurrencyOptions, setQuoteCurrencyOptions] = useState<
-    SelectOption[]
-  >(buildQuoteCurrencyOptions(initialValues.fromIsoCode, currencyPairs));
-
-  const baseCurrencies = cleanCurrencyList(
-    currencyPairs.map((pair) => pair.baseCurrencyCode),
+  const [quoteCurrencyOptions, setQuoteCurrencyOptions] = useState<SelectOption[]>(
+    buildQuoteCurrencyOptions(initialValues.fromIsoCode, currencyPairs),
   );
+
+  const baseCurrencies = cleanCurrencyList(currencyPairs.map((pair) => pair.baseCurrencyCode));
 
   const baseCurrencyOptions = buildCurrencyOptions(baseCurrencies);
 
@@ -170,11 +151,7 @@ export default function CurrencyPairSelection({
         />
       </div>
       <div className="w-full md:w-auto">
-        <Button
-          icon={<ArrowLeftRight size={20} />}
-          onClick={handleSwap}
-          className="w-full"
-        />
+        <Button icon={<ArrowLeftRight size={20} />} onClick={handleSwap} className="w-full" />
       </div>
       <div className="w-full md:w-auto">
         <SelectPicker
