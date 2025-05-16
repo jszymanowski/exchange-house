@@ -14,12 +14,11 @@ async def _get_latest_exchange_rates() -> list[ExchangeRate]:
 
     try:
         await Tortoise.init(config=TORTOISE_ORM)
-        rate = await exchange_rate_service.get_latest_rate(
+        rates = await exchange_rate_service.get_latest_rates(
             base_currency_code=Currency("USD"),
-            quote_currency_code=Currency("SGD"),
         )
 
-        return [rate]
+        return rates
     except Exception as e:
         print(f"Retrieving latest exchange rates failed: {e}", file=sys.stderr)
         return False

@@ -146,6 +146,26 @@ async def test_get_latest_rate_not_found() -> None:
 
 
 @pytest.mark.asyncio
+async def test_get_latest_rates_success() -> None:
+    base_currency_code = Currency("USD")
+    service = ExchangeRateService()
+    results = await service.get_latest_rates(base_currency_code)
+
+    assert len(results) == 2
+    result_1 = results[0]
+    assert result_1.base_currency_code == base_currency_code
+    assert result_1.quote_currency_code == Currency("EUR")
+    assert quantize_decimal(result_1.rate) == quantize_decimal("0.87")
+    assert result_1.as_of == date(2023, 1, 20)
+
+    result_2 = results[1]
+    assert result_2.base_currency_code == base_currency_code
+    assert result_2.quote_currency_code == Currency("JPY")
+    assert quantize_decimal(result_2.rate) == quantize_decimal("102")
+    assert result_2.as_of == date(2023, 1, 20)
+
+
+@pytest.mark.asyncio
 async def test_get_historical_rates_success() -> None:
     base_currency_code = Currency("USD")
     quote_currency_code = Currency("EUR")
