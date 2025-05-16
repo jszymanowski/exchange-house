@@ -21,22 +21,21 @@ async def _get_latest_exchange_rates() -> list[ExchangeRate]:
         return rates
     except Exception as e:
         print(f"Retrieving latest exchange rates failed: {e}", file=sys.stderr)
-        return False
+        return []
     finally:
         await Tortoise.close_connections()
 
 
-async def upload_exchange_rates(exchange_rates: list[ExchangeRate]) -> bool:
-    """Run the exchange rate refresh process for the specified date range."""
+async def upload_exchange_rates(exchange_rates: list[ExchangeRate]) -> tuple[bool, Exception | None]:
+    """Upload exchange rates to Firebase and return success status."""
 
     try:
         firebase_service = await get_firebase_service()
         firebase_service.update_exchange_rates(exchange_rates)
-        return True
+        return True, None
     except Exception as e:
         print(f"Uploading exchange rates failed: {e}", file=sys.stderr)
-        raise e
-        # return False
+        return False, e
 
 
 if __name__ == "__main__":

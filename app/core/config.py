@@ -147,7 +147,11 @@ healthcheck_settings = HealthcheckSettings()
 class FirebaseSettings(BaseSettings):
     @cached_property
     def firebase_credentials_path(self) -> str | None:
-        return os.getenv("FIREBASE_CREDENTIALS_PATH")
+        credentials_path = os.getenv("FIREBASE_CREDENTIALS_PATH")
+        if not credentials_path:
+            raise ValueError("FIREBASE_CREDENTIALS_PATH environment variable is required")
+
+        return credentials_path
 
     @cached_property
     def base_currency_code(self) -> str:

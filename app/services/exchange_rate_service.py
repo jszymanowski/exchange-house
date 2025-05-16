@@ -103,6 +103,9 @@ class ExchangeRateService(ExchangeRateServiceInterface):
 
     async def get_latest_rates(self, base_currency_code: Currency) -> list[ExchangeRate]:
         available_dates = await self.get_available_dates()
+        if not available_dates:
+            return []
+
         as_of = available_dates[-1]
 
         return (
