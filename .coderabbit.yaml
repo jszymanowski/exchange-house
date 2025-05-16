@@ -4,8 +4,10 @@ reviews:
   high_level_summary: false
   poem: false
   review_status: false
+  changed_files_summary: false
   collapse_walkthrough: false
   sequence_diagrams: false
+
   auto_review:
     enabled: true
     drafts: false
