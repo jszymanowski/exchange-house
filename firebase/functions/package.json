@@ -14,6 +14,7 @@
     "node": "22"
   },
   "main": "lib/index.js",
+  "type": "module",
   "dependencies": {
     "@google-cloud/functions-framework": "^4.0.0",
     "cors": "^2.8.5",
@@ -22,8 +23,8 @@
   },
   "devDependencies": {
     "@types/cors": "2.8.18",
-    "@typescript-eslint/eslint-plugin": "5.62.0",
-    "@typescript-eslint/parser": "5.62.0",
+    "@typescript-eslint/eslint-plugin": "8.32.1",
+    "@typescript-eslint/parser": "8.32.1",
     "eslint": "9.26.0",
     "eslint-config-google": "0.14.0",
     "eslint-plugin-import": "2.31.0",
