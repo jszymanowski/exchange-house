@@ -51,7 +51,7 @@ export default function ExchangeRateScreen({ currencyCode }: ExchangeRateScreenP
         </Heading>
       </View>
 
-      {exchangeRate && (
+      {exchangeRate ? (
         <>
           <ExchangeRateForm currency={currency} exchangeRate={exchangeRate} />
 
@@ -65,6 +65,12 @@ export default function ExchangeRateScreen({ currencyCode }: ExchangeRateScreenP
             </Text>
           </View>
         </>
+      ) : (
+        <View className="flex items-center justify-center p-4">
+          <Text className="text-center" testID="no-exchange-rate">
+            No exchange rate information available for {currency.name}
+          </Text>
+        </View>
       )}
     </ScreenWrapper>
   );
