@@ -11,6 +11,7 @@
     "build:watch": "tsc --watch",
     "format": "prettier --write .",
     "lint": "eslint --ext .js,.ts .",
+    "lint:ci": "eslint --ext .js,.ts --quiet .",
     "lint:fix": "eslint --ext .js,.ts --fix .",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
