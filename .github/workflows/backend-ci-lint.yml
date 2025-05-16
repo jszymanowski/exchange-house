@@ -1,8 +1,10 @@
-name: CI (API lint)
+name: Backend CI (lint)
 
 on:
   pull_request:
     branches: main
+    paths:
+      - backend/**
 
 jobs:
   lint:

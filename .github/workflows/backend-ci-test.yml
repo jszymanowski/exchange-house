@@ -1,8 +1,10 @@
-name: CI (API tests)
+name: Backend CI (tests)
 
 on:
   pull_request:
     branches: main
+    paths:
+      - backend/**
 
 jobs:
   test:

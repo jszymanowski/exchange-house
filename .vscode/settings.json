@@ -4,6 +4,7 @@
     "**/__pycache__": true,
     "**/htmlcov": true,
     "**/.coverage": true,
+    "**/mypy_cache": true,
     "**/.pytest_cache": true,
     "**/.ruff_cache": true
   }
