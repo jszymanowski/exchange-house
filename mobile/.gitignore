@@ -36,3 +36,7 @@ yarn-error.*
 *.tsbuildinfo
 
 coverage/
+
+# Use Continuous Native Generation
+ios/
+android/
