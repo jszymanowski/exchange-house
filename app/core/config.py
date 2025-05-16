@@ -149,5 +149,9 @@ class FirebaseSettings(BaseSettings):
     def firebase_credentials_path(self) -> str:
         return os.getenv("FIREBASE_CREDENTIALS_PATH")
 
+    @cached_property
+    def base_currency_code(self) -> str:
+        return os.getenv("BASE_CURRENCY_CODE", "USD")
+
 
 firebase_settings = FirebaseSettings()

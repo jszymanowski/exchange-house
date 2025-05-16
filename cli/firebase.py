@@ -15,8 +15,8 @@ async def _get_latest_exchange_rates() -> list[ExchangeRate]:
     try:
         await Tortoise.init(config=TORTOISE_ORM)
         rate = await exchange_rate_service.get_latest_rate(
-            base_currency_code=Currency("SGD"),
-            quote_currency_code=Currency("USD"),
+            base_currency_code=Currency("USD"),
+            quote_currency_code=Currency("SGD"),
         )
 
         return [rate]
@@ -36,7 +36,8 @@ async def upload_exchange_rates(exchange_rates: list[ExchangeRate]) -> bool:
         return True
     except Exception as e:
         print(f"Uploading exchange rates failed: {e}", file=sys.stderr)
-        return False
+        raise e
+        # return False
 
 
 if __name__ == "__main__":
