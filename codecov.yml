@@ -15,11 +15,6 @@ coverage:
           - frontend
         paths:
           - "frontend/"
-      mobile:
-        flags:
-          - mobile
-        paths:
-          - "mobile/"
 
     patch:
       default:
@@ -32,9 +27,6 @@ flags:
   frontend:
     paths:
       - frontend/
-  mobile:
-    paths:
-      - mobile/
 
 comment:
   layout: "reach,diff,flags,files,footer"
